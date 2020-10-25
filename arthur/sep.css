@@ -1,5 +1,6 @@
 .sep-graph {
-    width: 50em;
-    height: 50em;
-    display: block;
+    display: inline-block;
+    border: thin solid black;
+    vertical-align: top;
+    margin: 0.15rem;
 }

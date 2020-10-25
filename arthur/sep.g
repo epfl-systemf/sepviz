@@ -8,7 +8,7 @@ cruft
 
 Top
   = "{*" _ s:Stars _ "*}" {
-    return s;
+    return { raw: text(), parsed: s };
 }
 
 Stars
