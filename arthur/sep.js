@@ -11,7 +11,7 @@ function stringp(x) {
 }
 
 function parse_sep(sep) {
-    var memories = {};
+    var objects = [];
     var gensym = {};
 
     function next(prefix) {
@@ -44,11 +44,11 @@ function parse_sep(sep) {
         case "points-to":
             const addr = resolve(sep.from, ctx);
             const [constr, ...args] = sep.to;
-            memories[addr.uid] = {
+            objects.push({
                 addr,
                 constr,
                 args: args.map(a => resolve(a, ctx))
-            };
+            });
             break;
         case "gc":
             break;
@@ -56,7 +56,7 @@ function parse_sep(sep) {
     }
 
     loop(sep, Immutable.Map({}));
-    return memories;
+    return objects;
 }
 
 function render(term) {
@@ -74,7 +74,7 @@ function render(term) {
     return stack;
 }
 
-function render_sep(container, memories) {
+function render_sep(container, objects) {
     container = d3.select(container);
 
     const node = container.append('span');
@@ -143,11 +143,11 @@ function render_sep(container, memories) {
     // g.setEdge("p2$ptr", "p2", { ...EDGE });
 
     // var gensym = 0;
-    for (var uid in memories) {
+    for (var uid in objects) {
         const ptr = addr + "!ptr";
         const record = addr + "!record";
 
-        const {addr, constr, args} = memories[uid];
+        const {addr, constr, args} = objects[uid];
 
         g.setNode(ptr, { label: addr.label, ...POINTER_NODE });
         // console.log("node:", ptr);
@@ -165,7 +165,7 @@ function render_sep(container, memories) {
             g.setNode(arg, { label: a, ...ARG_NODE });
             g.setParent(arg, record);
             // console.log("node:", arg);
-            if (a in memories) {
+            if (a in objects) {
                 g.setEdge(arg, a, { ...EDGE });
                 // console.log("edge:", arg, "→", a);
             }
@@ -227,13 +227,13 @@ function render_sep(container, memories) {
     // svg.call(zoom.transform, d3.zoomIdentity.translate(scaled_offset, 0).scale(scale));
 }
 
-function render_sep(container, memories) {
+function render_sep(container, objects) {
     var nodes = [];
     var edges = [];
     // var constraints = [];
 
-    for (var uid in memories) {
-        const {addr, constr, args} = memories[uid];
+    for (var uid in objects) {
+        const {addr, constr, args} = objects[uid];
 
         const ptr = addr.uid + "!ptr";
 
@@ -251,8 +251,8 @@ function render_sep(container, memories) {
         // console.log("edge:", ptr, "→", addr);
     }
 
-    for (var uid in memories) {
-        const {addr, constr, args} = memories[uid];
+    for (var uid in objects) {
+        const {addr, constr, args} = objects[uid];
 
         // var constraint = [{ node: addr }];
         // constraints.push(constraint);
@@ -261,7 +261,7 @@ function render_sep(container, memories) {
             // nodes.push({ data: { id: arg, label: a } });
             // constraint.push({ node: arg });
             // console.log("node:", arg);
-            if (a.uid in memories) {
+            if (a.uid in objects) {
                 edges.push({ data: { id: arg + "→" + a.uid, source: addr.uid, target: a.uid }});
                 // console.log("edge:", arg, "→", a);
             }
@@ -323,12 +323,12 @@ function render_sep(container, memories) {
     // }).run();
 }
 
-function render_sep(container, memories) {
+function render_sep(container, objects) {
     var nodes = [];
     var edges = [];
 
-    for (var uid in memories) {
-        const {addr, constr, args} = memories[uid];
+    for (var uid in objects) {
+        const {addr, constr, args} = objects[uid];
 
         const ptr = addr.uid + "!ptr";
 
@@ -346,8 +346,8 @@ function render_sep(container, memories) {
         // console.log("edge:", ptr, "→", addr);
     }
 
-    for (var uid in memories) {
-        const {addr, constr, args} = memories[uid];
+    for (var uid in objects) {
+        const {addr, constr, args} = objects[uid];
 
         // var constraint = [{ node: addr }];
         // constraints.push(constraint);
@@ -356,14 +356,212 @@ function render_sep(container, memories) {
             // nodes.push({ data: { id: arg, label: a } });
             // constraint.push({ node: arg });
             // console.log("node:", arg);
-            if (a.uid in memories) {
+            if (a.uid in objects) {
                 edges.push({ data: { id: arg + "→" + a.uid, source: addr.uid, target: a.uid }});
                 // console.log("edge:", arg, "→", a);
             }
         });
     }
+}
+
+function graphviz_input_ports_of_object(obj) {
+    switch (obj.constr) {
+    case "MCell":
+        return { [obj.addr.uid]: ["car_in", "w"] };
+    case "MListSeg":
+    case "MList":
+        return { [obj.addr.uid]: ["list", "w"] };
+    default:
+        console.error("Unrecognized object:", obj);
+        return { [obj.addr.uid]: [] };
+    }
+}
+
+function graphviz_label_of_object(obj, known_uids) {
+    const xml = (node, default_attrs={}) => (attrs, ...contents) =>
+          [node, { ...default_attrs, ...attrs}, ...contents];
+
+    const table = xml('table', { border: 0,
+                                 cellborder: 1,
+                                 cellspacing: 0,
+                                 cellpadding: 4 }),
+          tr = xml('tr'), td = xml('td'), font = xml('font');
+
+    const header =
+          tr({}, td({ colspan: 2, cellpadding: 0, sides: "b" },
+                    font({ ['point-size']: 10 }, obj.constr)));
+
+    const value = (port, val) =>
+          tr({}, td({ port, colspan: 2 }, val.label));
+
+    const value_null = (port) =>
+          tr({}, td({ port, colspan: 2 }, "∅"));
+
+    const pointer = (port_in, port_out, ptr) =>
+          tr({},
+             td({ port: port_in, sides: "tlb" }, ptr.label),
+             td({ port: port_out, sides: "trb" }, "⏺"));
+
+    const value_or_ptr = (port_in, port_out, v) =>
+          (v.uid in known_uids ?
+           pointer(port_in, port_out, v) :
+           (v.label == "null" && v.global ?
+            value_null(port_in) : value(port_in, v)));
+
+    switch (obj.constr) {
+    case "MCell":
+        return table({}, header,
+                     value_or_ptr("car_in", "car_out", obj.args[0]),
+                     value_or_ptr("cdr_in", "cdr_out", obj.args[1]));
+    case "MListSeg":
+    case "MList":
+        return table({ cellborder: 0 }, header,
+                     value("list", obj.args[0]));
+    default:
+        console.error("Unrecognized object:", obj);
+        return table({}, header, ...obj.args.map(a => value(null, a)));
+    }
+} // FIXME add node definition around this.
+
+function graphviz_node_of_object(obj, known_uids) {
+    return {
+        name: obj.addr.uid,
+        props: { label: graphviz_label_of_object(obj, known_uids) }
+    };
+}
+
+function graphviz_edges_of_object(obj, input_port_of_uid) {
+    const name = obj.addr.uid;
+
+    const cell_edge = (out_port, uid) => {
+        const in_port = input_port_of_uid[uid];
+        return in_port === undefined ?
+            [] : [{ src: [name, ...out_port], dst: [uid, ...in_port] }];
+    };
+
+    switch (obj.constr) {
+    case "MCell":
+        return [...cell_edge(["car_out", "c"], obj.args[0].uid),
+                ...cell_edge(["cdr_out", "c"], obj.args[1].uid)];
+    case "MListSeg":
+        // TODO: later code should handle the case where v doesn't exist
+        const uid = obj.args[0].uid;
+        const in_port = input_port_of_uid[uid] || null;
+        return { src: [name, "list", "e"],
+                 dst: [uid, ...in_port],
+                 props: { tailclip: true } };
+    case "MList":
+        return [];
+    default:
+        console.error("Unrecognized object:", obj);
+        return [].concat(...obj.args.map(a => cell_edge([], a.uid)));
+    }
+}
+
+function graphviz_graph_of_objects(objects) {
+    const input_port_of_uid =
+          Object.assign({}, ...objects.map(graphviz_input_ports_of_object));
+    const nodes = objects.map(o =>
+        graphviz_node_of_object(o, input_port_of_uid));
+    const edges =
+          [].concat(...objects.map(o => graphviz_edges_of_object(o, input_port_of_uid)));
+    const props = [
+        { target: "graph", props: { rankdir: "LR", ranksep: 0.35, splines: true, packmode: "graph" } },
+        { target: "edge", props: { fontname: "Iosevka", tailclip: false, minlen: 1 } },
+        { target: "node", props: { shape: "plaintext", fontname: "Iosevka", sep: 2 } }
+    ];
+
+    return { name: "G",
+             objects: [...props, ...nodes, ...edges] };
+}
+
+function graphviz_render_text(graph) {
+    const map_dict = (attrs, fn) =>
+          Object.entries(attrs).filter(v => v[1] !== null).map(fn);
+
+    const render_attr = ([k, v]) =>
+          v === null ? `` : ` ${k}="${v}"`;
+
+    const render_attrs = (attrs) =>
+          map_dict(attrs, render_attr).join("");
+
+    const render_xml = (xml) => {
+        if (stringp(xml)) {
+            return xml;
+        } else {
+            const [node, attrs, ...contents] = xml;
+            return [
+                `<${node}${render_attrs(attrs)}>`,
+                ...contents.map(render_xml),
+                `</${node}>`
+            ].join("");
+        }
+    };
+
+    const render_prop = ([k, v]) =>
+          (k == "label" ?
+           `${k}=<${render_xml(v)}>` :
+           `${k}="${v}"`);
+
+    const render_props = (props={}) =>
+          "[" + map_dict(props, render_prop).join(", ") + "]";
+
+    const render_extremity = (path) =>
+          path.map(a => `"${a}"`).join(':');
+
+    const render_one = (obj) => {
+        if ("target" in obj)
+            return `${obj.target} ${render_props(obj.props)}`;
+        else if ("name" in obj)
+            return `"${obj.name}" ${render_props(obj.props)}`;
+        else if ("src" in obj)
+            return `${render_extremity(obj.src)} -> ${render_extremity(obj.dst)} ${render_props(obj.props)}`;
+        console.error("Unrecognized GraphViz construct:", obj);
+        return "";
+    };
+
+    return [`digraph ${graph.name} {`,
+            ...graph.objects.map(render_one),
+            "}"].join("\n");
+}
+
+function render_graphviz(container, objects) {
+    const graph = graphviz_graph_of_objects(objects);
+    container.append(document.createTextNode(graphviz_render_text(graph)));
+    return;
+
+    objects.forEach(({addr, constr, args}) => {
+        const ptr = addr.uid + "!ptr";
+
+        const label = constr + ' ' + args.map(a => a.label).join(' ');
+        nodes.push({ data: { id: addr.uid, label } });
+        // console.log("node:", addr);
+
+        if (addr.global) {
+            nodes.push({ data: { id: ptr, label: addr.label } });
+            edges.push({ data: { id: ptr + "→" + addr.uid, source: ptr, target: addr.uid }});
+        }
+        // console.log("node:", ptr);
+        // nodes.push({ data: { id: record } });
+        // console.log("node:", record);
+        // console.log("edge:", ptr, "→", addr);
+    });
+
+    objects.forEach(({addr, constr, args}) => {
+        args.forEach((a, id) => {
+            const arg = addr.uid + "!arg!" + id;
+            // nodes.push({ data: { id: arg, label: a } });
+            // constraint.push({ node: arg });
+            // console.log("node:", arg);
+            if (a.uid in objects) {
+                edges.push({ data: { id: arg + "→" + a.uid, source: addr.uid, target: a.uid }});
+                // console.log("edge:", arg, "→", a);
+            }
+        });
+    });
 
 }
+
 
 function render_embedded() {
     document.querySelectorAll(".goal-conclusion").forEach(goal => {
@@ -375,9 +573,9 @@ function render_embedded() {
                 _goal.append(document.createTextNode(obj));
             } else {
                 const host = document.createElement('span');
-                host.className = "sep-graph";
+                host.className = "sep"; // FIXME -graph
                 _goal.append(host);
-                render_sep(host, obj);
+                render_graphviz(host, obj);
             }
         });
     });
