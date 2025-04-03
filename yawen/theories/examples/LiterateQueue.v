@@ -78,7 +78,7 @@ Lemma Triple_is_empty : forall A `{EA: Enc A} (L: list A) p,
     (fun r => \[r = isTrue (L = nil)] \* p ~> MQueue L).
 Proof using.
   xwp. xunfolds MQueue ;=> f b d.
-  mxapp. mxapp. mxapp Triple_eq.
+  mxapp Triple_get_head. mxapp Triple_get_tail. mxapp Triple_eq.
   xchanges MListSeg_MCell_conflict ;=> M.
   rewrite* isTrue_eq_isTrue_eq.
 Qed.
@@ -92,40 +92,18 @@ Proof using.
   - xunfold MQueue. xpull ;=> f2 b2 d2 f1 b1 d1.
     destruct L2 as [| x L2']; [solve [tryfalse] |].
     xchange MListSeg_cons ;=> c2.
-    mxapp. mxapp. mxapp. mxapp. mxapp. mxapp.
-    mxapp. mxapp. mxapp. mxapp. mxapp. mxapp.
-    xchange <- (MListSeg_cons b1). xchange <- (MListSeg_concat f1).
-    xchanges (MListSeg_nil_intro f2 A EA).
+    mxapp Triple_get_tail. mxapp Triple_get_head.
+    mxapp Triple_get_head. mxapp Triple_get_head.
+    mxapp Triple_set_head. mxapp Triple_get_tail.
+    mxapp Triple_set_tail. mxapp Triple_get_tail.
+    mxapp Triple_set_tail. mxapp Triple_set_head.
+    mxapp Triple_set_tail. mxapp Triple_set_tail.
+    xchange <- (@MListSeg_cons A EA b1). xchange <- (@MListSeg_concat A EA f1).
+    xchanges (@MListSeg_nil_intro A EA f2).
   - subst. rew_list. mxvals.
 Qed.
 
 Ltac auto_tilde ::= auto_tilde_default.
-
-
-(* From Sep Require Import Example ExampleListNull ExampleQueue. *)
-
-(* Declare Custom Entry heap. *)
-(* Notation "{*  e  *}" := (e) (e custom heap at level 200, at level 0). *)
-
-(* Notation "H1 * H2" := *)
-(*   (SepSimplArgs.hstar H1 H2) *)
-(*     (in custom heap at level 41, *)
-(*         H2 custom heap at level 41). *)
-(* Notation "x ~> S" := *)
-(*   (repr S x) *)
-(*     (in custom heap at level 33, *)
-(*         x custom heap, *)
-(*         S custom heap at level 32). *)
-
-(* Notation "'llet' x := a 'in' v" := ((fun x => v) a) (at level 200). *)
-(* Locate "\exists". *)
-(* Notation "∃  x ,  P" := *)
-(*   (SepSimplArgs.hexists (fun x => P)) *)
-(*     (in custom heap at level 200, P custom heap at level 200). *)
-(* Notation "( x )" := (x) (in custom heap at level 0, x custom heap at level 200). *)
-(* Notation "x" := (x) (in custom heap at level 0, x constr at level 200). *)
-
-(* (*||*) *)
 
 (*|
 .. raw:: html
