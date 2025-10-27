@@ -421,7 +421,7 @@ function render_graphviz(fragment) {
 }
 
 function render_embedded() {
-    document.querySelectorAll(".goal-conclusion .highlight, .coq-message, .goal-hyp .highlight").forEach(goal => {
+    document.querySelectorAll(".goal-conclusion, .coq-message, .goal-hyp").forEach(goal => {
         const _goal = goal.cloneNode(false);
         goal.parentNode.replaceChild(_goal, goal);
 
