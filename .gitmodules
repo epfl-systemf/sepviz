@@ -4,3 +4,9 @@
 [submodule "arthur/cfml2"]
 	path = arthur/cfml2
 	url = https://gitlab.inria.fr/charguer/cfml2.git
+[submodule "vendor/cfml"]
+	path = vendor/cfml
+	url = git@github.com:yawen-guan/cfml.git
+[submodule "vendor/tlc"]
+	path = vendor/tlc
+	url = git@github.com:charguer/tlc.git
