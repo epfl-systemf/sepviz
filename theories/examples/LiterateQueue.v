@@ -107,8 +107,8 @@ Ltac auto_tilde ::= auto_tilde_default.
    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" integrity="sha512-1zKK2bG3QY2JaUPpfHZDUMe3dwBwFdCDwXQ01GrKSd+/l0hqPbF+aak66zYPUZtn+o2JYi1mjXAqy5mW04v3iA==" crossorigin="anonymous"></script>
 
    <link rel="stylesheet" href="sep.css">
-   <script type="text/javascript" src="parser.js"></script>
-   <script type="text/javascript" src="sep.js"></script>
+   <script type="module" src="parser.js"></script>
+   <script type="module" src="sep.js"></script>
 
 .. coq:: none
 |*)

@@ -20,6 +20,7 @@ Term
   = Parenthesized
   / Existential
   / PointsTo
+  / PurePredicate
   / GC
 
 Parenthesized
@@ -34,12 +35,17 @@ Existential
 
 PointsTo
   = from:name _ "~>" _ to:Formula {
-  return { kind: "points-to", from, to };
+  return { kind: "pointsTo", from, to };
 }
 
 GC
   = "\\GC" {
   return { kind: "gc" };
+}
+
+PurePredicate
+  = "[*" _ p:Formula _ "*]" {
+    return { kind: "purePredicate", predicate: p };
 }
 
 Formula
@@ -49,6 +55,7 @@ Formula
 
 Atom
   = name
+  / operator
   / ParenthesizedAtom {
   return text();
 }
@@ -56,12 +63,17 @@ Atom
 ParenthesizedAtom
   = "(" _ (unsafe / ParenthesizedAtom _)* ")"
 
-name "name"
+name
   = n:[A-Za-z0-9\']+ {
   return n.join("");
 }
 
-unsafe "unsafe"
+operator
+  = op:("<>" / "=") {
+  return op;
+}
+
+unsafe
   = u:[^()]+ {
   return u.join("");
 }

@@ -1,3 +1,4 @@
+import * as SepParser from "./parser.js";
 'use strict';
 
 // SepParser = require("./parser.node.js");
@@ -42,7 +43,7 @@ function parse_sep(sep) {
             });
             loop(sep.body, ctx);
             break;
-        case "points-to":
+        case "pointsTo":
             const addr = resolve(sep.from, ctx);
             const [constr, ...args] = sep.to;
             objects.push({
