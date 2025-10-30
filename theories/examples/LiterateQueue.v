@@ -54,6 +54,12 @@ End QueueApiImpl.
 
 (*||*)
 
+Goal forall A `{EA: Enc A} (L: list A) p f b,
+  Triple (is_empty p)
+    (f ~> MListSeg b L)
+    (fun (r: unit) => \[]).
+Proof. Abort.
+
 Lemma Triple_test_drawing_pure_conditions: forall A `{EA: Enc A} (L: list A) p,
   Triple (is_empty p)
     (p ~> MQueue L \* \[L <> nil])
