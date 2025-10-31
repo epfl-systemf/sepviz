@@ -1,95 +1,20 @@
 import * as SepParser from "./parser.js";
 ("use strict");
 
-document.addEventListener("DOMContentLoaded", init);
+let configOfConstr = null;
 
-// TODO: read from a separated config file.
-const configOfConstr = {
-  MCell: {
-    inPorts: ["car_in"],
-    isFlat: true,
-    args: {
-      0: {
-        inTable: true,
-        inPorts: ["car_in"],
-        outPorts: ["car_out"],
-      },
-      1: {
-        inTable: true,
-        inPorts: ["cdr_in"],
-        outPorts: ["cdr_out"],
-      },
-    },
-  },
-  MListSeg: {
-    inPorts: ["list_in"],
-    isFlat: false,
-    args: {
-      0: {
-        inTable: false,
-        isPointer: true, // For any instance of this construct, this field is always a pointer
-        outPorts: ["list"],
-      },
-      1: {
-        inTable: true,
-        inPorts: ["list"],
-        outPorts: ["list"],
-      },
-    },
-  },
-  MList: {
-    inPorts: [],
-    isFlat: false,
-    args: {
-      0: {
-        inTable: false,
-      },
-    },
-  },
-  MQueue: {
-    inPorts: ["list"],
-    isFlat: false,
-    args: {
-      0: {
-        inTable: true,
-        inPorts: ["list"],
-        outPorts: ["list"],
-      },
-    },
-  },
-  MNode: {
-    inPorts: ["in0"],
-    isFlat: true,
-    args: {
-      0: {
-        inTable: true,
-        inPorts: ["in0"],
-        outPorts: ["out0"],
-      },
-      1: {
-        inTable: true,
-        inPorts: ["in1"],
-        outPorts: ["out1"],
-      },
-      2: {
-        inTable: true,
-        inPorts: ["in2"],
-        outPorts: ["out2"],
-      },
-    },
-  },
-  MTree: {
-    inPorts: ["tree"],
-    isFlat: false,
-    args: {
-      0: {
-        inTable: true,
-        inPorts: ["tree"],
-        outPorts: ["tree"],
-      },
-    },
-  },
-};
+document.addEventListener("DOMContentLoaded", async () => {
+  configOfConstr = await loadConfig();
+  init();
+});
+
+async function loadConfig() {
+  const response = await fetch("./config_constr.json");
+  if (!response.ok)
+    throw new Error(`Failed to load config: ${response.status}`);
+  const configOfConstr = await response.json();
+  return configOfConstr;
+}
 
 function parseHeapPredicate(hpred) {
   let objects = [];
