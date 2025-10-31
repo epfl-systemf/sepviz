@@ -555,44 +555,48 @@ function renderGoalParseUnit(host, parseUnit) {
   };
 }
 
-// const goalClasses = ["goal-conclusion", "coq-message", "goal-hyp"];
+// TODO: besides "goal-conclusion", handle classes "coq-message" and "goal-hyp" as well.
 function renderEmbedded() {
   let genVid = 0,
     lastPreVid = null,
     lastPostVid = null;
 
-  function next(isPre) {
+  function next(isFreshStart, isPreCond) {
     const vid = `vid${genVid++}`;
-    lastVid[vid] = isPre ? lastPreVid : lastPostVid;
-    if (isPre) lastPreVid = vid;
+    if (isFreshStart) {
+      lastPreVid = null;
+      lastPostVid = null;
+    }
+    lastVid[vid] = isPreCond ? lastPreVid : lastPostVid;
+    if (isPreCond) lastPreVid = vid;
     else lastPostVid = vid;
     return vid;
   }
 
-  document.querySelectorAll(".goal-conclusion").forEach((goalNode) => {
-    const parseResult = parse(goalNode.innerText);
-    goalNode.innerText = "";
-    let isPre = true;
-    parseResult.forEach((parseUnit, parseUnitIdx) => {
-      if (typeof parseUnit === "object" && "raw" in parseUnit) {
-        const vid = next(isPre);
-        const host = createElement("div", ["sep-visualization"], {
-          text: null,
-          attrs: { id: vid },
-        });
-        goalNode.append(host);
-        renderGoalParseUnit(host, parseUnit);
-        isPre = false;
-      } else {
-        goalNode.append(parseUnit);
-      }
+  document
+    .querySelectorAll(".alectryon-sentence:has(.goal-conclusion)")
+    .forEach((sentenceNode) => {
+      const isFreshStart = sentenceNode.classList.contains("sep-fresh-start");
+      const goalNode = sentenceNode.querySelector(".goal-conclusion");
+      const parseResult = parse(goalNode.innerText);
+      goalNode.innerText = "";
+      let isPreCond = true;
+      parseResult.forEach((parseUnit, parseUnitIdx) => {
+        if (typeof parseUnit === "object" && "raw" in parseUnit) {
+          const vid = next(isFreshStart, isPreCond);
+          const host = createElement("div", ["sep-visualization"], {
+            text: null,
+            attrs: { id: vid },
+          });
+          goalNode.append(host);
+          renderGoalParseUnit(host, parseUnit);
+          isPreCond = false;
+        } else {
+          goalNode.append(parseUnit);
+        }
+      });
     });
-  });
 }
-
-const transitionFactory = () => {
-  return d3.transition().duration(5000).ease(d3.easeCubicInOut);
-};
 
 const renderingVids = new Set();
 
@@ -606,7 +610,6 @@ async function animate(vizNode, duration = 2000) {
   const gviz = svgNode.__graphviz__;
 
   renderingVids.add(vid);
-
   // render the previous diagram
   await new Promise((resolve) => {
     gviz
@@ -625,7 +628,6 @@ async function animate(vizNode, duration = 2000) {
       .renderDot(dots[vid])
       .on("end", resolve);
   });
-
   renderingVids.delete(vid);
 }
 
@@ -654,7 +656,22 @@ function observeAlectryonTarget() {
   });
 }
 
+function markFreshStarts() {
+  const startingTokens = ["Goal", "Lemma", "Theorem", "-", "+", "*", "{", "}"];
+
+  document.querySelectorAll(".alectryon-sentence").forEach((sentenceNode) => {
+    const inputNode = sentenceNode.querySelector(".alectryon-input");
+    const token =
+      inputNode.childElementCount > 0
+        ? inputNode.childNodes[0].innerText
+        : inputNode.innerText;
+    if (startingTokens.includes(token))
+      sentenceNode.classList.add("sep-fresh-start");
+  });
+}
+
 function init() {
+  markFreshStarts();
   renderEmbedded();
   observeAlectryonTarget();
 }

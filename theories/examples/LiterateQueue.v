@@ -102,6 +102,26 @@ Proof using.
   - subst. rew_list. mxvals.
 Qed.
 
+Lemma Triple_transfer_test_brackets : forall {A} `{EA: Enc A} (L1 L2: list A) p1 p2,
+  Triple (transfer p1 p2)
+    (p1 ~> MQueue L1 \* p2 ~> MQueue L2)
+    (fun (r:unit) => p1 ~> MQueue (L1 ++ L2) \* p2 ~> MQueue (@nil A)).
+Proof using.
+  xwp. mxapp Triple_is_empty. mxapp Triple_neg. xif ;=> C.
+  { xunfold MQueue. xpull ;=> f2 b2 d2 f1 b1 d1.
+    destruct L2 as [| x L2']; [solve [tryfalse] |].
+    xchange MListSeg_cons ;=> c2.
+    mxapp Triple_get_tail. mxapp Triple_get_head.
+    mxapp Triple_get_head. mxapp Triple_get_head.
+    mxapp Triple_set_head. mxapp Triple_get_tail.
+    mxapp Triple_set_tail. mxapp Triple_get_tail.
+    mxapp Triple_set_tail. mxapp Triple_set_head.
+    mxapp Triple_set_tail. mxapp Triple_set_tail.
+    xchange <- (@MListSeg_cons A EA b1). xchange <- (@MListSeg_concat A EA f1).
+    xchanges (@MListSeg_nil_intro A EA f2). }
+  subst. rew_list. mxvals.
+Qed.
+
 Ltac auto_star ::= auto_star_default.
 Ltac auto_tilde ::= auto_tilde_default.
 
