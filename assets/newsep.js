@@ -172,9 +172,9 @@ function parse(term) {
 }
 
 // Create DOM element with class and optional text/attrs.
-function createElement(tag, className, { text, attrs } = {}) {
+function createElement(tag, classList = [], { text, attrs } = {}) {
   const node = document.createElement(tag);
-  if (className) node.className = className;
+  classList.forEach((c) => node.classList.add(c));
   if (text != null) node.append(document.createTextNode(text));
   if (attrs)
     for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
@@ -183,9 +183,9 @@ function createElement(tag, className, { text, attrs } = {}) {
 
 // Put all pure predicates in a box.
 function renderPurePredicates(purePredicates) {
-  const host = createElement("div", "sep-pure-predicate-container");
+  const host = createElement("div", ["sep-pure-predicate-container"]);
   purePredicates.forEach((predicate) => {
-    let predicateNode = createElement("div", "sep-pure-predicate");
+    let predicateNode = createElement("div", ["sep-pure-predicate"]);
     predicate.forEach((part, index) => {
       if (index != 0) predicateNode.appendChild(document.createTextNode(" "));
       const partNode = document.createElement("span");
@@ -479,81 +479,182 @@ function graphvizRenderText(components) {
   return ["digraph {", ...components.map(renderOne), "}"].join("\n");
 }
 
-// https://github.com/mdaines/viz-js/wiki/Differences-between-Viz.js-2.x-and-3.x
-let vizPromise;
-function vizRender(src) {
-  if (typeof vizPromise === "undefined") {
-    vizPromise = Viz.instance();
-  }
-  return vizPromise.then((viz) => viz.renderSVGElement(src));
-}
+const lastVid = {};
+const dots = {};
 
-function renderHeapObjectsInOneDiagram(objects) {
+function renderHeapObjectsInOneDiagram(objects, vid) {
   const diagramComponents = graphvizDiagramComponents(objects);
   const dot = graphvizRenderText(diagramComponents);
-  const dotNode = createElement("span", "sep-diagram-dot", {
+  const dotNode = createElement("div", ["sep-diagram-dot"], {
     text: dot,
     attrs: null,
   });
-  const svgNode = createElement("span", "sep-diagram-svg");
-  vizRender(dot)
-    .then((element) => svgNode.appendChild(element))
-    .catch((error) => {
-      console.error(error);
-    });
+  dots[vid] = dot;
+  const svgNode = createElement("div", ["sep-diagram-svg"]);
+
+  // Call `dot` then `render` instead of `renderDot` to do the computational
+  // intensive layout stages for graphs before doing the potentially
+  // synchronized rendering of all the graphs simultaneously.
+  d3.select(svgNode)
+    .graphviz({ fit: false, useWorker: false, zoom: true })
+    .dot(dot)
+    .render();
   return { svgNode, dotNode };
 }
 
-function init() {
-  document
-    .querySelectorAll(".goal-conclusion, .coq-message, .goal-hyp")
-    .forEach((goal) => {
-      const parseResult = parse(goal.innerText);
-      goal.innerText = "";
-      // console.log("parseResult = ", parseResult);
-      parseResult.forEach((parseUnit) => {
-        if (typeof parseUnit === "object" && "raw" in parseUnit) {
-          const host = createElement("span", "sep-visualization");
-          goal.append(host);
-          // A sep-visualization node has two views:
-          // 1. source-code view
-          const srcView = createElement("span", "sep-source", {
-            text: parseUnit.raw,
-            attrs: null,
-          });
-          // 2. diagram view: pure predicates + diagram (svg or dot)
-          const diagramView = createElement("div", "sep-diagram");
-          const purePredsNode = parseUnit.purePredicates.length
-            ? renderPurePredicates(parseUnit.purePredicates)
-            : null;
-          const { svgNode, dotNode } = renderHeapObjectsInOneDiagram(
-            parseUnit.objects,
-          );
+// Render parsed unit of Rocq goal that has an embeded diagram.
+// A sep-visualization node has two views:
+// 1. source-code view
+// 2. diagram view: pure predicates + diagram (svg or dot)
+function renderGoalParseUnit(host, parseUnit) {
+  const srcView = createElement("div", ["sep-source"], {
+    text: parseUnit.raw,
+    attrs: null,
+  });
+  const diagramView = createElement("div", ["sep-diagram"]);
+  const purePredsNode = parseUnit.purePredicates.length
+    ? renderPurePredicates(parseUnit.purePredicates)
+    : null;
+  const { svgNode, dotNode } = renderHeapObjectsInOneDiagram(
+    parseUnit.objects,
+    host.id,
+  );
 
-          // default
-          diagramView.replaceChildren(
-            ...[purePredsNode, svgNode].filter(Boolean),
-          );
-          host.replaceChildren(diagramView);
+  function hide(node) {
+    node.classList.add("hidden");
+  }
 
-          // interaction
-          srcView.onclick = () => {
-            host.replaceChildren(diagramView);
-          };
-          if (purePredsNode)
-            purePredsNode.onclick = () => {
-              host.replaceChildren(srcView);
-            };
-          svgNode.onclick = () => {
-            diagramView.replaceChild(dotNode, svgNode);
-          };
-          dotNode.onclick = () => {
-            diagramView.replaceChild(svgNode, dotNode);
-            host.replaceChildren(srcView);
-          };
-        } else {
-          goal.append(parseUnit);
-        }
-      });
+  function show(node) {
+    node.classList.remove("hidden");
+  }
+
+  // default
+  diagramView.replaceChildren(
+    ...[purePredsNode, dotNode, svgNode].filter(Boolean),
+  );
+  hide(dotNode);
+  host.replaceChildren(diagramView);
+
+  // interaction
+  // TODO: revise
+  srcView.onclick = () => {
+    host.replaceChildren(diagramView);
+  };
+  if (purePredsNode)
+    purePredsNode.onclick = () => {
+      host.replaceChildren(srcView);
+    };
+  svgNode.onclick = () => {
+    show(dotNode);
+    hide(svgNode);
+  };
+  dotNode.onclick = () => {
+    show(svgNode);
+    hide(dotNode);
+    host.replaceChildren(srcView);
+  };
+}
+
+// const goalClasses = ["goal-conclusion", "coq-message", "goal-hyp"];
+function renderEmbedded() {
+  let genVid = 0,
+    lastPreVid = null,
+    lastPostVid = null;
+
+  function next(isPre) {
+    const vid = `vid${genVid++}`;
+    lastVid[vid] = isPre ? lastPreVid : lastPostVid;
+    if (isPre) lastPreVid = vid;
+    else lastPostVid = vid;
+    return vid;
+  }
+
+  document.querySelectorAll(".goal-conclusion").forEach((goalNode) => {
+    const parseResult = parse(goalNode.innerText);
+    goalNode.innerText = "";
+    let isPre = true;
+    parseResult.forEach((parseUnit, parseUnitIdx) => {
+      if (typeof parseUnit === "object" && "raw" in parseUnit) {
+        const vid = next(isPre);
+        const host = createElement("div", ["sep-visualization"], {
+          text: null,
+          attrs: { id: vid },
+        });
+        goalNode.append(host);
+        renderGoalParseUnit(host, parseUnit);
+        isPre = false;
+      } else {
+        goalNode.append(parseUnit);
+      }
     });
+  });
+}
+
+const transitionFactory = () => {
+  return d3.transition().duration(5000).ease(d3.easeCubicInOut);
+};
+
+const renderingVids = new Set();
+
+async function animate(vizNode, duration = 2000) {
+  const vid = vizNode.id;
+  if (renderingVids.has(vid)) return;
+  const last = lastVid[vid];
+  if (!last) return;
+
+  const svgNode = vizNode.querySelector(".sep-diagram-svg");
+  const gviz = svgNode.__graphviz__;
+
+  renderingVids.add(vid);
+
+  // render the previous diagram
+  await new Promise((resolve) => {
+    gviz
+      .transition(function () {
+        return d3.transition().duration(0);
+      })
+      .renderDot(dots[last])
+      .on("end", resolve);
+  });
+  // transit to the current diagram
+  await new Promise((resolve) => {
+    gviz
+      .transition(function () {
+        return d3.transition().duration(duration).ease(d3.easeCubicInOut);
+      })
+      .renderDot(dots[vid])
+      .on("end", resolve);
+  });
+
+  renderingVids.delete(vid);
+}
+
+function observeAlectryonTarget() {
+  function animateDiagramsInSentence(sentenceNode) {
+    sentenceNode.querySelectorAll(".sep-visualization").forEach((vizNode) => {
+      animate(vizNode);
+    });
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    mutations
+      .filter(
+        (m) =>
+          m.type === "attributes" &&
+          m.attributeName === "class" &&
+          m.target.classList.contains("alectryon-target"),
+      )
+      .forEach((m) => animateDiagramsInSentence(m.target));
+  });
+
+  observer.observe(document.body, {
+    attributes: true,
+    attributeFilter: ["class"],
+    subtree: true,
+  });
+}
+
+function init() {
+  renderEmbedded();
+  observeAlectryonTarget();
 }

@@ -41,7 +41,7 @@
     white-space: nowrap;
 }
 
-.sep-exist-var{
+.sep-exist-var {
     color: #3465a4;
 }
 
@@ -49,4 +49,14 @@
     border: 1px solid gray;
     border-radius: var(--border-radius);
     padding: var(--small-space);
+}
+
+.sep-diagram-svg svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.hidden {
+    display: none;
 }
