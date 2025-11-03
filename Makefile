@@ -49,8 +49,12 @@ $(LIB)/ListNull.vo: $(LIB)/Notations.vo
 $(BUILD_DIR):
 	mkdir -p $@
 
-$(BUILD_DIR)/%.html: theories/examples/%.v $(LIB_VFILES:.v=.vo)
-	alectryon $(COQFLAGS) $< --output-directory $(BUILD_DIR)
+$(BUILD_DIR)/%.html: $(EXM)/%.tmp.v $(LIB_VFILES:.v=.vo)
+	alectryon $(COQFLAGS) --output $@ $<
+
+# .tmp.v is considered an intermediate target and will be automatically deleted
+$(EXM)/%.tmp.v: $(EXM)/%.v assets/alectryon-header.v
+	cat $^ > $@
 
 $(BUILD_DIR)/%: assets/% $(BUILD_DIR)
 	cp $< $@
