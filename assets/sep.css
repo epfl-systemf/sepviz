@@ -1,20 +1,62 @@
-.sep-graph {
-    display: inline-block;
-    border: medium outset #888a8588;
-    vertical-align: top;
-    margin: 0.35rem 0.15rem;
-    width: min-content;
-    text-align: center;
-    /* border-radius: 0.15rem; */
-    /* box-shadow: 0 0 0.15rem 0px black; */
+:root {
+    --small-space: 0.5em;
+    --border-color: black;
+    --border-radius: 4px;
+    --predicate-gap: 1em;
 }
 
-.sep-graph-source {
-    white-space: pre;
-    text-align: left;
+/* .sep-graph { */
+/*     display: inline-block; */
+/*     border: medium outset #888a8588; */
+/*     vertical-align: top; */
+/*     margin: 0.35rem 0.15rem; */
+/*     width: min-content; */
+/*     text-align: center; */
+/*     /\* border-radius: 0.15rem; *\/ */
+/*     /\* box-shadow: 0 0 0.15rem 0px black; *\/ */
+/* } */
+
+/* .sep-graph-source { */
+/*     white-space: pre; */
+/*     text-align: left; */
+/* } */
+
+/* .sep-graph > span { */
+/*     display: inline-block; */
+/*     margin: 0.15rem auto; */
+/* } */
+
+.sep-pure-predicate-container {
+    border: 1px dotted var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--small-space);
+    display: flex;
+    wrap: nowrap;
+    gap: var(--predicate-gap);
 }
 
-.sep-graph > span {
-    display: inline-block;
-    margin: 0.15rem auto;
+.sep-pure-predicate {
+    border-radius: var(--border-radius);
+    background: #d3e9f0;
+    white-space: nowrap;
+}
+
+.sep-exist-var {
+    color: #3465a4;
+}
+
+.sep-diagram {
+    border: 1px solid gray;
+    border-radius: var(--border-radius);
+    padding: var(--small-space);
+}
+
+.sep-diagram-svg svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.hidden {
+    display: none;
 }
