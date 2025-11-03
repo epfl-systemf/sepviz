@@ -1,10 +1,83 @@
 Goal
-  = ts:(Top / cruft)* {
-  return [].concat(...ts);
+  = ts:(NotatedTriple / PlainTriple / Implication / DefaultTop / cruft)* {
+  return ts.flat();
 }
 
 cruft
   = .
+
+PlainTriple
+  = "Triple" w1:_ code:GallinaTerm _ pre:Top w2:_ post:GallinaTermWithTop {
+    if (post.parsed) {
+      return [
+        "Triple" + w1 + code,
+        {position: "pre", ...pre},
+        w2 + post.before,
+        {position: "post", ...post},
+        post.after,
+      ];
+    } else {
+      return [
+        "Triple" + w1 + code,
+        {position: "pre", ...pre},
+        w2 + post.raw,
+      ];
+    }
+}
+
+NotatedTriple
+  = "PRE" _ pre:Top _ "CODE" w1:_ code:GallinaTerm w2:_ "POST" w3:_ post:GallinaTermWithTop {
+    if (post.parsed) {
+      return [
+        "PRE",
+        {position: "pre", ...pre},
+        "CODE" + w1 + code + w2 + "POST" + w3 + post.before,
+        {position: "post", ...post},
+        post.after,
+      ];
+    } else {
+      return [
+        "PRE",
+        {position: "pre", ...pre},
+        "CODE" + w1 + code + w2 + "POST" + w3 + post.raw,
+      ];
+    }
+}
+
+Implication
+  = pre:Top _ "==>" _ post:Top {
+    return [
+      {position: "pre", ...pre},
+      "==>",
+      {position: "post", ...post},
+    ];
+}
+
+GallinaTerm
+  = $("(" (_ GallinaTerm)+ _ ")")
+    / $[^()\p{White_Space}]+
+
+GallinaTermWithTop
+  = Top
+    / "(" terms:((_ { return {raw: text()}; }) GallinaTermWithTop)+ w:_ ")" {
+      let flatTerms = terms.flat();
+      let parsedIdx = flatTerms.findIndex((t) => t.parsed !== undefined);
+      if (parsedIdx < 0) {
+        return {raw: text()};
+      } else {
+        return {
+          before: "(" + flatTerms.slice(0, parsedIdx).map((t) => t.raw).join("")
+            + (flatTerms[parsedIdx].before || ""),
+          after: (flatTerms[parsedIdx].after || "")
+            + flatTerms.slice(parsedIdx + 1).map((t) => t.raw).join("") + w + ")",
+          raw: text(),
+          parsed: flatTerms[parsedIdx].parsed,
+        };
+      }
+    }
+    / [^()\p{White_Space}]+ { return {raw: text()}; }
+
+DefaultTop = t:Top { return [{position: "default", ...t}]; }
 
 Top
   = "{*" _ s:Stars _ "*}" {
@@ -12,8 +85,8 @@ Top
 }
 
 Stars
-  = hd:Term tl:(_ "*" _ Term)* {
-  return { kind: "stars", conjuncts: [hd, ...tl.map(t => t[3])] };
+  = hd:Term tl:(_ "*" _ @Term)* {
+  return { kind: "stars", conjuncts: [hd, ...tl] };
 }
 
 Term
@@ -23,10 +96,7 @@ Term
   / PurePredicate
   / GC
 
-Parenthesized
-  = "(" s:Stars ")" {
-  return s;
-}
+Parenthesized = "(" @Stars ")"
 
 Existential
   = ("exists" / "∃") _ binder:name _ "," _ body:Stars {
@@ -48,37 +118,17 @@ PurePredicate
     return { kind: "purePredicate", predicate: p };
 }
 
-Formula
-  = hd:Atom tl:(_ Atom)* {
-  return [hd, ...tl.map(a => a[1])];
-}
+Formula = (@Atom _)*
 
-Atom
-  = name
-  / operator
-  / ParenthesizedAtom {
-  return text();
-}
+Atom = name / operator / $ParenthesizedAtom
 
 ParenthesizedAtom
   = "(" _ (unsafe / ParenthesizedAtom _)* ")"
 
-name
-  = n:[A-Za-z0-9\']+ {
-  return n.join("");
-}
+name = $[A-Za-z0-9\']+
 
-operator
-  = op:("<>" / "=") {
-  return op;
-}
+operator = $("<>" / "=")
 
-unsafe
-  = u:[^()]+ {
-  return u.join("");
-}
+unsafe = $[^()]+
 
-_ "whitespace"
-  = w:[ \t\n\r]* {
-    return w.join('');
-}
+_ "whitespace" = $[\p{White_Space}]*

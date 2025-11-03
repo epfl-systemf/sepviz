@@ -21,12 +21,15 @@ function parseHeapPredicate(hpred) {
     return gensym[prefix]++;
   }
 
-  function resolve(name, ctx) {
-    return ctx.get(name, {
-      global: true,
-      uid: name,
-      label: name,
-    });
+  function resolve(ctx, key, ifAbsent) {
+    let value = ctx.get(key);
+    if (value !== undefined) {
+      return value;
+    } else if (ifAbsent !== undefined) {
+      return ifAbsent;
+    } else {
+      return {global: true, uid: key, label: key};
+    };
   }
 
   function loop(hpred, ctx) {
@@ -36,7 +39,7 @@ function parseHeapPredicate(hpred) {
         break;
       case "existential":
         const num = next(hpred.binder);
-        ctx = ctx.set(hpred.binder, {
+        ctx.set(hpred.binder, {
           global: false,
           uid: hpred.binder + "$" + num,
           label: `?${hpred.binder}${num}`, // ['font', {}, `?${hpred.binder}`, ['sub', {}, `${num}`]]
@@ -44,28 +47,25 @@ function parseHeapPredicate(hpred) {
         loop(hpred.body, ctx);
         break;
       case "pointsTo":
-        const addr = resolve(hpred.from, ctx);
+        const addr = resolve(ctx, hpred.from);
         const [constr, ...args] = hpred.to;
         objects.push({
           addr,
           constr,
-          args: args.map((a) => resolve(a, ctx)),
+          args: args.map((a) => resolve(ctx, a)),
         });
         break;
       case "gc":
         break;
       case "purePredicate":
-        const predicate = hpred.predicate.map((x) =>
-          ctx.has(x) ? resolve(x, ctx) : x,
-        );
-        purePredicates.push(predicate);
+        purePredicates.push(hpred.predicate.map((x) => resolve(ctx, x, x)));
         break;
       default:
         throw new Error("Not supported kind: ${hpred.kind}");
     }
   }
 
-  loop(hpred, Immutable.Map({}));
+  loop(hpred, new Map());
   return { objects: objects, purePredicates: purePredicates };
 }
 
@@ -81,6 +81,7 @@ function parse(term) {
         raw: x.raw,
         objects: res.objects,
         purePredicates: res.purePredicates,
+        position: x.position,
       });
       string = [];
     } else {
@@ -92,12 +93,11 @@ function parse(term) {
 }
 
 // Create DOM element with class and optional text/attrs.
-function createElement(tag, classList = [], { text, attrs } = {}) {
+function createElement(tag, classList = [], { text, id } = {}) {
   const node = document.createElement(tag);
   classList.forEach((c) => node.classList.add(c));
-  if (text != null) node.append(document.createTextNode(text));
-  if (attrs)
-    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  if (text) node.append(document.createTextNode(text));
+  if (id) node.setAttribute("id", id);
   return node;
 }
 
@@ -139,16 +139,16 @@ class GraphvizEdge {
 
 function graphvizEdgesOfObject(obj, knownUids, inPortOfUid) {
   const srcUid = obj.addr.uid;
-  const argsConfig = renderConfig["constr"][obj.constr]["args"];
+  const argsConfig = renderConfig.constr[obj.constr].args;
 
   return obj.args
     .map((arg, argIdx) => {
       const config = argsConfig[argIdx];
       const dstUid = arg.uid;
       const dstInPort = inPortOfUid[dstUid] || [];
-      return knownUids.has(dstUid) || config["isPointer"] // This field is a pointer
+      return knownUids.has(dstUid) || config.isPointer // This field is a pointer
         ? new GraphvizEdge(
-            [srcUid, ...config["outPorts"], ...[config["inTable"] ? "c" : "e"]],
+            [srcUid, ...config.outPorts, ...[config.inTable ? "c" : "e"]],
             [dstUid, ...dstInPort, "w"],
           )
         : null;
@@ -176,12 +176,12 @@ function graphvizPointersOfObject(obj, inPortOfUid, hasIncomingEdges) {
 }
 
 function graphvizInputPortsOfConstr(constr) {
-  const constrConfig = renderConfig["constr"];
+  const constrConfig = renderConfig.constr;
   if (!(constr in constrConfig)) {
     console.error("Unrecognized structure:", constr);
     return [];
   }
-  return constrConfig[constr]["inPorts"];
+  return constrConfig[constr].inPorts;
 }
 
 class XMLContainer {
@@ -229,7 +229,7 @@ function graphvizLabelOfObject(obj, knownUids) {
       ? v.label == "null"
         ? "∅"
         : v.label
-      : font({ color: renderConfig["font"]["existVarColor"] }, v.label);
+      : font({ color: renderConfig.font.existVarColor }, v.label);
   };
 
   const header = tr(
@@ -252,19 +252,19 @@ function graphvizLabelOfObject(obj, knownUids) {
   const valueOrPointer = (inPort, outPort, v) =>
     knownUids.has(v.uid) ? pointer(inPort, outPort, v) : value(inPort, v);
 
-  const objConfig = renderConfig["constr"][obj.constr];
+  const objConfig = renderConfig.constr[obj.constr];
   return table(
     {
-      cellborder: objConfig["isFlat"] ? 1 : 0,
+      cellborder: objConfig.isFlat ? 1 : 0,
     },
     header,
     ...obj.args
       .map((arg, argIdx) => {
-        const config = objConfig["args"][argIdx];
-        return config["inTable"]
-          ? knownUids.has(arg.uid) || config["isPointer"]
-            ? valueOrPointer(config["inPorts"][0], config["outPorts"][0], arg)
-            : value(config["inPorts"], arg)
+        const config = objConfig.args[argIdx];
+        return config.inTable
+          ? knownUids.has(arg.uid) || config.isPointer
+            ? valueOrPointer(config.inPorts[0], config.outPorts[0], arg)
+            : value(config.inPorts, arg)
           : null;
       })
       .filter(Boolean),
@@ -369,10 +369,7 @@ function graphvizRenderText(components) {
 function renderHeapObjectsInOneDiagram(objects, vid) {
   const diagramComponents = graphvizDiagramComponents(objects);
   const dot = graphvizRenderText(diagramComponents);
-  const dotNode = createElement("div", ["sep-diagram-dot"], {
-    text: dot,
-    attrs: null,
-  });
+  const dotNode = createElement("div", ["sep-diagram-dot"], {text: dot});
   const svgNode = createElement("div", ["sep-diagram-svg"]);
 
   // Call `dot` then `render` instead of `renderDot` to do the computational
@@ -390,10 +387,7 @@ function renderHeapObjectsInOneDiagram(objects, vid) {
 // 1. source-code view
 // 2. diagram view: pure predicates + diagram (svg or dot)
 function renderGoalParseUnit(host, parseUnit) {
-  const srcView = createElement("div", ["sep-source"], {
-    text: parseUnit.raw,
-    attrs: null,
-  });
+  const srcView = createElement("div", ["sep-source"], {text: parseUnit.raw});
   const diagramView = createElement("div", ["sep-diagram"]);
   const purePredsNode = parseUnit.purePredicates.length
     ? renderPurePredicates(parseUnit.purePredicates)
@@ -440,64 +434,54 @@ function renderGoalParseUnit(host, parseUnit) {
 
 // TODO: besides "goal-conclusion", handle classes "coq-message" and "goal-hyp" as well.
 function renderEmbedded() {
-  const lastVidMap = {};
-  let genVid = 0,
-    lastPreVid = null,
-    lastPostVid = null;
+  const previousVids = {};
+  let latestVids = {pre: 0, post: 0, default: 0};
 
-  function next(isFreshStart, isPreCond) {
-    const vid = `vid${genVid++}`;
-    lastVidMap[vid] = isPreCond ? lastPreVid : lastPostVid;
-    if (isPreCond) lastPreVid = vid;
-    else lastPostVid = vid;
+  function vidOf(number, stream) { return `vid-${stream}-${number}`; }
+
+  function nextVid(isResetGoal, stream) {
+    const latest = latestVids[stream];
+    const vid = vidOf(++latestVids[stream], stream);
+    if (!isResetGoal) previousVids[vid] = vidOf(latest, stream);
     return vid;
   }
 
   document
     .querySelectorAll(".alectryon-sentence:has(.goal-conclusion)")
     .forEach((sentenceNode) => {
-      const isFreshStart = sentenceNode.classList.contains("sep-fresh-start");
-      if (isFreshStart) {
-        lastPreVid = null;
-        lastPostVid = null;
-      }
       const goalNode = sentenceNode.querySelector(".goal-conclusion");
       const parseResult = parse(goalNode.innerText);
       goalNode.innerText = "";
-      let isPreCond = true;
-      parseResult.forEach((parseUnit, parseUnitIdx) => {
-        if (typeof parseUnit === "object" && "raw" in parseUnit) {
-          const vid = next(isFreshStart, isPreCond);
-          const host = createElement("div", ["sep-visualization"], {
-            text: null,
-            attrs: { id: vid },
-          });
+      parseResult.forEach((parseUnit) => {
+        if (typeof parseUnit === "object") {
+          const vid = nextVid(sentenceNode.goalReset, parseUnit.position);
+          const host = createElement("div", ["sep-visualization"], {id: vid});
           goalNode.append(host);
           renderGoalParseUnit(host, parseUnit);
-          isPreCond = false;
-        } else {
+        } else { // unparsed string
           goalNode.append(parseUnit);
         }
       });
     });
 
-  return lastVidMap;
+  return previousVids;
 }
 
 // Use a MutationObserver to watch the target and animate its transitions.
-function animateAlectryonTarget(lastVidMap) {
+function animateAlectryonTarget(previousVids) {
   const renderingVids = new Set();
 
   function getDotByVid(vid) {
     const node = document.querySelector(`#${vid} .sep-diagram-dot`);
+    if (!node) console.log(vid);
     return node.innerText;
   }
 
   async function animate(vizNode, duration = 2000) {
     const vid = vizNode.id;
     if (renderingVids.has(vid)) return;
-    const last = lastVidMap[vid];
-    if (!last) return;
+    const previous = previousVids[vid];
+    if (!previous) return;
 
     const svgNode = vizNode.querySelector(".sep-diagram-svg");
     const gviz = svgNode.__graphviz__;
@@ -511,7 +495,7 @@ function animateAlectryonTarget(lastVidMap) {
         .transition(function () {
           return d3.transition().duration(0);
         })
-        .renderDot(getDotByVid(last))
+        .renderDot(getDotByVid(previous))
         .on("end", resolve);
     });
     // transit to the current diagram
@@ -550,30 +534,19 @@ function animateAlectryonTarget(lastVidMap) {
   });
 }
 
-function markFreshStarts() {
-  const startingTokens = ["Goal", "Lemma", "Theorem", "-", "+", "*", "{", "}"];
-
-  document.querySelectorAll(".alectryon-sentence").forEach((sentenceNode) => {
-    const inputNode = sentenceNode.querySelector(".alectryon-input");
-    const firstNode = inputNode.firstChild;
-    const token =
-      firstNode && firstNode.nodeType === Node.TEXT_NODE
-        ? firstNode.textContent.trim()
-        : firstNode.innerText;
-    if (startingTokens.includes(token))
-      sentenceNode.classList.add("sep-fresh-start");
+function markGoalResets() {
+  const resetKeywords = ["Goal", "Lemma", "Theorem", "Definition", "Example", "Corollary",
+                         "-", "+", "*", "{", "}"];
+  document.querySelectorAll(".alectryon-sentence").forEach((n) => {
+    const firstText = n.querySelector(".alectryon-input").firstChild.textContent.trim();
+    if (resetKeywords.includes(firstText)) n.goalReset = true;
   });
 }
 
+var renderConfig;
 async function init() {
-  markFreshStarts();
-  const renderConfig = await loadRenderConfig();
-  Object.defineProperty(window, "renderConfig", {
-    value: renderConfig,
-    writable: false,
-    configurable: false,
-    enumerable: true,
-  });
-  const lastVidMap = renderEmbedded();
-  animateAlectryonTarget(lastVidMap);
+  markGoalResets();
+  renderConfig = await loadRenderConfig();
+  const previousVids = renderEmbedded();
+  animateAlectryonTarget(previousVids);
 }
