@@ -2,7 +2,7 @@
   lib,
   which,
   bash,
-  coq-tlc,
+  tlc,
   coqPackages,
   ...
 }:
@@ -34,7 +34,7 @@ mkCoqDerivation {
 
   buildInputs = [ bash ];
   propagatedBuildInputs = [
-    coq-tlc
+    tlc
   ]
   ++ (with coq.ocamlPackages; [
     ocaml
