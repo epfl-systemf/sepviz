@@ -23,7 +23,7 @@ mkCoqDerivation {
   src = builtins.fetchGit {
     url = "git@github.com:yawen-guan/cfml.git"; # Use ssh for the private repo.
     ref = "dev";
-    rev = "015ff67689a1f52fb37f933ac5feacc38c377dd6";
+    rev = "72f8dbbff7a916d1b236b8909c2bdccb288cab85";
     # Fetch submodules so CFML examples will be compiled in the build phase.
     # For faster compilation, set `submodules` to `false`.
     # submodules = true;
