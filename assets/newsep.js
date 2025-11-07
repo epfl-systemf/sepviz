@@ -217,7 +217,12 @@ function graphvizLabelOfObject(obj, knownUids) {
     ),
   );
 
-  const value = (port, v) => tr({}, td({ port: port, colspan: 2 }, label(v)));
+  const value = (port, v) =>
+    tr(
+      {},
+      td({ port: port, sides: "tlb" }, label(v)),
+      td({ sides: "trb" }, ""),
+    );
 
   const pointer = (inPort, outPort, ptr) =>
     tr(
@@ -225,9 +230,6 @@ function graphvizLabelOfObject(obj, knownUids) {
       td({ port: inPort, sides: "tlb" }, label(ptr)),
       td({ port: outPort, sides: "trb" }, "⏺"),
     );
-
-  const valueOrPointer = (inPort, outPort, v) =>
-    knownUids.has(v.uid) ? pointer(inPort, outPort, v) : value(inPort, v);
 
   const objConfig = renderConfig.constr[obj.constr];
   return table(
@@ -239,8 +241,8 @@ function graphvizLabelOfObject(obj, knownUids) {
       .map((arg, argIdx) => {
         const config = objConfig.args[argIdx];
         return config.inTable
-          ? knownUids.has(arg.uid) || config.isPointer
-            ? valueOrPointer(config.inPorts[0], config.outPorts[0], arg)
+          ? knownUids.has(arg.uid)
+            ? pointer(config.inPorts[0], config.outPorts[0], arg)
             : value(config.inPorts, arg)
           : null;
       })
@@ -294,9 +296,10 @@ function graphvizDiagramComponents(objects) {
     props: renderConfig[target],
   }));
 
-  // Reverse node order to flip Graphviz’s Y-axis, in order to visually display
-  // the objects in top-to-bottom order.
-  return [...props, ...nodes.reverse(), ...edges];
+  // Try to have canonical order
+  let nodesEdges = nodes.concat(edges).sort((x1, x2) =>
+    (x1.name || x1.src.join("") + x1.dst.join("")) < (x2.name || x2.src.join("") + x2.dst.join("")));
+  return [...props, ...nodesEdges];
 }
 
 function graphvizRenderText(components) {
@@ -400,13 +403,20 @@ function renderGoalParseUnit(host, parseUnit) {
     hide(svgNode);
     show(dotNode);
   };
-  srcView.onclick = toggleDiagramView;
-  if (purePredsNode) purePredsNode.onclick = toggleSrcView;
-  svgNode.onclick = toggleDot;
-  dotNode.onclick = () => {
+  function onSpecialClick(elem, callback) {
+    elem.addEventListener('click', (e) => {
+      if (e.ctrlKey) {
+        callback();
+      }
+    });
+  }
+  onSpecialClick(srcView, toggleDiagramView);
+  if (purePredsNode) onSpecialClick(purePredsNode, toggleSrcView);
+  onSpecialClick(svgNode, toggleDot);
+  onSpecialClick(dotNode, () => {
     toggleSvg();
     toggleSrcView();
-  };
+  });
 }
 
 // TODO: besides "goal-conclusion", handle classes "coq-message" and "goal-hyp" as well.
