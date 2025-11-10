@@ -1,4 +1,4 @@
-import './sep.css';
+import './assets/sep.css';
 
 import {
   createElement,

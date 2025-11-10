@@ -1,9 +1,11 @@
 {
   "scripts": {
-    "gen:plain": "./scripts/gen_plain.sh",
-    "gen:parser": "npx peggy --format es -o src/parser.js src/sep.g",
-    "dev": "npm run gen:parser && vite",
-    "build": "npm run gen:parser && vite build",
+    "gen:proofs": "./scripts/gen_proofs.sh",
+    "inject": "./scripts/inject.sh",
+    "gen:parser": "npx peggy --format es -o src/parser.js src/assets/sep.g",
+    "prepare": "run-s gen:proofs inject gen:parser",
+    "dev": "npm run prepare && vite",
+    "build": "npm run prepare && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -11,6 +13,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
     "eslint": "^9.39.1",
+    "npm-run-all": "^4.1.5",
     "peggy": "^5.0.6",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",

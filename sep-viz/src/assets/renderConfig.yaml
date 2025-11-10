@@ -1,0 +1,113 @@
+font:
+  name: &fontname Iosevka # Helvetica
+  size: &fontsize 12
+  charwidth: 6.075 # 12: 6.875; 11.5: 5.6. FIXME not reliable enough.  Recompile graphviz?
+  existVarColor: '#3465a4'
+graph:
+  rankdir: LR
+  ranksep: 0.05
+  nodesep: 0.2
+  concentrate: false
+  splines: true
+  packmode: array
+  truecolor: true
+  bgcolor: '#00000000'
+  pad: 0
+  fontname: *fontname
+  fontsize: *fontsize
+edge:
+  tailclip: false
+  arrowsize: 0.5
+  minlen: 3
+  fontname: *fontname
+  fontsize: *fontsize
+node:
+  shape: plaintext
+  margin: 0.05
+  fontname: *fontname
+  fontsize: *fontsize
+constr:
+  MCell:
+    inPorts:
+      - car_in
+    isFlat: true
+    args:
+      0:
+        inTable: true
+        inPorts:
+          - car_in
+        outPorts:
+          - car_out
+      1:
+        inTable: true
+        inPorts:
+          - cdr_in
+        outPorts:
+          - cdr_out
+  MListSeg:
+    inPorts:
+      - list
+    isFlat: false
+    args:
+      0:
+        inTable: false
+        isPointer: true # For any instance of this construct, isPointer=true means this field is always a pointer
+        outPorts:
+          - list
+      1:
+        inTable: true
+        inPorts:
+          - list
+        outPorts:
+          - list
+  MList:
+    inPorts: []
+    isFlat: false
+    args:
+      0:
+        inTable: false
+  MQueue:
+    inPorts:
+      - list
+    isFlat: false
+    args:
+      0:
+        inTable: true
+        inPorts:
+          - list
+        outPorts:
+          - list
+  MNode:
+    inPorts:
+      - in0
+    isFlat: true
+    args:
+      0:
+        inTable: true
+        inPorts:
+          - in0
+        outPorts:
+          - out0
+      1:
+        inTable: true
+        inPorts:
+          - in1
+        outPorts:
+          - out1
+      2:
+        inTable: true
+        inPorts:
+          - in2
+        outPorts:
+          - out2
+  MTree:
+    inPorts:
+      - tree
+    isFlat: false
+    args:
+      0:
+        inTable: true
+        inPorts:
+          - tree
+        outPorts:
+          - tree

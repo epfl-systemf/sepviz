@@ -2,3 +2,7 @@ _plain
 dist
 node_modules
 src/parser.js
+
+# ignore everying in public/ except the config file
+public/*
+!public/renderConfig.yaml
