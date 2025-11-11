@@ -30,6 +30,20 @@
   padding: var(--small-space);
 }
 
+.sep-diagram-dot {
+  position: relative;
+}
+
+.sep-diagram-dot .copy-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 12px;
+  z-index: 10;
+}
+
 .sep-diagram-svg svg {
   width: 100%;
   height: auto;

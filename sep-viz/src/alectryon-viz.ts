@@ -91,8 +91,13 @@ function renderHeapState(
   const diagramView = createElement('div', ['sep-diagram']);
   const purePredsNode = renderPurePredicates(state.purePredicates);
 
+  const dotNode = createElement('div', ['sep-diagram-dot']);
+  const dotCopy = createElement('button', ['copy-button'], { text: 'Copy' });
+  dotNode.append(dotCopy);
   const dot = new DotBuilder(config, state.heapPredicates).build();
-  const dotNode = createElement('div', ['sep-diagram-dot'], { text: dot });
+  const dotContent = createElement('div', ['content'], { text: dot });
+  dotNode.append(dotContent);
+
   const svgNode = createElement('div', ['sep-diagram-svg']);
   // Call `dot` then `render` instead of `renderDot` to do the computational
   // intensive layout stages for graphs before doing the potentially
@@ -129,13 +134,23 @@ function renderHeapState(
     hide(svgNode);
     show(dotNode);
   };
-  srcView.onclick = toggleDiagramView;
-  if (purePredsNode) purePredsNode.onclick = toggleSrcView;
-  svgNode.onclick = toggleDot;
-  dotNode.onclick = () => {
+
+  srcView.addEventListener('click', toggleDiagramView);
+  if (purePredsNode) purePredsNode.addEventListener('click', toggleSrcView);
+  svgNode.addEventListener('click', toggleDot);
+  dotContent.addEventListener('click', () => {
     toggleSvg();
     toggleSrcView();
-  };
+  });
+  dotCopy.addEventListener('click', () => {
+    navigator.clipboard
+      .writeText(dotContent.textContent)
+      .then(() => {
+        dotCopy.textContent = 'Copied!';
+        setTimeout(() => (dotCopy.textContent = 'Copy'), 800);
+      })
+      .catch((err) => console.error('Copy failed', err));
+  });
 }
 
 function renderPurePredicates(
@@ -182,10 +197,10 @@ function setupAnimation(
 
   function getDotByVid(vid: Vid): string | null {
     const node = document.querySelector<HTMLElement>(
-      `#${vid} .sep-diagram-dot`
+      `#${vid} .sep-diagram-dot .content`
     );
     if (!node) {
-      console.warn('Cannot find .sep-diagram-dot for vid: ', vid);
+      console.warn('Cannot find the dot content for vid: ', vid);
       return null;
     }
     return node.innerText;
@@ -199,9 +214,10 @@ function setupAnimation(
     if (!previous) return;
 
     const svgNode = vizNode.querySelector<SVGElement>('.sep-diagram-svg');
-    const dotNode = vizNode.querySelector<HTMLElement>('.sep-diagram-dot');
+    const dot = vizNode.querySelector<HTMLElement>(
+      '.sep-diagram-dot .content'
+    )?.innerText;
     const gviz = svgNode?.__graphviz__;
-    const dot = dotNode?.innerText;
     const prevDot = getDotByVid(previous);
 
     if (!svgNode || !gviz || !dot || !prevDot) return;
