@@ -221,6 +221,7 @@ function setupAnimation(
     const prevDot = getDotByVid(previous);
 
     if (!svgNode || !gviz || !dot || !prevDot) return;
+    if (prevDot === dot) return;
 
     renderingVids.add(vid);
     // render the previous diagram instantly
