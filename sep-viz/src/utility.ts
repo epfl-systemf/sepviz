@@ -26,6 +26,12 @@ export const resetKeywords = [
   '}',
 ];
 
+export const InTablePointerEdgeAttrs = {
+  dir: 'both',
+  arrowtail: 'dot',
+  arrowhead: 'normal',
+};
+
 export type AttrKey = string | number;
 export type AttrValue = string | number | boolean;
 export type Attrs = Record<AttrKey, AttrValue>;

@@ -14,6 +14,7 @@ import {
   ConstrConfig,
   CompleteArgConfig,
   RenderConfig,
+  InTablePointerEdgeAttrs,
 } from './utility';
 
 type Uid = string;
@@ -442,7 +443,8 @@ export class DotBuilder {
       constrField(port, label(sym), null, '');
 
     const pointer = (inPort: string, outPort: string, sym: Symbol) =>
-      constrField(inPort, label(sym), outPort, '⏺');
+      // Or: use '⏺' here and disable InTablePointerEdgeAttr
+      constrField(inPort, label(sym), outPort, '');
 
     const constrConfig = this.getConstrConfig(hpred.obj.constr);
     return table(
@@ -469,7 +471,15 @@ export class DotBuilder {
       const srcOutPorts = [...config.outPorts, config.inTable ? 'c' : 'e'];
       const dstUid = arg.uid;
       const dstInPort = [...(this.inPortsOfUid[dstUid] || []), 'w'];
-      return [new DotEdge(srcUid, srcOutPorts, dstUid, dstInPort)];
+      return [
+        new DotEdge(
+          srcUid,
+          srcOutPorts,
+          dstUid,
+          dstInPort,
+          config.inTable ? InTablePointerEdgeAttrs : {}
+        ),
+      ];
     });
   }
 
