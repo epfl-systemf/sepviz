@@ -401,8 +401,8 @@ export class DotBuilder {
 
     const row = (...vs: XMLChild[]) => tr({}, ...vs.map((v) => td({}, v)));
 
-    const globalLabel: (label: string) => string = (label) =>
-      label == 'null' ? '∅' : label;
+    const globalLabel: (label: string) => XMLElement | string = (label) =>
+      label == 'null' ? font({ face: 'Helvetica' }, '∅') : label;
 
     // TODO: read default value from default config
     const localLabel: (label: string) => XMLElement = (label) => {
