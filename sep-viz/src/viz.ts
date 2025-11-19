@@ -450,7 +450,7 @@ export class DotBuilder {
   protected buildEdges(hpred: HeapPredicate): DotEdge[] {
     const srcUid = hpred.addr.uid;
     const constrConfig = this.getConstrConfig(hpred.obj.constr);
-    return hpred.obj.args.flatMap((arg, idx) => {
+    const allEdges = hpred.obj.args.flatMap((arg, idx) => {
       const config = constrConfig.args[idx];
       if (!(this.knownPtrUids.has(arg.uid) || config.isPointer)) return [];
       const srcOutPorts = [config.outPort, config.inTable ? 'c' : 'e'];
@@ -458,16 +458,34 @@ export class DotBuilder {
       const dstInPorts = this.inPortOfUid[dstUid]
         ? [this.inPortOfUid[dstUid], 'w']
         : ['w'];
-      return [
-        new DotEdge(
-          srcUid,
-          srcOutPorts,
-          dstUid,
-          dstInPorts,
-          config.inTable ? InTablePointerEdgeAttrs : {}
-        ),
-      ];
+      const edge = new DotEdge(
+        srcUid,
+        srcOutPorts,
+        dstUid,
+        dstInPorts,
+        config.inTable ? InTablePointerEdgeAttrs : {}
+      );
+      if (srcOutPorts.length == 1 && dstInPorts.length == 1) return [edge];
+      // If `edge` starts or ends inside a table, add an invisible node-level
+      // edge to reduce edge crossing.
+      const nodeLevelEdge = new DotEdge(srcUid, ['e'], dstUid, ['w'], {
+        style: 'invis',
+        constraint: false,
+      });
+      return [edge, nodeLevelEdge];
     });
+
+    // The node-level edges might have duplicates.
+    const seen = new Set<string>();
+    const uniqueEdges = allEdges.filter((e) => {
+      if (e.srcOutPorts.length > 1 || e.dstInPorts.length > 1) return true;
+      const key = `${e.srcUid}-${e.dstUid}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    return uniqueEdges;
   }
 
   protected buildRootPointerNodeAndEdge(sym: Symbol): [DotNode, DotEdge] {
