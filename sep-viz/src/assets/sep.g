@@ -121,6 +121,7 @@ PointsTo
   return { kind: "pointsTo", from, to };
 }
 
+// TODO: make it non-specific to CFML (add new notations to CFML)
 GC
   = "\\GC" {
   return { kind: "gc" };
