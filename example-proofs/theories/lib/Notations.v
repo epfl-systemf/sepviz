@@ -5,7 +5,7 @@ Require Export WPUntyped.
 Declare Custom Entry heap.
 Notation "{*  e  *}" := (e) (e custom heap at level 200, at level 0).
 
-Notation "H1 * H2" :=
+Notation "H1 ★ H2" :=
   (hstar H1 H2)
     (in custom heap at level 41,
         H2 custom heap at level 41).

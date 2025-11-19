@@ -203,7 +203,7 @@ export class DotBuilder {
     this.inPortsOfUid = Object.fromEntries(
       heapPredicates.map((hpred) => [
         hpred.addr.uid,
-        this.config?.constr?.[hpred.obj.constr].inPorts ?? [],
+        this.config?.constr?.[hpred.obj.constr]?.inPorts ?? [],
       ])
     ) as Record<Uid, string[]>;
   }

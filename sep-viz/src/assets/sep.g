@@ -98,7 +98,7 @@ Top
 }
 
 Stars
-  = hd:Term tl:(_ "*" _ @Term)* {
+  = hd:Term tl:(_ "★" _ @Term)* {
   return { kind: "stars", conjuncts: [hd, ...tl] };
 }
 
@@ -133,14 +133,15 @@ PurePredicate
 
 Formula = (@Atom _)*
 
-Atom = name / operator / $ParenthesizedAtom
+Atom = $RawAtom / $ParenthesizedAtom
+
+// Use "★" for the separating star to allow "*" in RawAtom.
+RawAtom = !("*]" / "*}" / "★") $[^()\p{White_Space}]+
 
 ParenthesizedAtom
   = "(" _ (unsafe / ParenthesizedAtom _)* ")"
 
 name = $[A-Za-z0-9_\']+
-
-operator = $("<>" / "=" / "<->")
 
 unsafe = $[^()]+
 
