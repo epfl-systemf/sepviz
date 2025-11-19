@@ -2,6 +2,9 @@
 
 import yaml from 'js-yaml';
 
+// @ts:ignore
+import merge from 'lodash.merge';
+
 // See: https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
 // Use 'keyMode: id' to ensure that d3-graphviz treats nodes or edges of the
 // same id as the same object in transitions.
@@ -37,49 +40,115 @@ export type AttrValue = string | number | boolean;
 export type Attrs = Record<AttrKey, AttrValue>;
 
 export interface RenderConfig {
-  font?: FontConfig;
-  graph?: Attrs;
-  edge?: Attrs;
-  node?: Attrs;
-  constr?: Record<string, ConstrConfig>;
+  font: FontConfig;
+  graph: Attrs;
+  edge: Attrs;
+  node: Attrs;
+  constr: Record<string, ConstrConfig>;
 }
 
 export interface FontConfig {
-  name?: string;
-  size?: number;
-  charwidth?: number;
-  existVarColor?: string;
+  name: string;
+  size: number;
+  existVarColor: string;
 }
 
 export interface ConstrConfig {
-  inPorts?: string[];
-  isFlat?: boolean;
-  args?: Record<number, ArgConfig>;
+  inPort: string | null; // default: the input port for the first in-table arg, null if no arg is in table.
+  isFlat: boolean; // default: false
+  argNum: number; // default: the maximum key of args, 0 if args is null.
+  args: Record<number, ArgConfig>;
 }
 
 export interface ArgConfig {
-  inTable?: boolean;
-  isPointer?: boolean;
-  inPorts?: string[];
-  outPorts?: string[];
+  inTable: boolean; // default: true for flat structures, false otherwise
+  isPointer: boolean; // default: false
+  inPort: string; // default: `in$i`, where i is the index of the argument
+  outPort: string; // default: `out$i`, where i is the index of the argument
 }
 
-export interface CompleteArgConfig {
-  inTable: boolean;
-  isPointer: boolean;
-  inPorts: string[];
-  outPorts: string[];
+// NOTE: Use Courier 11 in graphviz and override display with Iosevka 12.
+const defaultFontConfig = {
+  name: 'Courier',
+  size: 11,
+  existVarColor: '#3465a4',
+};
+
+const defaultRenderConfig = {
+  font: defaultFontConfig,
+  graph: {
+    rankdir: 'LR',
+    ranksep: 0.05,
+    nodesep: 0.2,
+    concentrate: false,
+    splines: true,
+    packmode: 'array_i',
+    truecolor: true,
+    bgcolor: '#00000000',
+    pad: 0,
+    fontname: defaultFontConfig.name,
+    fontsize: defaultFontConfig.size,
+  },
+  edge: {
+    tailclip: false,
+    arrowsize: 0.5,
+    minlen: 3,
+  },
+  node: {
+    shape: 'plaintext',
+    margin: 0.05,
+    fontname: defaultFontConfig.name,
+    fontsize: defaultFontConfig.size,
+  },
+  constr: {},
+};
+
+async function fetchText(url: string): Promise<string> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+  }
+  return response.text();
 }
 
 export async function loadRenderConfig(
   url = 'renderConfig.yaml'
 ): Promise<RenderConfig> {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-  }
-  const text = await response.text();
-  return yaml.load(text) as RenderConfig;
+  const text = await fetchText(url);
+  const userRenderConfig = (await yaml.load(text)) as Partial<RenderConfig>;
+  const renderConfig: RenderConfig = merge(
+    defaultRenderConfig,
+    userRenderConfig
+  );
+  // Complete constr configs with default values.
+  Object.entries(renderConfig.constr).forEach(([name, c]) => {
+    const argNum =
+      c?.argNum ??
+      (c?.args ? Math.max(...Object.keys(c?.args).map(Number)) + 1 : 0);
+
+    let isFlat = c?.isFlat ?? false;
+    let inPort = null;
+
+    const args: Record<number, ArgConfig> = {};
+    for (let i = 0; i < argNum; i++) {
+      args[i] = {
+        inTable: c?.args?.[i]?.inTable ?? (isFlat ? true : false),
+        isPointer: c?.args?.[i]?.isPointer ?? false,
+        inPort: c?.args?.[i]?.inPort ?? `in$${i}`,
+        outPort: c?.args?.[i]?.outPort ?? `out$${i}`,
+      };
+      if (!inPort && args[i].inTable) inPort = args[i].inPort;
+    }
+
+    renderConfig.constr[name] = {
+      isFlat: isFlat,
+      inPort: inPort,
+      argNum: argNum,
+      args: args,
+    };
+  });
+
+  return renderConfig;
 }
 
 /** HTML Utilities */

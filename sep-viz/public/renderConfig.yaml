@@ -1,113 +1,28 @@
-font:
-  name: &fontname 'Courier' # NOTE: Use Courier 11 in graphviz and override display with Iosevka 12.
-  size: &fontsize 11
-  # charwidth: 6.075 # 12: 6.875; 11.5: 5.6. NOTE: or add autosize boxes.  FIXME not reliable enough.  Recompile graphviz?
-  existVarColor: '#3465a4'
-graph:
-  rankdir: LR
-  ranksep: 0.05
-  nodesep: 0.2
-  concentrate: false
-  splines: true
-  packmode: array_i # respect input order
-  truecolor: true
-  bgcolor: '#00000000'
-  pad: 0
-  fontname: *fontname
-  fontsize: *fontsize
-edge:
-  tailclip: false
-  arrowsize: 0.5
-  minlen: 3
-  fontname: *fontname
-  fontsize: *fontsize
-node:
-  shape: plaintext
-  margin: 0.05
-  fontname: *fontname
-  fontsize: *fontsize
 constr:
+  TestConstr:
   MCell:
-    inPorts:
-      - car_in
     isFlat: true
-    args:
-      0:
-        inTable: true
-        inPorts:
-          - car_in
-        outPorts:
-          - car_out
-      1:
-        inTable: true
-        inPorts:
-          - cdr_in
-        outPorts:
-          - cdr_out
+    argNum: 2
   MListSeg:
-    inPorts:
-      - list
-    isFlat: false
+    inPort: list
     args:
       0:
-        inTable: false
         isPointer: true # For any instance of this construct, isPointer=true means this field is always a pointer
-        outPorts:
-          - list
+        outPort: list
       1:
         inTable: true
-        inPorts:
-          - list
-        outPorts:
-          - list
+        inPort: list
+        outPort: list
   MList:
-    inPorts: []
-    isFlat: false
-    args:
-      0:
-        inTable: false
+    argNum: 1
   MQueue:
-    inPorts:
-      - list
-    isFlat: false
     args:
       0:
         inTable: true
-        inPorts:
-          - list
-        outPorts:
-          - list
   MNode:
-    inPorts:
-      - in0
     isFlat: true
-    args:
-      0:
-        inTable: true
-        inPorts:
-          - in0
-        outPorts:
-          - out0
-      1:
-        inTable: true
-        inPorts:
-          - in1
-        outPorts:
-          - out1
-      2:
-        inTable: true
-        inPorts:
-          - in2
-        outPorts:
-          - out2
+    argNum: 3
   MTree:
-    inPorts:
-      - tree
-    isFlat: false
     args:
       0:
         inTable: true
-        inPorts:
-          - tree
-        outPorts:
-          - tree

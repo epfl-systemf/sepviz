@@ -12,7 +12,6 @@ import {
   AttrKey,
   AttrValue,
   ConstrConfig,
-  CompleteArgConfig,
   RenderConfig,
   InTablePointerEdgeAttrs,
 } from './utility';
@@ -194,18 +193,18 @@ export class DotBuilder {
   private readonly config: RenderConfig;
   private readonly heapPredicates: HeapPredicate[];
   private readonly knownPtrUids: Set<Uid>;
-  private readonly inPortsOfUid: Record<Uid, string[]>;
+  private readonly inPortOfUid: Record<Uid, string | null>;
 
   constructor(config: RenderConfig, heapPredicates: HeapPredicate[]) {
     this.config = config;
     this.heapPredicates = heapPredicates;
     this.knownPtrUids = new Set(heapPredicates.map((hpred) => hpred.addr.uid));
-    this.inPortsOfUid = Object.fromEntries(
+    this.inPortOfUid = Object.fromEntries(
       heapPredicates.map((hpred) => [
         hpred.addr.uid,
-        this.config?.constr?.[hpred.obj.constr]?.inPorts ?? [],
+        this.config.constr[hpred.obj.constr]?.inPort ?? null,
       ])
-    ) as Record<Uid, string[]>;
+    ) as Record<Uid, string | null>;
   }
 
   build(): string {
@@ -363,19 +362,6 @@ export class DotBuilder {
     return config;
   }
 
-  protected getCompleteArgConfig(
-    constrConfig: ConstrConfig,
-    argIdx: number
-  ): CompleteArgConfig {
-    const argConfig = constrConfig.args?.[argIdx];
-    return {
-      inTable: argConfig?.inTable ?? false,
-      isPointer: argConfig?.isPointer ?? false,
-      inPorts: argConfig?.inPorts ?? [`default_in_${argIdx}`],
-      outPorts: argConfig?.outPorts ?? [`default_out_${argIdx}`],
-    };
-  }
-
   protected buildNodeLabel(hpred: HeapPredicate): XMLElement {
     const xml =
       (tag: string, defaultAttrs: Attrs = {}) =>
@@ -404,9 +390,8 @@ export class DotBuilder {
     const globalLabel: (label: string) => XMLElement | string = (label) =>
       label == 'null' ? font({ face: 'Helvetica' }, '∅') : label;
 
-    // TODO: read default value from default config
     const localLabel: (label: string) => XMLElement = (label) => {
-      const color = this.config.font?.existVarColor ?? '#3465a4';
+      const color = this.config.font.existVarColor;
       return font({ color: color }, label);
     };
 
@@ -451,12 +436,12 @@ export class DotBuilder {
       { cellborder: constrConfig.isFlat ? 1 : 0 },
       header,
       ...hpred.obj.args.flatMap((arg, idx) => {
-        const config = this.getCompleteArgConfig(constrConfig, idx);
+        const config = constrConfig.args[idx];
         if (!config.inTable) return [];
         return [
           this.knownPtrUids.has(arg.uid) || config.isPointer
-            ? pointer(config.inPorts[0], config.outPorts[0], arg)
-            : value(config.inPorts[0], arg),
+            ? pointer(config.inPort, config.outPort, arg)
+            : value(config.inPort, arg),
         ];
       })
     );
@@ -466,17 +451,19 @@ export class DotBuilder {
     const srcUid = hpred.addr.uid;
     const constrConfig = this.getConstrConfig(hpred.obj.constr);
     return hpred.obj.args.flatMap((arg, idx) => {
-      const config = this.getCompleteArgConfig(constrConfig, idx);
+      const config = constrConfig.args[idx];
       if (!(this.knownPtrUids.has(arg.uid) || config.isPointer)) return [];
-      const srcOutPorts = [...config.outPorts, config.inTable ? 'c' : 'e'];
+      const srcOutPorts = [config.outPort, config.inTable ? 'c' : 'e'];
       const dstUid = arg.uid;
-      const dstInPort = [...(this.inPortsOfUid[dstUid] || []), 'w'];
+      const dstInPorts = this.inPortOfUid[dstUid]
+        ? [this.inPortOfUid[dstUid], 'w']
+        : ['w'];
       return [
         new DotEdge(
           srcUid,
           srcOutPorts,
           dstUid,
-          dstInPort,
+          dstInPorts,
           config.inTable ? InTablePointerEdgeAttrs : {}
         ),
       ];
@@ -494,7 +481,7 @@ export class DotBuilder {
       ptrUid,
       ['e'],
       sym.uid,
-      [...this.inPortsOfUid[sym.uid], 'nw'],
+      this.inPortOfUid[sym.uid] ? [this.inPortOfUid[sym.uid], 'nw'] : ['nw'],
       { tailclip: 'true', minlen: '1' }
     );
     return [node, edge];

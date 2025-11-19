@@ -42,7 +42,7 @@ type Vid = string;
 
 function renderEmbedded(config: RenderConfig): Record<Vid, Vid> {
   const previousVids: Record<Vid, Vid> = {};
-  let latestVids: Record<string, number> = { pre: 0, post: 0, default: 0 };
+  const latestVids: Record<string, number> = { pre: 0, post: 0, default: 0 };
 
   function vidOf(n: number, stream: string): Vid {
     return `vid-${stream}-${n}`;
