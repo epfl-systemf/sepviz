@@ -26,3 +26,6 @@ constr:
     args:
       0:
         inTable: true
+  MCell2:
+    isFlat: true
+    argNum: 2

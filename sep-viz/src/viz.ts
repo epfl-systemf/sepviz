@@ -17,6 +17,8 @@ import {
   InTablePointerEdgeAttrs,
 } from './config';
 
+import { sort } from './sort';
+
 type Uid = string;
 
 export interface Symbol {
@@ -171,6 +173,15 @@ class DotEdge {
      */
     this.attrs = { id: `${srcUid}-${srcOutPorts.join('-')}`, ...attrs };
   }
+
+  toString(): string {
+    return [
+      this.srcUid,
+      ...this.srcOutPorts,
+      this.dstUid,
+      ...this.dstInPorts,
+    ].join('-');
+  }
 }
 
 class DotTarget {
@@ -189,14 +200,23 @@ interface DotCluster {
   edges: DotEdge[];
 }
 
+export type NodeOrder = Record<Uid, number>;
+
 // TODO: rename RenderConfig to DotConfig ?
 export class DotBuilder {
   private readonly config: RenderConfig;
   private readonly heapPredicates: HeapPredicate[];
   private readonly knownPtrUids: Set<Uid>;
   private readonly inPortOfUid: Record<Uid, string | null>;
+  private readonly previousOrder: NodeOrder | null;
+  public readonly dot: string;
+  public readonly nodeOrder: NodeOrder;
 
-  constructor(config: RenderConfig, heapPredicates: HeapPredicate[]) {
+  constructor(
+    config: RenderConfig,
+    heapPredicates: HeapPredicate[],
+    previousOrder: NodeOrder | null
+  ) {
     this.config = config;
     this.heapPredicates = heapPredicates;
     this.knownPtrUids = new Set(heapPredicates.map((hpred) => hpred.addr.uid));
@@ -206,10 +226,11 @@ export class DotBuilder {
         this.config.constr[hpred.obj.constr]?.inPort ?? null,
       ])
     ) as Record<Uid, string | null>;
-  }
+    this.previousOrder = previousOrder;
 
-  build(): string {
-    return this.buildText(...this.buildComponents());
+    const [clusters, targets] = this.buildComponents();
+    this.nodeOrder = this.buildNodeOrder(clusters);
+    this.dot = this.buildText(clusters, targets);
   }
 
   protected buildComponents(): [DotCluster[], DotTarget[]] {
@@ -248,7 +269,19 @@ export class DotBuilder {
     ];
 
     const clusters = this.partition(nodes, edges);
+    clusters
+      .sort((c1, c2) => c2.root.localeCompare(c1.root))
+      .map((c) => this.sortNodes(c));
+
     return [clusters, targets];
+  }
+
+  protected buildNodeOrder(clusters: DotCluster[]): NodeOrder {
+    const nodeOrder: NodeOrder = {};
+    clusters
+      .flatMap((cluster) => cluster.nodes.flatMap((n) => n.uid))
+      .forEach((uid, idx) => (nodeOrder[uid] = idx));
+    return nodeOrder;
   }
 
   // Run a union-find to cluster the graph into weakly connected components.
@@ -266,6 +299,12 @@ export class DotBuilder {
       parents[find(dst)] = find(src);
     }
 
+    // Sort the edges before union find to make sure equivalent states that
+    // contain circles ends up having the same roots.
+    // Example: {* p ~> MCell q null \* q ~> MCell p null *}
+    //   and {* q ~> MCell p null \* p ~> MCell q null *}
+    //   should end up with the same cluster with root 'p'.
+    edges.sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
     edges.forEach((edge) => union(edge.srcUid, edge.dstUid));
 
     const clusters: Record<Uid, DotCluster> = {};
@@ -277,18 +316,19 @@ export class DotBuilder {
     nodes.forEach((n) => clusters[find(n.uid)].nodes.push(n));
     edges.forEach((e) => clusters[find(e.srcUid)].edges.push(e));
 
-    return Object.values(clusters)
-      .sort((c1, c2) => c2.root.localeCompare(c1.root))
-      .map((c) => this.sortInsideCluster(c));
+    return Object.values(clusters);
   }
 
-  protected sortInsideCluster(cluster: DotCluster): DotCluster {
-    cluster.nodes.sort((n1, n2) => n1.uid.localeCompare(n2.uid));
-    const edgeToString = (e: DotEdge) =>
-      [e.srcUid, ...e.srcOutPorts, e.dstUid, ...e.dstInPorts].join();
-    cluster.edges.sort((e1, e2) =>
-      edgeToString(e1).localeCompare(edgeToString(e2))
+  protected sortNodes(cluster: DotCluster): DotCluster {
+    const order = sort(
+      cluster.root,
+      cluster.nodes.map((n) => n.uid),
+      cluster.edges.map((e) => {
+        return { src: e.srcUid, dst: e.dstUid };
+      }),
+      this.previousOrder
     );
+    cluster.nodes.sort((n1, n2) => order[n1.uid] - order[n2.uid]);
     return cluster;
   }
 

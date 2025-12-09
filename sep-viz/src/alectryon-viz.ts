@@ -9,7 +9,14 @@ import {
   GraphvizOptions,
 } from './config';
 
-import { parse, HeapState, PurePredicate, Symbol, DotBuilder } from './viz';
+import {
+  parse,
+  HeapState,
+  PurePredicate,
+  Symbol,
+  DotBuilder,
+  NodeOrder,
+} from './viz';
 
 // @ts:ignore
 import * as d3 from 'd3';
@@ -43,6 +50,7 @@ type Vid = string;
 
 function renderEmbedded(config: RenderConfig): Record<Vid, Vid> {
   const previousVids: Record<Vid, Vid> = {};
+  const nodeOrders: Record<Vid, NodeOrder | null> = {};
   const latestVids: Record<string, number> = { pre: 0, post: 0, default: 0 };
 
   function vidOf(n: number, stream: string): Vid {
@@ -77,7 +85,7 @@ function renderEmbedded(config: RenderConfig): Record<Vid, Vid> {
                 host.id = nextVid(sentenceNode.goalReset, unit.position);
               }
               goalNode.append(host);
-              renderHeapState(config, host, unit);
+              renderHeapState(config, host, unit, nodeOrders, previousVids);
             }
           });
         });
@@ -92,7 +100,9 @@ function renderEmbedded(config: RenderConfig): Record<Vid, Vid> {
 function renderHeapState(
   config: RenderConfig,
   host: HTMLElement,
-  state: HeapState
+  state: HeapState,
+  nodeOrders: Record<Vid, NodeOrder | null>,
+  previousVids: Record<Vid, Vid>
 ) {
   const hide = (node: HTMLElement) => node.classList.add('hidden');
   const show = (node: HTMLElement) => node.classList.remove('hidden');
@@ -100,6 +110,9 @@ function renderHeapState(
     show(toShow);
     hide(toHide);
   };
+
+  const vid = host.id;
+  const previousVid = previousVids[vid];
 
   const srcView = createElement('div', ['sep-source'], { text: state.raw });
   const diagramView = createElement('div', ['sep-diagram']);
@@ -116,7 +129,13 @@ function renderHeapState(
   if (state.heapPredicates.length > 0) {
     const dotNode = createElement('div', ['sep-diagram-dot']);
     const dotCopy = createElement('button', ['copy-button'], { text: 'Copy' });
-    const dot = new DotBuilder(config, state.heapPredicates).build();
+    const dotBuilder = new DotBuilder(
+      config,
+      state.heapPredicates,
+      previousVid ? nodeOrders[previousVid] : null
+    );
+    nodeOrders[vid] = dotBuilder.nodeOrder;
+    const dot = dotBuilder.dot;
     const dotContent = createElement('div', ['content'], { text: dot });
     dotNode.append(dotCopy, dotContent);
 

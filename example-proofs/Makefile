@@ -12,7 +12,7 @@ LIB := theories/lib
 EXM := theories/examples
 
 VFILES_IN_LIB := WPUntyped.v Notations.v ListNull.v
-VFILES_IN_EXM := LiterateQueue.v LiterateTree.v
+VFILES_IN_EXM := LiterateQueue.v LiterateTree.v LiterateTest.v
 
 LIB_VFILES := $(addprefix $(LIB)/, $(VFILES_IN_LIB))
 HTML_FILES := $(addprefix $(OUT_DIR)/, $(VFILES_IN_EXM:.v=.html))
