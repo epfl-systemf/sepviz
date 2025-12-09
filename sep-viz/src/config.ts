@@ -78,7 +78,7 @@ const defaultRenderConfig = {
   graph: {
     rankdir: 'LR',
     ranksep: 0.05,
-    nodesep: 0.2,
+    nodesep: 0.05,
     concentrate: false,
     splines: true,
     packmode: 'array_i',
