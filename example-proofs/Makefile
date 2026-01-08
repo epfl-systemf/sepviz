@@ -26,7 +26,7 @@ tlc:
 
 cfml: tlc
 	$(MAKE) -C vendor/cfml .depend_lib
-	$(MAKE) COQEXTRAFLAGS="-Q vendor/tlc/src TLC" -C vendor/cfml libcoq
+	$(MAKE) COQEXTRAFLAGS="-Q ../tlc/src TLC" -C vendor/cfml libcoq
 
 %.vo: %.v
 	$(COQC) $(COQFLAGS) $<

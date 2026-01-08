@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[gen:proofs] building example proofs with direnv..."
-direnv exec ../example-proofs make -C ../example-proofs
+if [[ -v USE_NIX ]]; then
+    echo "[gen:proofs] building example proofs with direnv..."
+    direnv exec ../example-proofs make -C ../example-proofs
+else
+    echo "[gen:proofs] building example proofs..."
+    pushd ../example-proofs
+    make -C ../example-proofs
+    popd
+fi
 
 echo "[gen:proofs] removing..."
 find public -mindepth 1 ! \( -name 'renderConfig.yaml' -o -name 'test-animation.html' -o -name 'test-animation.js' \) \
