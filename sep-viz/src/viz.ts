@@ -13,7 +13,6 @@ import {
   AttrKey,
   AttrValue,
   ConstrConfig,
-  ArgConfig,
   RenderConfig,
   InTablePointerEdgeAttrs,
 } from './config';
@@ -26,7 +25,6 @@ export interface Symbol {
   isGlobal: boolean;
   uid: Uid;
   label: string;
-  config?: ArgConfig; // set in DotBuilder constructor
 }
 
 export type PurePredicate = (Symbol | string)[];
@@ -38,7 +36,6 @@ export interface HeapPredicate {
 
 export interface HeapObject {
   constr: string;
-  config?: ConstrConfig; // set in DotBuilder constructor
   args: Symbol[];
 }
 
@@ -222,17 +219,11 @@ export class DotBuilder {
   ) {
     this.config = config;
     this.heapPredicates = heapPredicates;
-    this.heapPredicates.forEach((hpred) => {
-      const constrConfig = this.getConstrConfig(hpred.obj.constr);
-      hpred.obj.config = constrConfig;
-      hpred.obj.args.forEach((arg, idx) => {
-        arg.config = constrConfig.args[idx];
-      })});
     this.knownPtrUids = new Set(heapPredicates.map((hpred) => hpred.addr.uid));
     this.inPortOfUid = Object.fromEntries(
       heapPredicates.map((hpred) => [
         hpred.addr.uid,
-        hpred.obj.config.inPort ?? null,
+        this.config.constr[hpred.obj.constr]?.inPort ?? null,
       ])
     ) as Record<Uid, string | null>;
     this.previousOrder = previousOrder;
@@ -240,14 +231,6 @@ export class DotBuilder {
     const [clusters, targets] = this.buildComponents();
     this.nodeOrder = this.buildNodeOrder(clusters);
     this.dot = this.buildText(clusters, targets);
-  }
-
-  protected getConstrConfig(constrName: string): ConstrConfig {
-    const config = this.config.constr[constrName];
-    if (!config) {
-      throw new Error(`Configuration for constr ${constrName} is missing.`);
-    }
-    return config;
   }
 
   protected buildComponents(): [DotCluster[], DotTarget[]] {
@@ -412,6 +395,14 @@ export class DotBuilder {
     ].join('\n');
   }
 
+  protected getConstrConfig(constrName: string): ConstrConfig {
+    const config = this.config.constr?.[constrName];
+    if (!config) {
+      throw new Error(`Configuration for constr ${constrName} is missing.`);
+    }
+    return config;
+  }
+
   protected buildNodeLabel(hpred: HeapPredicate): XMLElement {
     const xml =
       (tag: string, defaultAttrs: Attrs = {}) =>
@@ -481,21 +472,27 @@ export class DotBuilder {
       // Or: use '⏺' here and disable InTablePointerEdgeAttr
       constrField(inPort, label(sym), outPort, '');
 
+    const constrConfig = this.getConstrConfig(hpred.obj.constr);
     return table(
-      { cellborder: hpred.obj.config.isFlat ? 1 : 0 },
+      { cellborder: constrConfig.isFlat ? 1 : 0 },
       header,
-      ...hpred.obj.args
-        .filter((arg) => arg.config.inTable)
-        .map((arg) => this.knownPtrUids.has(arg.uid) || arg.config.isPointer
-          ? pointer(arg.config.inPort, arg.config.outPort, arg)
-          : value(arg.config.inPort, arg))
+      ...hpred.obj.args.flatMap((arg, idx) => {
+        const config = constrConfig.args[idx];
+        if (!config.inTable) return [];
+        return [
+          this.knownPtrUids.has(arg.uid) || config.isPointer
+            ? pointer(config.inPort, config.outPort, arg)
+            : value(config.inPort, arg),
+        ];
+      })
     );
   }
 
   protected buildEdges(hpred: HeapPredicate): DotEdge[] {
     const srcUid = hpred.addr.uid;
-    const allEdges = hpred.obj.args.flatMap((arg) => {
-      const config = arg.config;
+    const constrConfig = this.getConstrConfig(hpred.obj.constr);
+    const allEdges = hpred.obj.args.flatMap((arg, idx) => {
+      const config = constrConfig.args[idx];
       if (!(this.knownPtrUids.has(arg.uid) || config.isPointer)) return [];
       const srcOutPorts = [config.outPort, config.inTable ? 'c' : 'e'];
       const dstUid = arg.uid;
