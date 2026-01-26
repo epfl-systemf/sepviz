@@ -16,6 +16,8 @@ import {
   Symbol,
   DotBuilder,
   NodeOrder,
+  StarHeapPred,
+  HeapObject,
 } from './viz';
 
 // @ts:ignore
@@ -73,7 +75,7 @@ function renderEmbedded(config: RenderConfig): Record<Vid, Vid> {
       sentenceNode
         .querySelectorAll<HTMLElement>('.goal-conclusion')
         .forEach((goalNode, idx) => {
-          const parseResult = parse(goalNode.innerText);
+          const parseResult = parse(goalNode.innerText, config);
           goalNode.innerText = '';
           parseResult.forEach((unit: HeapState | string) => {
             if (typeof unit === 'string') {
@@ -120,18 +122,18 @@ function renderHeapState(
   hide(srcView); // default: diagram view
   srcView.addEventListener('click', () => toggle(diagramView, srcView));
 
-  if (state.purePredicates.length > 0) {
-    const purePredsNode = renderPurePredicates(state.purePredicates);
+  if (state.pred.purePreds.length > 0) {
+    const purePredsNode = renderPurePredicates(state.pred.purePreds);
     diagramView.append(purePredsNode);
     purePredsNode.addEventListener('click', () => toggle(srcView, diagramView));
   }
 
-  if (state.heapPredicates.length > 0) {
+  if (state.pred.heapObjs.length > 0) {
     const dotNode = createElement('div', ['sep-diagram-dot']);
     const dotCopy = createElement('button', ['copy-button'], { text: 'Copy' });
     const dotBuilder = new DotBuilder(
       config,
-      state.heapPredicates,
+      state.pred.heapObjs,
       previousVid ? nodeOrders[previousVid] : null
     );
     nodeOrders[vid] = dotBuilder.nodeOrder;

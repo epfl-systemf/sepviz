@@ -36,28 +36,68 @@ export interface HeapPredicate {
 }
 
 export interface HeapObject {
+  addr: Symbol;
   constr: string;
   args: Symbol[];
-  config: ConstrConfig; // set in DotBuilder constructor
+  config: ConstrConfig;
 }
 
 export interface HeapState {
   position: string;
   raw: string;
-  heapPredicates: HeapPredicate[];
-  purePredicates: PurePredicate[];
+  pred: StarHeapPred;
 }
 
-export function parse(goalText: string): (HeapState | string)[] {
+export type OtherHeapPred = WandHeapPred | ConjHeapPred | DisjHeapPred;
+
+export interface StarHeapPred {
+  heapObjs: HeapObject[];
+  purePreds: PurePredicate[];
+  otherHeapPreds: OtherHeapPred[];
+}
+
+export interface WandHeapPred {
+  // magic wand
+  H1: StarHeapPred;
+  H2: StarHeapPred;
+}
+
+export interface ConjHeapPred {
+  // non-separating conjunction
+  H1: StarHeapPred;
+  H2: StarHeapPred;
+}
+
+export interface DisjHeapPred {
+  // disjunction
+  H1: StarHeapPred;
+  H2: StarHeapPred;
+}
+
+export function parse(
+  goalText: string,
+  renderConfig: RenderConfig
+): (HeapState | string)[] {
   return peggyParse(goalText).map((unit: any) =>
-    typeof unit === 'object' ? resolveSymbols(unit) : (unit as string)
+    typeof unit === 'object'
+      ? resolveSymbols(unit, renderConfig)
+      : (unit as string)
   );
 }
 
-function resolveSymbols(unit: any): HeapState {
-  let purePredicates: PurePredicate[] = [];
-  let heapPredicates: HeapPredicate[] = [];
+function newStarHeapPred(): StarHeapPred {
+  return { heapObjs: [], purePreds: [], otherHeapPreds: [] };
+}
+
+function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
+  let pred: StarHeapPred = newStarHeapPred();
   let gensym: Record<string, number> = {};
+
+  function getConstrConfig(constrName: string): ConstrConfig {
+    const config = renderConfig.constr?.[constrName];
+    if (!config) throw new Error(`Missing config for constr ${constrName}.`);
+    return config;
+  }
 
   function next(prefix: string): number {
     if (!(prefix in gensym)) gensym[prefix] = 0;
@@ -68,10 +108,10 @@ function resolveSymbols(unit: any): HeapState {
     return key in ctx ? ctx[key] : { isGlobal: true, uid: key, label: key };
   }
 
-  function loop(sep: any, ctx: Record<string, Symbol>) {
+  function loop(sep: any, ctx: Record<string, Symbol>, pred: StarHeapPred) {
     switch (sep.kind) {
       case 'stars':
-        sep.conjuncts.forEach((c: any) => loop(c, ctx));
+        sep.conjuncts.forEach((c: any) => loop(c, ctx, pred));
         break;
       case 'existential':
         const num = next(sep.binder);
@@ -80,22 +120,30 @@ function resolveSymbols(unit: any): HeapState {
           uid: sep.binder + '$' + num,
           label: `?${sep.binder}${num}`, // ['font', {}, `?${sep.binder}`, ['sub', {}, `${num}`]]
         };
-        loop(sep.body, ctx);
+        loop(sep.body, ctx, pred);
         break;
       case 'pointsTo':
         const [constr, ...args] = sep.to as string[];
-        heapPredicates.push({
+        pred.heapObjs.push({
           addr: resolve(ctx, sep.from),
-          obj: {
-            constr: constr,
-            args: args.map((arg) => resolve(ctx, arg)),
-          },
+          constr: constr,
+          args: args.map((arg) => resolve(ctx, arg)),
+          config: getConstrConfig(constr),
         });
+        break;
+      case 'wand':
+        const wand: WandHeapPred = {
+          H1: newStarHeapPred(),
+          H2: newStarHeapPred(),
+        };
+        loop(sep.H1, ctx, wand.H1);
+        loop(sep.H2, ctx, wand.H2);
+        pred.otherHeapPreds.push(wand);
         break;
       case 'gc':
         break;
       case 'purePredicate':
-        purePredicates.push(
+        pred.purePreds.push(
           sep.predicate.map((x: string) => (x in ctx ? ctx[x] : x))
         );
         break;
@@ -104,14 +152,9 @@ function resolveSymbols(unit: any): HeapState {
     }
   }
 
-  loop(unit.parsed, {});
+  loop(unit.parsed, {}, pred);
 
-  return {
-    position: unit.position,
-    raw: unit.raw,
-    heapPredicates: heapPredicates,
-    purePredicates: purePredicates,
-  };
+  return { position: unit.position, raw: unit.raw, pred: pred };
 }
 
 type XMLChild = XMLElement | string;
@@ -207,7 +250,7 @@ export type NodeOrder = Record<Uid, number>;
 // TODO: rename RenderConfig to DotConfig ?
 export class DotBuilder {
   private readonly config: RenderConfig;
-  private readonly heapPredicates: HeapPredicate[];
+  private readonly heapObjs: HeapObject[];
   private readonly knownPtrUids: Set<Uid>;
   private readonly inPortOfUid: Record<Uid, string | null>;
   private readonly previousOrder: NodeOrder | null;
@@ -216,26 +259,22 @@ export class DotBuilder {
 
   constructor(
     config: RenderConfig,
-    heapPredicates: HeapPredicate[],
+    heapObjs: HeapObject[],
     previousOrder: NodeOrder | null
   ) {
     this.config = config;
-    this.heapPredicates = heapPredicates;
-    this.heapPredicates.forEach((hpred) => {
-      hpred.obj.config = this.getConstrConfig(hpred.obj.constr);
-      // below does not work because some args are aliased between hpreds with
-      // different constrs. specifically, existential args are unique across
-      // hpreds, and this would reset .config once for each of them
-      // hpred.obj.args.forEach((arg, idx) => {
-      //   arg.config = hpred.obj.config.args[idx];
-      // });
-    });
-    this.knownPtrUids = new Set(heapPredicates.map((hpred) => hpred.addr.uid));
+    this.heapObjs = heapObjs;
+    // this.heapObjs.forEach((obj) => {
+    //   // below does not work because some args are aliased between heap objs with
+    //   // different constrs. specifically, existential args are unique across
+    //   // heap objs, and this would reset .config once for each of them
+    //   // obj.args.forEach((arg, idx) => {
+    //   //   arg.config = obj.config.args[idx];
+    //   // });
+    // });
+    this.knownPtrUids = new Set(heapObjs.map((obj) => obj.addr.uid));
     this.inPortOfUid = Object.fromEntries(
-      heapPredicates.map((hpred) => [
-        hpred.addr.uid,
-        hpred.obj.config.inPort ?? null,
-      ])
+      heapObjs.map((obj) => [obj.addr.uid, obj.config.inPort ?? null])
     ) as Record<Uid, string | null>;
     this.previousOrder = previousOrder;
 
@@ -245,23 +284,21 @@ export class DotBuilder {
   }
 
   protected buildComponents(): [DotCluster[], DotTarget[]] {
-    const nodes: DotNode[] = this.heapPredicates.map(
-      (hpred) => new DotNode(hpred.addr.uid, this.buildNodeLabel(hpred))
+    const nodes: DotNode[] = this.heapObjs.map(
+      (obj) => new DotNode(obj.addr.uid, this.buildNodeLabel(obj))
     );
-    const edges: DotEdge[] = this.heapPredicates.flatMap((hpred) =>
-      this.buildEdges(hpred)
+    const edges: DotEdge[] = this.heapObjs.flatMap((obj) =>
+      this.buildEdges(obj)
     );
 
     // For each root pointer, add a node for the pointer and a edge from the
     // pointer to the pointed-to object.
     let hasIncomingEdges: Record<Uid, boolean> = {};
     edges.forEach((edge) => (hasIncomingEdges[edge.dstUid] = true));
-    this.heapPredicates
-      .filter(
-        (hpred) => hpred.addr.isGlobal && !hasIncomingEdges[hpred.addr.uid]
-      )
-      .forEach((hpred) => {
-        const [node, edge] = this.buildRootPointerNodeAndEdge(hpred.addr);
+    this.heapObjs
+      .filter((obj) => obj.addr.isGlobal && !hasIncomingEdges[obj.addr.uid])
+      .forEach((obj) => {
+        const [node, edge] = this.buildRootPointerNodeAndEdge(obj.addr);
         nodes.push(node);
         edges.push(edge);
       });
@@ -406,15 +443,7 @@ export class DotBuilder {
     ].join('\n');
   }
 
-  protected getConstrConfig(constrName: string): ConstrConfig {
-    const config = this.config.constr?.[constrName];
-    if (!config) {
-      throw new Error(`Configuration for constr ${constrName} is missing.`);
-    }
-    return config;
-  }
-
-  protected buildNodeLabel(hpred: HeapPredicate): XMLElement {
+  protected buildNodeLabel(heapObj: HeapObject): XMLElement {
     const xml =
       (tag: string, defaultAttrs: Attrs = {}) =>
       (attrs: Attrs = {}, ...children: XMLChild[]) =>
@@ -454,7 +483,7 @@ export class DotBuilder {
       {},
       td(
         { colspan: 2, cellpadding: 0, sides: 'b' },
-        box({}, row(label(hpred.addr), ': ', hpred.obj.constr))
+        box({}, row(label(heapObj.addr), ': ', heapObj.constr))
       )
     );
 
@@ -484,21 +513,23 @@ export class DotBuilder {
       constrField(inPort, label(sym), outPort, '');
 
     return table(
-      { cellborder: hpred.obj.config.isFlat ? 1 : 0 },
+      { cellborder: heapObj.config.isFlat ? 1 : 0 },
       header,
-      ...hpred.obj.args
-        .map((arg, idx) => [arg, hpred.obj.config.args[idx]])
+      ...heapObj.args
+        .map((arg, idx) => [arg, heapObj.config.args[idx]])
         .filter(([, config]) => config.inTable)
-        .map(([arg, config]) => this.knownPtrUids.has(arg.uid) || config.isPointer
-          ? pointer(config.inPort, config.outPort, arg)
-          : value(config.inPort, arg))
+        .map(([arg, config]) =>
+          this.knownPtrUids.has(arg.uid) || config.isPointer
+            ? pointer(config.inPort, config.outPort, arg)
+            : value(config.inPort, arg)
+        )
     );
   }
 
-  protected buildEdges(hpred: HeapPredicate): DotEdge[] {
-    const srcUid = hpred.addr.uid;
-    const allEdges = hpred.obj.args.flatMap((arg, idx) => {
-      const config = hpred.obj.config.args[idx];
+  protected buildEdges(heapObj: HeapObject): DotEdge[] {
+    const srcUid = heapObj.addr.uid;
+    const allEdges = heapObj.args.flatMap((arg, idx) => {
+      const config = heapObj.config.args[idx];
       if (!(this.knownPtrUids.has(arg.uid) || config.isPointer)) return [];
       const srcOutPorts = [config.outPort, config.inTable ? 'c' : 'e'];
       const dstUid = arg.uid;

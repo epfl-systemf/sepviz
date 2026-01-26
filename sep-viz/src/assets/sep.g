@@ -93,16 +93,22 @@ GallinaTermWithTop
 DefaultTop = t:Top { return [{position: "default", ...t}]; }
 
 Top
-  = "{*" _ s:Stars _ "*}" {
-    return { raw: text(), parsed: s };
+  = "{*" _ f:SepFormula _ "*}" {
+    return { raw: text(), parsed: f };
 }
+
+SepFormula // wand-level (wand is right associative), stars bind tighter than wands
+  = H1: Stars _ "-∗" _ H2: SepFormula {
+      return { kind: "wand", H1, H2 };
+    }
+  / Stars
 
 Stars
   = hd:Term tl:(_ "★" _ @Term)* {
   return { kind: "stars", conjuncts: [hd, ...tl] };
 }
 
-Term
+Term // non-recursive base terms
   = Parenthesized
   / Existential
   / PointsTo

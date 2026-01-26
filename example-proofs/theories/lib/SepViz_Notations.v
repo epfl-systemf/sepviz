@@ -14,6 +14,9 @@ Notation "⌜  P  ⌝" :=
   (hpure P)
     (in custom sepviz_heap at level 40,
       P custom sepviz_heap at level 40).
+Notation "H1 -∗ H2" :=
+  (hwand H1 H2)
+    (in custom sepviz_heap at level 40, right associativity).
 Notation "x ~> S" :=
   (repr S x)
     (in custom sepviz_heap at level 33,
