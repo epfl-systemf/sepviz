@@ -8,6 +8,7 @@
 
     "prepare": "run-s gen:proofs inject gen:parser",
 
+    "typecheck": "tsc --noEmit",
     "dev": "run-s prepare vite",
     "vite:build": "vite build",
     "build": "run-s prepare vite:build",

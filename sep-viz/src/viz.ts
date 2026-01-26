@@ -12,6 +12,7 @@ import {
   Attrs,
   AttrKey,
   AttrValue,
+  ArgConfig,
   ConstrConfig,
   RenderConfig,
   InTablePointerEdgeAttrs,
@@ -512,11 +513,18 @@ export class DotBuilder {
       // Or: use '⏺' here and disable InTablePointerEdgeAttr
       constrField(inPort, label(sym), outPort, '');
 
+    function getArgConfig(
+      arg: Symbol,
+      idx: number
+    ): [arg: Symbol, config: ArgConfig] {
+      return [arg, heapObj.config.args[idx]];
+    }
+
     return table(
       { cellborder: heapObj.config.isFlat ? 1 : 0 },
       header,
       ...heapObj.args
-        .map((arg, idx) => [arg, heapObj.config.args[idx]])
+        .map(getArgConfig)
         .filter(([, config]) => config.inTable)
         .map(([arg, config]) =>
           this.knownPtrUids.has(arg.uid) || config.isPointer
@@ -577,7 +585,9 @@ export class DotBuilder {
       ptrUid,
       ['e'],
       sym.uid,
-      this.inPortOfUid[sym.uid] ? [this.inPortOfUid[sym.uid], 'nw'] : ['nw'],
+      (this.inPortOfUid[sym.uid]
+        ? [this.inPortOfUid[sym.uid], 'nw']
+        : ['nw']) as string[],
       { tailclip: 'true', minlen: '1' }
     );
     return [node, edge];
