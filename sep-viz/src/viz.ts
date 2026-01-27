@@ -521,13 +521,13 @@ export class DotBuilder {
     }
 
     return table(
-      { cellborder: heapObj.config.isFlat ? 1 : 0 },
+      { cellborder: heapObj.config.drawBorder ? 1 : 0 },
       header,
       ...heapObj.args
         .map(getArgConfig)
         .filter(([, config]) => config.inTable)
         .map(([arg, config]) =>
-          this.knownPtrUids.has(arg.uid) || config.isPointer
+          this.knownPtrUids.has(arg.uid) || config.forceEdge
             ? pointer(config.inPort, config.outPort, arg)
             : value(config.inPort, arg)
         )
@@ -538,7 +538,7 @@ export class DotBuilder {
     const srcUid = heapObj.addr.uid;
     const allEdges = heapObj.args.flatMap((arg, idx) => {
       const config = heapObj.config.args[idx];
-      if (!(this.knownPtrUids.has(arg.uid) || config.isPointer)) return [];
+      if (!(this.knownPtrUids.has(arg.uid) || config.forceEdge)) return [];
       const srcOutPorts = [config.outPort, config.inTable ? 'c' : 'e'];
       const dstUid = arg.uid;
       const dstInPorts = this.inPortOfUid[dstUid]

@@ -1,13 +1,13 @@
 constr:
   TestConstr:
   MCell:
-    isFlat: true
+    drawBorder: true
     argNum: 2
   MListSeg:
     inPort: list
     args:
       0:
-        isPointer: true # For any instance of this construct, isPointer=true means this field is always a pointer
+        forceEdge: true # forceEdge=true means there is always an edge to this argument
         outPort: list
       1:
         inTable: true
@@ -20,12 +20,12 @@ constr:
       0:
         inTable: true
   MNode:
-    isFlat: true
+    drawBorder: true
     argNum: 3
   MTree:
     args:
       0:
         inTable: true
   MCell2:
-    isFlat: true
+    drawBorder: true
     argNum: 2

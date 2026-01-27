@@ -54,14 +54,18 @@ export interface FontConfig {
 
 export interface ConstrConfig {
   inPort: string | null; // default: the input port for the first in-table arg, null if no arg is in table.
-  isFlat: boolean; // default: false
+  drawBorder: boolean; // default: false
   argNum: number; // default: the maximum key of args, 0 if args is null.
   args: Record<number, ArgConfig>;
 }
 
 export interface ArgConfig {
   inTable: boolean; // default: true for flat structures, false otherwise
-  isPointer: boolean; // default: false
+  forceEdge: boolean; // default: false.
+  // When forceEdge is true, this argument is always treated as a pointer even
+  // when the context does not imply it. For example, {* p ~> MListSeg L b *}
+  // b is not a known pointer because b does not point to any object, but if
+  // forceEdge=true, an edge to b will still be drawn.
   inPort: string; // default: `in$i`, where i is the index of the argument
   outPort: string; // default: `out$i`, where i is the index of the argument
 }
@@ -125,14 +129,14 @@ export async function loadRenderConfig(
       c?.argNum ??
       (c?.args ? Math.max(...Object.keys(c?.args).map(Number)) + 1 : 0);
 
-    let isFlat = c?.isFlat ?? false;
+    let drawBorder = c?.drawBorder ?? false;
     let inPort = null;
 
     const args: Record<number, ArgConfig> = {};
     for (let i = 0; i < argNum; i++) {
       args[i] = {
-        inTable: c?.args?.[i]?.inTable ?? (isFlat ? true : false),
-        isPointer: c?.args?.[i]?.isPointer ?? false,
+        inTable: c?.args?.[i]?.inTable ?? (drawBorder ? true : false),
+        forceEdge: c?.args?.[i]?.forceEdge ?? false,
         inPort: c?.args?.[i]?.inPort ?? `in$${i}`,
         outPort: c?.args?.[i]?.outPort ?? `out$${i}`,
       };
@@ -140,7 +144,7 @@ export async function loadRenderConfig(
     }
 
     renderConfig.constr[name] = {
-      isFlat: isFlat,
+      drawBorder: drawBorder,
       inPort: inPort,
       argNum: argNum,
       args: args,
