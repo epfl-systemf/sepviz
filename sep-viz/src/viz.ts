@@ -41,6 +41,7 @@ export interface HeapObject {
   constr: string;
   args: Symbol[];
   config: ConstrConfig;
+  hyp: string;
 }
 
 export interface HeapState {
@@ -103,10 +104,15 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
     return key in ctx ? ctx[key] : { isGlobal: true, uid: key, label: key };
   }
 
-  function loop(sep: any, ctx: Record<string, Symbol>, pred: StarHeapPred) {
+  function loop(
+    sep: any,
+    ctx: Record<string, Symbol>,
+    pred: StarHeapPred,
+    binder: string
+  ) {
     switch (sep.kind) {
       case 'stars':
-        sep.conjuncts.forEach((c: any) => loop(c, ctx, pred));
+        sep.conjuncts.forEach((c: any) => loop(c, ctx, pred, binder));
         break;
       case 'existential':
         const num = next(sep.binder);
@@ -115,7 +121,7 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           uid: sep.binder + '$' + num,
           label: `?${sep.binder}${num}`, // ['font', {}, `?${sep.binder}`, ['sub', {}, `${num}`]]
         };
-        loop(sep.body, ctx, pred);
+        loop(sep.body, ctx, pred, binder);
         break;
       case 'pointsTo':
         const [constr, ...args] = sep.to as string[];
@@ -124,6 +130,7 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           constr: constr,
           args: args.map((arg) => resolve(ctx, arg)),
           config: getConstrConfig(constr),
+          hyp: binder,
         });
         break;
       case 'wand':
@@ -134,8 +141,8 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           preds: [H1, H2],
           op: '-∗',
         };
-        loop(sep.H1, ctx, H1);
-        loop(sep.H2, ctx, H2);
+        loop(sep.H1, ctx, H1, binder);
+        loop(sep.H2, ctx, H2, binder);
         pred.otherHeapPreds.push(wand);
         break;
       case 'gc':
@@ -152,7 +159,7 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           preds: [H],
           op: sep.op,
         };
-        loop(sep.body, ctx, H);
+        loop(sep.body, ctx, H, binder);
         pred.otherHeapPreds.push(m);
         break;
       case 'abstract': // FIXME
@@ -167,7 +174,13 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
     }
   }
 
-  loop(unit.parsed, {}, pred);
+  if (unit.kind === 'top') loop(unit.parsed, {}, pred, '');
+  else if (unit.kind === 'namedtops') {
+    const ctx = {};
+    unit.tops.forEach((top: any) =>
+      loop(top.top.parsed, ctx, pred, top.binder)
+    );
+  }
 
   return { position: unit.position, raw: unit.raw, pred: pred };
 }
@@ -300,7 +313,10 @@ export class DotBuilder {
 
   protected buildComponents(): [DotCluster[], DotTarget[]] {
     const nodes: DotNode[] = this.heapObjs.map(
-      (obj) => new DotNode(obj.addr.uid, this.buildNodeLabel(obj))
+      (obj) =>
+        new DotNode(obj.addr.uid, this.buildNodeLabel(obj), {
+          tooltip: obj.hyp,
+        })
     );
     const edges: DotEdge[] = this.heapObjs.flatMap((obj) =>
       this.buildEdges(obj)
