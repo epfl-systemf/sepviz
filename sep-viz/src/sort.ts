@@ -120,6 +120,13 @@ export function sort(
 
   const graph: Record<Node, Node[]> = {};
   nodes.forEach((n) => (graph[n] = []));
+  nodes.sort(compareNode(null));
+  const orderMap: Record<Node, number> = {};
+  nodes.forEach((n, idx) => (orderMap[n] = idx));
+  return orderMap;
+
+  // TODO: investigate why the toposort + (de)condensation leads to more edge crossing
+
   edges.forEach((e) => graph[e.src].push(e.dst));
   const SCCs: Record<Node, Node[]> = tarjanSCC(root, graph);
 
