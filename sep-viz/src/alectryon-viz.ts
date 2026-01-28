@@ -238,20 +238,26 @@ class Render {
 
   protected renderOtherHeapPred(otherPred: OtherHeapPred) {
     const host = createElement('div', ['sep-other-pred-container']);
-    const H1 = this.renderStarHeapPred(otherPred.H1, 'vid-none', null); // FIXME
-    const H2 = this.renderStarHeapPred(otherPred.H2, 'vid-none', null); // FIXME
-    const op = createElement('div', ['sep-op']);
-    host.append(H1, op, H2);
+    const predNodes = otherPred.preds.map((pred) =>
+      this.renderStarHeapPred(pred, 'vid-none', null)
+    ); // FIXME: vid, previousNodeOrder
+    const op = createElement('div', ['sep-op'], { text: otherPred.op });
     switch (otherPred.kind) {
-      case OtherHeapPredKind.WandHeapPred:
-        op.innerText = '-∗';
-        H1.classList.add('sep-wand-hyp');
+      case OtherHeapPredKind.Wand:
+        host.append(predNodes[0], op, predNodes[1]);
+        predNodes[0].classList.add('sep-wand-hyp');
         break;
-      case OtherHeapPredKind.ConjHeapPred:
-        op.innerText = '/\\';
+      case OtherHeapPredKind.Conj:
+        host.append(predNodes[0], op, predNodes[1]);
         break;
-      case OtherHeapPredKind.DisjHeapPred:
-        op.innerText = '\\/';
+      case OtherHeapPredKind.Disj:
+        host.append(predNodes[0], op, predNodes[1]);
+        break;
+      case OtherHeapPredKind.Modality:
+        host.append(op, predNodes[0]);
+        break;
+      case OtherHeapPredKind.Abstract:
+        host.append(op);
         break;
     }
     return host;

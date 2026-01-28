@@ -90,7 +90,12 @@ GallinaTermWithTop
     }
     / [^()\p{White_Space}]+ { return {raw: text()}; }
 
-DefaultTop = t:Top { return [{position: "default", ...t}]; }
+DefaultTop = t:(Top / NamedTop) { return [{position: "default", ...t}]; }
+
+NamedTop // for iris
+  = "[*" _ binder:name _ ":" _ f:Top  _ "*]" {
+    return { raw: text(), parsed: f, binder}
+}
 
 Top
   = "{*" _ f:WandFormula _ "*}" {
@@ -102,6 +107,12 @@ WandFormula
       return { kind: "wand", H1, H2 };
     }
   / Stars
+  / AbstractPred
+
+AbstractPred
+  = body: "Φ #()" {
+    return { kind: "abstract", body };
+}
 
 Stars // stars bind tighter than wands
   = hd:Term tl:(_ "∗" _ @Term)* {
@@ -114,6 +125,7 @@ Term // non-recursive base terms
   / PointsTo
   / PurePredicate
   / GC
+  / Modality
 
 Parenthesized = "(" @WandFormula ")"
 
@@ -136,6 +148,11 @@ GC
 PurePredicate
   = "⌜" _ p:Formula _ "⌝" {
     return { kind: "purePredicate", predicate: p };
+}
+
+Modality
+  = op:("▷" / "□") _ body:Term {
+    return { kind: "modality", op, body }
 }
 
 Formula = (@Atom _)*

@@ -50,9 +50,11 @@ export interface HeapState {
 }
 
 export enum OtherHeapPredKind {
-  WandHeapPred,
-  ConjHeapPred,
-  DisjHeapPred,
+  Wand,
+  Conj,
+  Disj,
+  Modality,
+  Abstract,
 }
 
 export interface StarHeapPred {
@@ -62,10 +64,9 @@ export interface StarHeapPred {
 }
 
 export interface OtherHeapPred {
-  // magic wand, non-separating conjunction, disjunction
   kind: OtherHeapPredKind;
-  H1: StarHeapPred;
-  H2: StarHeapPred;
+  preds: StarHeapPred[];
+  op: string;
 }
 
 export function parse(
@@ -126,13 +127,15 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
         });
         break;
       case 'wand':
+        const H1 = newStarHeapPred(),
+          H2 = newStarHeapPred();
         const wand: OtherHeapPred = {
-          kind: OtherHeapPredKind.WandHeapPred,
-          H1: newStarHeapPred(),
-          H2: newStarHeapPred(),
+          kind: OtherHeapPredKind.Wand,
+          preds: [H1, H2],
+          op: '-∗',
         };
-        loop(sep.H1, ctx, wand.H1);
-        loop(sep.H2, ctx, wand.H2);
+        loop(sep.H1, ctx, H1);
+        loop(sep.H2, ctx, H2);
         pred.otherHeapPreds.push(wand);
         break;
       case 'gc':
@@ -142,8 +145,25 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           sep.predicate.map((x: string) => (x in ctx ? ctx[x] : x))
         );
         break;
+      case 'modality':
+        const H = newStarHeapPred();
+        const m: OtherHeapPred = {
+          kind: OtherHeapPredKind.Modality,
+          preds: [H],
+          op: sep.op,
+        };
+        loop(sep.body, ctx, H);
+        pred.otherHeapPreds.push(m);
+        break;
+      case 'abstract': // FIXME
+        pred.otherHeapPreds.push({
+          kind: OtherHeapPredKind.Abstract,
+          preds: [],
+          op: sep.body,
+        });
+        break;
       default:
-        throw new Error('Not supported kind: ${sep.kind}');
+        throw new Error(`Not supported kind: ${sep.kind}`);
     }
   }
 
