@@ -2,7 +2,10 @@
   "scripts": {
     "gen:proofs:example": "./scripts/gen_proofs_example.sh",
     "gen:proofs:lp": "./scripts/gen_proofs_lp.sh",
-    "gen:proofs": "run-s gen:proofs:example gen:proofs:lp",
+    "gen:proofs:vc": "./scripts/gen_proofs_vc.sh",
+    "gen:proofs:slf": "./scripts/gen_proofs_slf.sh",
+    "gen:proofs:iris": "./scripts/gen_proofs_iris.sh",
+    "gen:proofs": "run-s gen:proofs:example gen:proofs:lp gen:proofs:vc gen:proofs:slf gen:proofs:iris",
     "inject": "./scripts/inject.sh",
     "gen:parser": "npx peggy --format es -o src/parser.js src/assets/sep.g",
 

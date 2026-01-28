@@ -29,3 +29,48 @@ constr:
   MCell2:
     drawBorder: true
     argNum: 2
+  # slf Repr.html
+  Record2:
+    drawBorder: true
+    argNum: 4
+    args:
+      0:
+        inTable: false
+      2:
+        inTable: false
+  Record2':
+    drawBorder: true
+    argNum: 4
+    args:
+      0:
+        inTable: false
+      2:
+        inTable: false
+  Record3:
+    drawBorder: true
+    argNum: 6
+    args:
+      0:
+        inTable: false
+      2:
+        inTable: false
+      4:
+        inTable: false
+  Record3':
+    drawBorder: true
+    argNum: 6
+    args:
+      0:
+        inTable: false
+      2:
+        inTable: false
+      4:
+        inTable: false
+  Stack:
+    argNum: 1
+  SingleCell:
+    drawBorder: true
+    argNum: 1
+  # iris-tutorial queue
+  isQueue:
+    argNum: 1
