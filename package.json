@@ -1,11 +1,9 @@
 {
   "scripts": {
     "gen:proofs:cfml": "./scripts/gen_proofs_cfml.sh",
-    "gen:proofs:lp": "./scripts/gen_proofs_lp.sh",
-    "gen:proofs:vc": "./scripts/gen_proofs_vc.sh",
     "gen:proofs:slf": "./scripts/gen_proofs_slf.sh",
     "gen:proofs:iris": "./scripts/gen_proofs_iris.sh",
-    "gen:proofs": "run-s gen:proofs:cfml gen:proofs:vc gen:proofs:slf gen:proofs:iris",
+    "gen:proofs": "run-s gen:proofs:cfml gen:proofs:slf gen:proofs:iris",
     "inject": "./scripts/inject.sh",
     "gen:parser": "npx peggy --format es -o src/parser.js src/assets/sep.g",
 
