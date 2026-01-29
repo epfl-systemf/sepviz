@@ -29,7 +29,6 @@ It contains the visualization source code and the example configuration (`public
 - [CFML](https://www.chargueraud.org/softs/cfml/) examples, including queues (queue transfer) and binary trees (tree rotations).
 - The queue transfer example in [Iris](https://iris-project.org/).
 - Textbook [Software Foundations: Separation Logic Foundations](https://softwarefoundations.cis.upenn.edu/slf-current/index.html) examples (including lists, list segments, trees, stacks). The textbook which uses a variant of CFML.
-- Textbook [Software Foundations: Verifiable C](https://softwarefoundations.cis.upenn.edu/vc-current/index.html) examples.
 
 ## Animation demos
 
