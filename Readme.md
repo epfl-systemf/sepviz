@@ -20,8 +20,7 @@ And open `https://localhost:8080` on your browser.
  If you want to generate these proof recordings by yourself as well, you need to:
 1. Install [Alectryon](https://github.com/cpitclaudel/alectryon) (tested on v1.4.0);
 2. Install the dependencies of all submodules (the Rocq source code).
-3. Build the submodules one by one according to the Readme of each project. Alternatively, if you use nix, you can run `USE_NIX=1 npm run gen:proofs` and then `USE_NIX=1 npm run build`.
-
+3. Build the submodules one by one according to the Readme of each Rocq project. Alternatively, if you use nix, you can run `USE_NIX=1 npm run gen:proofs` and then `USE_NIX=1 npm run build`.
 
 ## What does this artifact contain?
 
