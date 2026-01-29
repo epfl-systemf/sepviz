@@ -1,11 +1,5 @@
 _plain
-# dist
+dist
 node_modules
 src/parser.js
 .direnv
-
-# ignore everying in public/ except the config file
-public/*
-!public/renderConfig.yaml
-!public/test-animation.html
-!public/test-animation.js
