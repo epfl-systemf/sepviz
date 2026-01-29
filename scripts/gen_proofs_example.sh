@@ -3,11 +3,11 @@ set -euo pipefail
 
 if [[ -v USE_NIX ]]; then
     echo "[gen:proofs:example] building example proofs with direnv..."
-    direnv exec ../example-proofs make -C ../example-proofs
+    direnv exec ../cfml-examples make -C ../cfml-examples
 else
     echo "[gen:proofs:example] building example proofs..."
-    pushd ../example-proofs
-    make -C ../example-proofs
+    pushd ../cfml-examples
+    make -C ../cfml-examples
     popd
 fi
 
@@ -16,6 +16,6 @@ fi
 #     -print -exec rm -rf {} +
 
 echo "[gen:proofs:example] copying build output to public/"
-cp -r ../example-proofs/_build/* ./public/
+cp -r ../cfml-examples/_build/* ./public/
 
 echo "[gen:proofs:example] done."

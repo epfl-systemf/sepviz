@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" class="alectryon-standalone" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<title>Verif_append1.v</title>
+<link rel="stylesheet" href="alectryon.css" type="text/css" />
+<link rel="stylesheet" href="docutils_basic.css" type="text/css" />
+<link rel="stylesheet" href="pygments.css" type="text/css" />
+<script type="text/javascript" src="alectryon.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/IBM-type/0.5.4/css/ibm-type.min.css" integrity="sha512-sky5cf9Ts6FY1kstGOBHSybfKqdHR41M0Ldb0BjNiv3ifltoQIsg0zIaQ+wwdwgQ0w9vKFW7Js50lxH9vqNSSw==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/firacode/5.2.0/fira_code.min.css" integrity="sha512-MbysAYimH1hH2xYzkkMHB6MqxBqfP0megxsCLknbYqHVwXTCg9IqHbk+ZP/vnhO8UEW6PaXAkKe2vQ+SWACxxA==" crossorigin="anonymous" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="sep.css" type="text/css" />
+<script type="module" src="alectryon-viz.js"></script>
+</head>
+<body>
+<div class="alectryon-root alectryon-centered"><div class="alectryon-banner">Built with <a href="https://github.com/cpitclaudel/alectryon/">Alectryon</a>, running Coq+SerAPI v8.16.0+0.16.0. Bubbles (<span class="alectryon-bubble"></span>) indicate interactive fragments: hover for details, tap to reveal contents. Use <kbd>Ctrl+↑</kbd> <kbd>Ctrl+↓</kbd> to navigate, <kbd>Ctrl+🖱️</kbd> to focus. On Mac, use <kbd>⌘</kbd> instead of <kbd>Ctrl</kbd>.</div><div class="document">
+
+
+<pre class="alectryon-io highlight"><!-- Generator: Alectryon --><span class="alectryon-wsp"><span class="sd">(** * Verif_append1: List segments *)</span>
+
+<span class="sd">(** Here is a little C program, [append.c]</span>
+
+<span class="sd">    #include &lt;stddef.h&gt;</span>
+
+<span class="sd">    struct list {int head; struct list *tail;};</span>
+
+<span class="sd">    struct list *append (struct list *x, struct list *y) {</span>
+<span class="sd">      struct list *t, *u;</span>
+<span class="sd">      if (x==NULL)</span>
+<span class="sd">        return y;</span>
+<span class="sd">      else {</span>
+<span class="sd">        t = x;</span>
+<span class="sd">        u = t-&gt;tail;</span>
+<span class="sd">        while (u!=NULL) {</span>
+<span class="sd">          t = u;</span>
+<span class="sd">          u = t-&gt;tail;</span>
+<span class="sd">        }</span>
+<span class="sd">        t-&gt;tail = y;</span>
+<span class="sd">        return x;</span>
+<span class="sd">      }</span>
+<span class="sd">    }</span>
+
+<span class="sd">In this chapter, we will learn to verify this in-place linked-list-append</span>
+<span class="sd">operation. That is, two original lists will be destructed and a new list,</span>
+<span class="sd">the concatenation of them, will be constructed in this program.</span>
+<span class="sd">As we did in previous chapters, we import VST and the C program&#39;s AST. *)</span>
+
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Require</span> VC.Preface. <span class="c">(* Check for the right version of VST *)</span></span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Require Import</span> VST.floyd.proofauto.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Require Import</span> VC.append.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk0" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk0">#[export] <span class="kn">Instance</span> <span class="nf">CompSpecs</span> : compspecs.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion">compspecs</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input">make_compspecs prog.</span><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Defined</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk1" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk1"><span class="kn">Definition</span> <span class="nf">Vprog</span> : varspecs.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion">varspecs</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input">mk_varspecs prog.</span><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Defined</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="c">(* ================================================================= *)</span>
+<span class="sd">(** ** Specification of the [append] function. *)</span>
+
+<span class="sd">(** Here we just copy what we have defined in [Verif_reverse] *)</span>
+
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Definition</span> <span class="nf">t_list</span> := Tstruct _list noattr.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Fixpoint</span> <span class="nf">listrep</span> (<span class="nv">sigma</span>: list val) (<span class="nv">p</span>: val) : mpred :=
+ <span class="kr">match</span> sigma <span class="kr">with</span>
+ | h::hs =&gt; 
+    EX y:val, 
+      data_at Tsh t_list (h,y) p  *  listrep hs y
+ | nil =&gt; 
+    !! (p = nullval) &amp;&amp; emp
+ <span class="kr">end</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Arguments</span> listrep sigma p : <span class="nb">simpl</span> never.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="sd">(** Then we can easily describe the functionality of this [append]. *)</span>
+
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Definition</span> <span class="nf">append_spec</span> :=
+ DECLARE _append
+  WITH x: val, y: val, s1: list val, s2: list val
+  PRE [ tptr t_list , tptr t_list]
+     PROP()
+     PARAMS (x; y)
+     SEP (listrep s1 x; listrep s2 y)
+  POST [ tptr t_list ]
+    EX r: val,
+     PROP()
+     RETURN(r)
+     SEP (listrep (s1++s2) r).</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Definition</span> <span class="nf">Gprog</span> : funspecs := [ append_spec ].</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="c">(* ================================================================= *)</span>
+<span class="sd">(** ** List segments. *)</span>
+
+<span class="sd">(** When verifying this program, a critical step is to figure out</span>
+<span class="sd">a correct loop invariant. If we try to simulate this program,</span>
+<span class="sd">especially the loop in it, we may want a loop invariant which</span>
+<span class="sd">can be illustrated by the following diagram.</span>
+<span class="sd">(The following diagram is best demonstrated with a monospaced font. )</span>
+
+<span class="sd">        +---+---+            +---+---+   +---+---+   +---+---+   </span>
+<span class="sd">  x ==&gt; |   |  ===&gt; ... ===&gt; |   | t ==&gt; | b | u ==&gt; |   |  ===&gt; ... </span>
+<span class="sd">        +---+---+            +---+---+   +---+---+   +---+---+</span>
+
+<span class="sd">      | &lt;========= s1a =========&gt; |       (b)       | &lt;==== s1c ====&gt; |</span>
+<span class="sd">      | &lt;============================= s1 ==========================&gt; |</span>
+
+<span class="sd">        +---+---+   +---+---+   +---+---+   </span>
+<span class="sd">  y ==&gt; |   |  ===&gt; |   |   ==&gt; |   |  ===&gt; ... </span>
+<span class="sd">        +---+---+   +---+---+   +---+---+</span>
+
+<span class="sd">      | &lt;================ s2 =================&gt; |</span>
+<span class="sd">*)</span>
+
+<span class="sd">(** To describe this loop invariant, we need a separation logic predicate to</span>
+<span class="sd">describe the partial linked list from address [x] to address [t] with contents</span>
+<span class="sd">[s1a]. This must a new predicate different from [listrep] because [listrep]</span>
+<span class="sd">describes linked lists ending with [NULL] which is not the case here. We call</span>
+<span class="sd">this new predicate [lseg], pronounced &quot;list-segment&quot;. *)</span>
+
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Fixpoint</span> <span class="nf">lseg</span> (<span class="nv">contents</span>: list val) (<span class="nv">x</span> <span class="nv">z</span>: val) : mpred :=
+  <span class="kr">match</span> contents <span class="kr">with</span>
+  | nil =&gt; !! (x = z) &amp;&amp; emp
+  | h::hs =&gt; EX y:val, data_at Tsh t_list (h, y) x * lseg hs y z
+  <span class="kr">end</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Arguments</span> lseg contents x z : <span class="nb">simpl</span> never.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="sd">(** Now, we can prove some useful properties about [lseg]. *)</span>
+
+<span class="sd">(** **** Exercise: 1 star, standard (singleton_lseg) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk2" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk2"><span class="kn">Lemma</span> <span class="nf">singleton_lseg</span>: <span class="kr">forall</span> (<span class="nv">a</span>: val) (<span class="nv">x</span> <span class="nv">y</span>: val),
+  data_at Tsh t_list (a, y) x |-- lseg [a] x y.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span> : val,
+data_at Tsh t_list (a, y) x |-- lseg [a] x y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk3" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk3"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span> : val,
+data_at Tsh t_list (a, y) x |-- lseg [a] x y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** It is critical to observe that a partial linked list defined by</span>
+<span class="sd"> [lseg s x y] may have a loop. For example, the following diagram does</span>
+<span class="sd"> satisfy [lseg [a; b] x y].</span>
+<span class="sd">(The following diagram is best demonstrated with a monospaced font. )</span>
+
+<span class="sd">        +---+---+   +---+---+   </span>
+<span class="sd">  x ==&gt; | a | y ==&gt; | b | y ====+ </span>
+<span class="sd">        +---+---+   +- -+---+   |</span>
+<span class="sd">                      ^         |</span>
+<span class="sd">                      |         |</span>
+<span class="sd">                      +=========+</span>
+
+<span class="sd">We can prove this formally. *)</span>
+
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk4" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk4"><span class="kn">Lemma</span> <span class="nf">lseg_maybe_loop</span>: <span class="kr">forall</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">x</span> <span class="nv">y</span>: val),
+  data_at Tsh t_list (a, y) x * data_at Tsh t_list (b, y) y 
+  |-- lseg [a; b] x y.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">x</span> <span class="nv">y</span> : val,
+data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y |-- lseg [a; b] x y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk5" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk5"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">x</span> <span class="nv">y</span> : val,
+data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y |-- lseg [a; b] x y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk6" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk6"><span class="nb">intros</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y |-- lseg [a; b] x y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk7" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk7"><span class="nb">unfold</span> lseg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+|-- EX y0 : val,
+    data_at Tsh t_list (a, y0) x
+      * (EX y1 : val,
+         data_at Tsh t_list (b, y1) y0
+           * (!! (y1 = y) &amp;&amp; emp))</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk8" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk8">Exists y.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+|-- data_at Tsh t_list (a, y) x
+      * (EX y0 : val,
+         data_at Tsh t_list (b, y0) y
+           * (!! (y0 = y) &amp;&amp; emp))</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk9" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk9">Exists y.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+|-- data_at Tsh t_list (a, y) x
+      * (data_at Tsh t_list (b, y) y
+           * (!! (y = y) &amp;&amp; emp))</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><span class="alectryon-input">entailer!.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Qed</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="sd">(** Is our definition of [lseg] wrong? The answer is no because a loopy [lseg]</span>
+<span class="sd">cannot connect to a nonempty linked list. For instance, we can prove that</span>
+
+<span class="sd">  data_at Tsh t_list (a, y) x * data_at Tsh t_list (b, y) y * listrep [c] y</span>
+
+<span class="sd">will lead to a contradication. Here, the first two separating conjuncts build</span>
+<span class="sd">a loopy [lseg] and the third separating conjunct is a nonempty [listrep]. *)</span>
+
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chka" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chka"><span class="kn">Lemma</span> <span class="nf">loopy_lseg_not_bad</span>: <span class="kr">forall</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">x</span> <span class="nv">y</span>: val),
+  data_at Tsh t_list (a, y) x * data_at Tsh t_list (b, y) y * listrep [c] y 
+    |-- FF.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">x</span> <span class="nv">y</span> : val,
+data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+  * listrep [c] y |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chkb" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chkb"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">x</span> <span class="nv">y</span> : val,
+data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+  * listrep [c] y |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chkc" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chkc"><span class="nb">intros</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+  * listrep [c] y |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chkd" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chkd"><span class="nb">unfold</span> listrep.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+  * (EX y0 : val,
+     data_at Tsh t_list (c, y0) y
+       * (!! (y0 = nullval) &amp;&amp; emp)) |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chke" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chke">Intros u.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>u = nullval</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+  * (data_at Tsh t_list (c, u) y * emp) |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chkf" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chkf"><span class="nb">subst</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+  * (data_at Tsh t_list (c, nullval) y * emp) |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk10" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk10"><span class="kn">Check</span> (data_at_conflict Tsh t_list (c, nullval)).</label><small class="alectryon-output"><div><div class="alectryon-messages"><blockquote class="alectryon-message">data_at_conflict Tsh t_list (c, nullval)
+     : <span class="kr">forall</span> (<span class="nv">v&#39;</span> : reptype t_list) (<span class="nv">p</span> : val),
+       sepalg.nonidentity Tsh -&gt;
+       <span class="mi">0</span> &lt; sizeof t_list -&gt;
+       data_at Tsh t_list (c, nullval) p
+         * data_at Tsh t_list v&#39; p |-- FF</blockquote></div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, y) y
+  * (data_at Tsh t_list (c, nullval) y * emp) |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp"> 
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk11" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk11">sep_apply (data_at_conflict Tsh t_list (c, nullval)).</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">sepalg.nonidentity Tsh</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk12" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk12"><hr></label><div class="goal-conclusion">FF * data_at Tsh t_list (a, y) x |-- FF</div></blockquote></div></div></div></small><span class="alectryon-wsp"> 
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk13" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk13">+</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">sepalg.nonidentity Tsh</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">auto</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk14" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk14">+</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">FF * data_at Tsh t_list (a, y) x |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input">entailer!.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Qed</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="sd">(** Important note!  The proof above demonstrates the use of the [sep_apply]</span>
+<span class="sd"> tactic.  Step through that part of the proof to see what [sep_apply] does. *)</span>
+
+<span class="sd">(** Now we can prove the following theorems about partial linked</span>
+<span class="sd"> lists and complete linked lists. *)</span>
+
+<span class="sd">(** **** Exercise: 1 star, standard (lseg_lseg) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk15" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk15"><span class="kn">Lemma</span> <span class="nf">lseg_lseg</span>: <span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span>: list val) (<span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span>: val),
+  lseg s1 x y * lseg s2 y z |-- lseg (s1 ++ s2) x z.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> : val),
+lseg s1 x y * lseg s2 y z |-- lseg (s1 ++ s2) x z</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk16" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk16"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> : val),
+lseg s1 x y * lseg s2 y z |-- lseg (s1 ++ s2) x z</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** **** Exercise: 1 star, standard (lseg_list) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk17" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk17"><span class="kn">Lemma</span> <span class="nf">lseg_list</span>: <span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span>: list val) (<span class="nv">x</span> <span class="nv">y</span>: val),
+  lseg s1 x y * listrep s2 y |-- listrep (s1 ++ s2) x.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> : val),
+lseg s1 x y * listrep s2 y |-- listrep (s1 ++ s2) x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk18" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk18"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> : val),
+lseg s1 x y * listrep s2 y |-- listrep (s1 ++ s2) x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** Is it possible to define [lseg] in a different way so that loopy </span>
+<span class="sd">   situations can be banned?  Yes.  We discuss this near the end of </span>
+<span class="sd">   the chapter. *)</span>
+
+<span class="c">(* ================================================================= *)</span>
+<span class="sd">(** ** Proof of the [append] function *)</span>
+
+<span class="sd">(** Before verifying the functional correctness of [append], we still need</span>
+<span class="sd">to add lemmas to hint databases for separation logic predicates. Readers</span>
+<span class="sd">may copy proofs from [Verif_reverse] or just skip down to &quot;End of the</span>
+<span class="sd">material&quot;. *)</span>
+
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk19" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk19"><span class="kn">Lemma</span> <span class="nf">listrep_local_facts</span>:
+  <span class="kr">forall</span> <span class="nv">sigma</span> <span class="nv">p</span>,
+   listrep sigma p |--
+   !! (is_pointer_or_null p /\ (p=nullval &lt;-&gt; sigma=nil)).</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">sigma</span> : list val) (<span class="nv">p</span> : val),
+listrep sigma p
+|-- !! (is_pointer_or_null p /\
+        (p = nullval &lt;-&gt; sigma = []))</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk1a" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk1a"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">sigma</span> : list val) (<span class="nv">p</span> : val),
+listrep sigma p
+|-- !! (is_pointer_or_null p /\
+        (p = nullval &lt;-&gt; sigma = []))</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input">#[export] <span class="kn">Hint Resolve</span> listrep_local_facts : saturate_local.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk1b" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk1b"><span class="kn">Lemma</span> <span class="nf">listrep_valid_pointer</span>:
+  <span class="kr">forall</span> <span class="nv">sigma</span> <span class="nv">p</span>,
+   listrep sigma p |-- valid_pointer p.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">sigma</span> : list val) (<span class="nv">p</span> : val),
+listrep sigma p |-- valid_pointer p</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk1c" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk1c"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">sigma</span> : list val) (<span class="nv">p</span> : val),
+listrep sigma p |-- valid_pointer p</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input">#[export] <span class="kn">Hint Resolve</span> listrep_valid_pointer : valid_pointer.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="sd">(** (End of the material repeated from Verif_reverse.v) *)</span>
+
+<span class="sd">(** In C programs, we test whether the head pointer of a linked list is null</span>
+<span class="sd"> to determine whether that list is empty or not. Thus, from a separating</span>
+<span class="sd"> conjunct [listrep contents x], it is useful to prove [contents = nil] (or</span>
+<span class="sd"> [contents &lt;&gt; nil]) when knowing that [x = nullval] (or [x &lt;&gt; nullval]). The</span>
+<span class="sd"> following two lemmas state such correlation. They will be used several</span>
+<span class="sd"> times in the C function [append]&#39;s correctness proof. *)</span>
+
+<span class="sd">(** **** Exercise: 1 star, standard (listrep_null) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk1d" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk1d"><span class="kn">Lemma</span> <span class="nf">listrep_null</span>: <span class="kr">forall</span> <span class="nv">contents</span> <span class="nv">x</span>,
+  x = nullval -&gt;
+  listrep contents x = !! (contents=nil) &amp;&amp; emp.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">contents</span> : list val) (<span class="nv">x</span> : val),
+x = nullval -&gt;
+listrep contents x = !! (contents = []) &amp;&amp; emp</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk1e" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk1e"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">contents</span> : list val) (<span class="nv">x</span> : val),
+x = nullval -&gt;
+listrep contents x = !! (contents = []) &amp;&amp; emp</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** Hint: One way to prove [P=Q], where P and Q are [mpred]s,</span>
+<span class="sd">  is to apply [pred_ext] and then prove [P|--Q] and [Q|--P]. *)</span>
+<span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** **** Exercise: 1 star, standard (listrep_nonnull) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk1f" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk1f"><span class="kn">Lemma</span> <span class="nf">listrep_nonnull</span>: <span class="kr">forall</span> <span class="nv">contents</span> <span class="nv">x</span>,
+  x &lt;&gt; nullval -&gt;
+  listrep contents x =
+    EX h: val, EX hs: list val, EX y:val,
+      !! (contents = h :: hs) &amp;&amp; data_at Tsh t_list (h, y) x * listrep hs y.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">contents</span> : list val) (<span class="nv">x</span> : val),
+x &lt;&gt; nullval -&gt;
+listrep contents x = EX (h : val) (hs : list val)
+                     (y : val),
+                     !! (contents = h :: hs) &amp;&amp;
+                     data_at Tsh t_list (h, y) x
+                       * listrep hs y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk20" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk20"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">contents</span> : list val) (<span class="nv">x</span> : val),
+x &lt;&gt; nullval -&gt;
+listrep contents x = EX (h : val) (hs : list val)
+                     (y : val),
+                     !! (contents = h :: hs) &amp;&amp;
+                     data_at Tsh t_list (h, y) x
+                       * listrep hs y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** Again, [pred_ext] will be useful here. *)</span>
+<span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** Now, let&#39;s prove this [append] function correct. *)</span>
+
+<span class="sd">(** **** Exercise: 3 stars, standard (body_append) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk21" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk21"><span class="kn">Lemma</span> <span class="nf">body_append</span>: semax_body Vprog Gprog f_append append_spec.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion">semax_body Vprog Gprog f_append append_spec</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk22" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk22"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion">semax_body Vprog Gprog f_append append_spec</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk23" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk23">start_function.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y))
+  (<span class="kr">if</span> (_x == (tptr tvoid) (<span class="mi">0</span>)) {
+     <span class="kr">return</span> _y;
+   } <span class="kr">else</span> {
+     (_t = _x;
+      _u = (_t -&gt; _tail);
+      while (_u != (tptr tvoid) (<span class="mi">0</span>)) {
+        (_t = _u;
+         _u = (_t -&gt; _tail);)
+      }
+      (_t -&gt; _tail) = _y;
+      <span class="kr">return</span> _x;)
+   }) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk24" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk24">forward_if. <span class="c">(* if (x == NULL) *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x = nullval</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y)) 
+  (<span class="kr">return</span> _y;) POSTCONDITION</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk25" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk25"><hr></label><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y))
+  (_t = _x;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk26" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk26">- <span class="c">(* If-then *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x = nullval</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y)) 
+  (<span class="kr">return</span> _y;) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  <span class="sd">(** This if-then branch handles the cases in which [x] is null. In other</span>
+<span class="sd">   words, [s1] should be [nil]. We can easily derive this by [listrep_null].</span>
+<span class="sd">   The rest of the proof in this branch is left as an exercise. *)</span>
+</span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk27" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk27"><span class="nb">rewrite</span> (listrep_null _ x) <span class="bp">by</span> <span class="nb">auto</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x = nullval</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (!! (s1 = []) &amp;&amp; emp; listrep s2 y))
+  (<span class="kr">return</span> _y;) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  <span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">admit</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk28" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk28">- <span class="c">(* If-else *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y))
+  (_t = _x;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  <span class="sd">(** This time, we know that [x] is not null; thus [s1] should</span>
+<span class="sd">    be nonempty. *)</span>
+</span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk29" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk29"><span class="nb">rewrite</span> (listrep_nonnull _ x) <span class="bp">by</span> <span class="nb">auto</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (EX (h : val) (hs : list val) 
+        (y : val),
+        !! (s1 = h :: hs) &amp;&amp;
+        data_at Tsh t_list (h, y) x
+          * listrep hs y; 
+   listrep s2 y)) (_t = _x;
+                   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk2a" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk2a">Intros h r u.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (data_at Tsh t_list (h, u) x; 
+   listrep r u; listrep s2 y)) 
+  (_t = _x;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk2b" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk2b">forward. <span class="c">(* t = x; *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _t x; temp _x x; 
+   temp _y y)
+   SEP (data_at Tsh t_list (h, u) x; 
+   listrep r u; listrep s2 y))
+  (_u = (_t -&gt; _tail);
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk2c" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk2c">forward. <span class="c">(* u = t -&gt; tail; *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br><span><var>LOOP_BODY</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _u u; temp _t x; 
+   temp _x x; temp _y y)
+   SEP (data_at Tsh t_list (h, u) x; 
+   listrep r u; listrep s2 y))
+  (while (_u != (tptr tvoid) (<span class="mi">0</span>)) {
+     LOOP_BODY
+   }
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+  <span class="sd">(** After symbolically executing two assignment commands, we arrive</span>
+<span class="sd">     at the while loop. As mentioned above, we can verify it using</span>
+<span class="sd">     the following loop invariant. *)</span>
+</span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk2d" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk2d">forward_while
+      ( EX s1a: list val, EX b: val, EX s1c: list val, EX t: val, EX u: val,
+        PROP (s1 = s1a ++ b :: s1c)
+        LOCAL (temp _x x; temp _t t; temp _u u; temp _y y)
+        SEP (lseg s1a x t;
+             data_at Tsh t_list (b, u) t;
+             listrep s1c u;
+             listrep s2 y))%<span class="nb">assert</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP ( )
+LOCAL (temp _u u; temp _t x; 
+temp _x x; temp _y y)
+SEP (data_at Tsh t_list (h, u) x; 
+listrep r u; listrep s2 y)
+|-- EX (s1a : list val) 
+    (b : val) (s1c : list val) 
+    (t u : val),
+    PROP (s1 = s1a ++ b :: s1c)
+    LOCAL (temp _x x; temp _t t; 
+    temp _u u; temp _y y)
+    SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+    listrep s1c u; listrep s2 y)</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk2e" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u0</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk2e"><hr></label><div class="goal-conclusion">ENTAIL Delta,
+PROP (s1 = s1a ++ b :: s1c)
+LOCAL (temp _x x; temp _t t; 
+temp _u u0; temp _y y)
+SEP (lseg s1a x t; data_at Tsh t_list (b, u0) t;
+listrep s1c u0; listrep s2 y)
+|-- tc_expr Delta (!_u != (tptr tvoid) (<span class="mi">0</span>))%expr</div></blockquote><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk2f" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u0</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u0 &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk2f"><hr></label><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u0; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u0) t;
+   listrep s1c u0; listrep s2 y))
+  (_t = _u;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk30" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u0</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u0 = nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk30"><hr></label><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u0; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u0) t;
+   listrep s1c u0; listrep s2 y))
+  ((_t -&gt; _tail) = _y;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk31" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk31">+ <span class="c">(* current assertion implies loop invariant *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP ( )
+LOCAL (temp _u u; temp _t x; 
+temp _x x; temp _y y)
+SEP (data_at Tsh t_list (h, u) x; 
+listrep r u; listrep s2 y)
+|-- EX (s1a : list val) 
+    (b : val) (s1c : list val) 
+    (t u : val),
+    PROP (s1 = s1a ++ b :: s1c)
+    LOCAL (temp _x x; temp _t t; 
+    temp _u u; temp _y y)
+    SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+    listrep s1c u; listrep s2 y)</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk32" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk32">Exists (@nil val) h r x u.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP ( )
+LOCAL (temp _u u; temp _t x; 
+temp _x x; temp _y y)
+SEP (data_at Tsh t_list (h, u) x; 
+listrep r u; listrep s2 y)
+|-- PROP (s1 = [] ++ h :: r)
+    LOCAL (temp _x x; temp _t x; 
+    temp _u u; temp _y y)
+    SEP (lseg [] x x; data_at Tsh t_list (h, u) x;
+    listrep r u; listrep s2 y)</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk33" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk33"><span class="nb">subst</span> s1.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP ( )
+LOCAL (temp _u u; temp _t x; 
+temp _x x; temp _y y)
+SEP (data_at Tsh t_list (h, u) x; 
+listrep r u; listrep s2 y)
+|-- PROP (h :: r = [] ++ h :: r)
+    LOCAL (temp _x x; temp _t x; 
+    temp _u u; temp _y y)
+    SEP (lseg [] x x; data_at Tsh t_list (h, u) x;
+    listrep r u; listrep s2 y)</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk34" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk34">entailer!.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>PNu</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null u</span></span></span><br><span><var>PNx</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null x</span></span></span><br><span><var>PNy</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null y</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] x</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>value_fits t_list (h, u)</span></span></span><br><span><var>H2</var><span class="hyp-type"><b>: </b><span>u = nullval &lt;-&gt; r = []</span></span></span><br><span><var>H3</var><span class="hyp-type"><b>: </b><span>y = nullval &lt;-&gt; s2 = []</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">emp |-- lseg [] x x</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">unfold</span> lseg; entailer!.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk35" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk35">+ <span class="c">(* loop test is safe to execute *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u0</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP (s1 = s1a ++ b :: s1c)
+LOCAL (temp _x x; temp _t t; 
+temp _u u0; temp _y y)
+SEP (lseg s1a x t; data_at Tsh t_list (b, u0) t;
+listrep s1c u0; listrep s2 y)
+|-- tc_expr Delta (!_u != (tptr tvoid) (<span class="mi">0</span>))%expr</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><span class="alectryon-input">entailer!.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk36" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk36">+  <span class="c">(* loop body preserves invariant *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u0</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u0 &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u0; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u0) t;
+   listrep s1c u0; listrep s2 y))
+  (_t = _u;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">    <span class="sd">(** We know [u] is not null from the fact that the loop condition</span>
+<span class="sd">       is true. Thus we can represent [s1c] in the form of [(c :: s1d)]. *)</span>
+</span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk37" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk37"><span class="nb">clear</span> h r u H0; <span class="nb">rename</span> u0 <span class="nb">into</span> u.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   listrep s1c u; listrep s2 y))
+  (_t = _u;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk38" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk38"><span class="nb">rewrite</span> (listrep_nonnull _ u) <span class="bp">by</span> <span class="nb">auto</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   EX (h : val) (hs : list val) 
+   (y : val),
+   !! (s1c = h :: hs) &amp;&amp; data_at Tsh t_list (h, y) u
+     * listrep hs y; listrep s2 y))
+  (_t = _u;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk39" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk39">Intros c s1d z.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1c = c :: s1d</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   data_at Tsh t_list (c, z) u; 
+   listrep s1d z; listrep s2 y))
+  (_t = _u;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk3a" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk3a">forward. <span class="c">(* t = u; *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1c = c :: s1d</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _t u; temp _x x; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   data_at Tsh t_list (c, z) u; 
+   listrep s1d z; listrep s2 y)) 
+  (_u = (_t -&gt; _tail);) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk3b" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk3b">forward. <span class="c">(* u = t -&gt; tail; *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1c = c :: s1d</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP ( )
+LOCAL (temp _u z; temp _t u; 
+temp _x x; temp _y y)
+SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+data_at Tsh t_list (c, z) u; 
+listrep s1d z; listrep s2 y)
+|-- EX a : list val * val * list val * val * val,
+    PROP (s1 = fst (fst (fst (fst a))) ++
+               snd (fst (fst (fst a)))
+               :: snd (fst (fst a)))
+    LOCAL (temp _x x; temp _t (snd (fst a));
+    temp _u (snd a); temp _y y)
+    SEP (lseg (fst (fst (fst (fst a)))) x
+           (snd (fst a));
+    data_at Tsh t_list
+      (snd (fst (fst (fst a))), snd a) 
+      (snd (fst a));
+    listrep (snd (fst (fst a))) (snd a); 
+    listrep s2 y)</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+    <span class="sd">(** In the end of the loop body, we need to re-establish the</span>
+<span class="sd">      loop invariant. At this point, the memory layout can be</span>
+<span class="sd">      illustrated by the following diagram.</span>
+
+<span class="sd">      (The following diagram is best demonstrated with a monospaced font. )</span>
+
+<span class="sd">                                 new t       new u</span>
+<span class="sd">                                   |           |</span>
+<span class="sd">                                   |           |</span>
+<span class="sd">                 +---+---+   +---+---+   +---+---+   +---+---+   </span>
+<span class="sd">  x ==&gt; ... ===&gt; |   | t ==&gt; | b | u ==&gt; | c | z ==&gt; |   |  ===&gt; ... </span>
+<span class="sd">                 +---+---+   +---+---+   +---+---+   +---+---+</span>
+
+<span class="sd">      | &lt;===== s1a =====&gt; |   (b)         (c)      | &lt;==== s1d ====&gt; |</span>
+<span class="sd">      | &lt;========== new s1a ========&gt; |  (new b)   | &lt;== new s1c ==&gt; |</span>
+
+<span class="sd">        +---+---+   +---+---+   +---+---+   </span>
+<span class="sd">  y ==&gt; |   |  ===&gt; |   |   ==&gt; |   |  ===&gt; ... </span>
+<span class="sd">        +---+---+   +---+---+   +---+---+</span>
+<span class="sd">      | &lt;================ s2 =================&gt; |</span>
+
+<span class="sd"> Clearly, [s1a ++ b :: nil] should be the new value of [s1a];  [c] should be</span>
+<span class="sd"> the new value of [b]; [s1d] should be the new value of [s1c]; [u] should be</span>
+<span class="sd"> the new value of [t]; and [z] should be the new value of [u]. The next </span>
+<span class="sd"> command instantiates the existentially quantified variables in our loop</span>
+<span class="sd"> invariant accordingly. *)</span>
+
+</span><span class="alectryon-wsp">   </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk3c" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk3c">Exists ((s1a ++ b :: nil),c,s1d,u,z).</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1c = c :: s1d</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP ( )
+LOCAL (temp _u z; temp _t u; 
+temp _x x; temp _y y)
+SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+data_at Tsh t_list (c, z) u; 
+listrep s1d z; listrep s2 y)
+|-- PROP (s1 = fst
+                 (fst
+                    (fst
+                       (fst (s1a ++ [b], c, s1d, u, z)))) ++
+               snd
+                 (fst
+                    (fst
+                       (fst (s1a ++ [b], c, s1d, u, z))))
+               :: snd
+                    (fst
+                       (fst (s1a ++ [b], c, s1d, u, z))))
+    LOCAL (temp _x x;
+    temp _t (snd (fst (s1a ++ [b], c, s1d, u, z)));
+    temp _u (snd (s1a ++ [b], c, s1d, u, z));
+    temp _y y)
+    SEP (lseg
+           (fst
+              (fst
+                 (fst (fst (s1a ++ [b], c, s1d, u, z)))))
+           x (snd (fst (s1a ++ [b], c, s1d, u, z)));
+    data_at Tsh t_list
+      (snd
+         (fst (fst (fst (s1a ++ [b], c, s1d, u, z)))),
+       snd (s1a ++ [b], c, s1d, u, z))
+      (snd (fst (s1a ++ [b], c, s1d, u, z)));
+    listrep
+      (snd (fst (fst (s1a ++ [b], c, s1d, u, z))))
+      (snd (s1a ++ [b], c, s1d, u, z)); 
+    listrep s2 y)</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk3d" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk3d"><span class="nb">unfold</span> fst, snd.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1c = c :: s1d</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">ENTAIL Delta,
+PROP ( )
+LOCAL (temp _u z; temp _t u; 
+temp _x x; temp _y y)
+SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+data_at Tsh t_list (c, z) u; 
+listrep s1d z; listrep s2 y)
+|-- PROP (s1 = (s1a ++ [b]) ++ c :: s1d)
+    LOCAL (temp _x x; temp _t u; 
+    temp _u z; temp _y y)
+    SEP (lseg (s1a ++ [b]) x u;
+    data_at Tsh t_list (c, z) u; 
+    listrep s1d z; listrep s2 y)</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+  <span class="sd">(** As usual, we try [entailer!] to solve this proof goal. This time,</span>
+<span class="sd"> [entailer!] does not solve it directly. Instead, two simplified proof goals</span>
+<span class="sd"> are left. Their proofs are left for the reader, using [app_assoc], </span>
+<span class="sd"> [singleton_lseg] and [lseg_lseg]. *)</span>
+</span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk3e" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk3e">entailer!.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b, t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>PNz</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null z</span></span></span><br><span><var>PNu</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null u</span></span></span><br><span><var>PNx</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null x</span></span></span><br><span><var>PNy</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null y</span></span></span><br><span><var>H2</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] t</span></span></span><br><span><var>H3</var><span class="hyp-type"><b>: </b><span>value_fits t_list (b, u)</span></span></span><br><span><var>H4</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] u</span></span></span><br><span><var>H5</var><span class="hyp-type"><b>: </b><span>value_fits t_list (c, z)</span></span></span><br><span><var>H6</var><span class="hyp-type"><b>: </b><span>z = nullval &lt;-&gt; s1d = []</span></span></span><br><span><var>H7</var><span class="hyp-type"><b>: </b><span>y = nullval &lt;-&gt; s2 = []</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">s1a ++ b :: c :: s1d = (s1a ++ [b]) ++ c :: s1d</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk3f" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b, t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>PNz</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null z</span></span></span><br><span><var>PNu</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null u</span></span></span><br><span><var>PNx</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null x</span></span></span><br><span><var>PNy</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null y</span></span></span><br><span><var>H2</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] t</span></span></span><br><span><var>H3</var><span class="hyp-type"><b>: </b><span>value_fits t_list (b, u)</span></span></span><br><span><var>H4</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] u</span></span></span><br><span><var>H5</var><span class="hyp-type"><b>: </b><span>value_fits t_list (c, z)</span></span></span><br><span><var>H6</var><span class="hyp-type"><b>: </b><span>z = nullval &lt;-&gt; s1d = []</span></span></span><br><span><var>H7</var><span class="hyp-type"><b>: </b><span>y = nullval &lt;-&gt; s2 = []</span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk3f"><hr></label><div class="goal-conclusion">lseg s1a x t * data_at Tsh t_list (b, u) t
+|-- lseg (s1a ++ [b]) x u</div></blockquote></div></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk40" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk40">* <span class="c">(* FILL IN HERE *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b, t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>PNz</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null z</span></span></span><br><span><var>PNu</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null u</span></span></span><br><span><var>PNx</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null x</span></span></span><br><span><var>PNy</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null y</span></span></span><br><span><var>H2</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] t</span></span></span><br><span><var>H3</var><span class="hyp-type"><b>: </b><span>value_fits t_list (b, u)</span></span></span><br><span><var>H4</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] u</span></span></span><br><span><var>H5</var><span class="hyp-type"><b>: </b><span>value_fits t_list (c, z)</span></span></span><br><span><var>H6</var><span class="hyp-type"><b>: </b><span>z = nullval &lt;-&gt; s1d = []</span></span></span><br><span><var>H7</var><span class="hyp-type"><b>: </b><span>y = nullval &lt;-&gt; s2 = []</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">s1a ++ b :: c :: s1d = (s1a ++ [b]) ++ c :: s1d</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">admit</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk41" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk41">* <span class="c">(* FILL IN HERE *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b, t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u &lt;&gt; nullval</span></span></span><br><span><var>c</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1d</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>z</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>PNz</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null z</span></span></span><br><span><var>PNu</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null u</span></span></span><br><span><var>PNx</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null x</span></span></span><br><span><var>PNy</var><span class="hyp-type"><b>: </b><span>is_pointer_or_null y</span></span></span><br><span><var>H2</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] t</span></span></span><br><span><var>H3</var><span class="hyp-type"><b>: </b><span>value_fits t_list (b, u)</span></span></span><br><span><var>H4</var><span class="hyp-type"><b>: </b><span>field_compatible t_list [] u</span></span></span><br><span><var>H5</var><span class="hyp-type"><b>: </b><span>value_fits t_list (c, z)</span></span></span><br><span><var>H6</var><span class="hyp-type"><b>: </b><span>z = nullval &lt;-&gt; s1d = []</span></span></span><br><span><var>H7</var><span class="hyp-type"><b>: </b><span>y = nullval &lt;-&gt; s2 = []</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">lseg s1a x t * data_at Tsh t_list (b, u) t
+|-- lseg (s1a ++ [b]) x u</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">admit</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk42" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk42">+ <span class="c">(* after the loop *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u0</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u0 = nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u0; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u0) t;
+   listrep s1c u0; listrep s2 y))
+  ((_t -&gt; _tail) = _y;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">   <span class="sd">(** After exiting the loop, the loop condition must be false, i.e.</span>
+<span class="sd">    [u] is the null pointer. Thus [s1c = nil] and [s1 = s1a ++ [b]]. *)</span>    
+</span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk43" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk43"><span class="nb">clear</span> h r u H0; <span class="nb">rename</span> u0 <span class="nb">into</span> u.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u = nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   listrep s1c u; listrep s2 y))
+  ((_t -&gt; _tail) = _y;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk44" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk44"><span class="nb">rewrite</span> (listrep_null s1c) <span class="bp">by</span> <span class="nb">auto</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u = nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   !! (s1c = []) &amp;&amp; emp; 
+   listrep s2 y)) ((_t -&gt; _tail) = _y;
+                   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk45" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk45">Intros.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1c</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u = nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ b :: s1c</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1c = []</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   emp; listrep s2 y))
+  ((_t -&gt; _tail) = _y;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk46" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk46"><span class="nb">subst</span> s1c.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>s1a</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>b, t, u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>HRE</var><span class="hyp-type"><b>: </b><span>u = nullval</span></span></span><br><span><var>H1</var><span class="hyp-type"><b>: </b><span>s1 = s1a ++ [b]</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _t t; 
+   temp _u u; temp _y y)
+   SEP (lseg s1a x t; data_at Tsh t_list (b, u) t;
+   emp; listrep s2 y))
+  ((_t -&gt; _tail) = _y;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+  <span class="sd">(** The rest of the proof is standard. Hint, [singleton_lseg],</span>
+<span class="sd">    [lseg_lseg] and/or [lseg_list] may be useful. *)</span>
+  <span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">admit</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="c">(* ================================================================= *)</span>
+<span class="sd">(** ** Additional exercises: more proofs about list segments *)</span>
+
+<span class="sd">(** For verifying the C function [append], it is enough to have only three</span>
+<span class="sd"> separation logic proof rules about [lseg]: [singleton_lseg], [lseg_lseg]</span>
+<span class="sd"> and [lseg_list]. The following exercises are other important properties</span>
+<span class="sd"> of [lseg]. *)</span>
+
+<span class="sd">(** **** Exercise: 1 star, standard: (lseg2listrep) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk47" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk47"><span class="kn">Lemma</span> <span class="nf">lseg2listrep</span>: <span class="kr">forall</span> <span class="nv">s</span> <span class="nv">x</span>,
+  lseg s x nullval |-- listrep s x.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s</span> : list val) (<span class="nv">x</span> : val),
+lseg s x nullval |-- listrep s x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk48" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk48"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s</span> : list val) (<span class="nv">x</span> : val),
+lseg s x nullval |-- listrep s x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** **** Exercise: 1 star, standard: (listrep2lseg) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk49" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk49"><span class="kn">Lemma</span> <span class="nf">listrep2lseg</span>: <span class="kr">forall</span> <span class="nv">s</span> <span class="nv">x</span>,
+  listrep s x |-- lseg s x nullval.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s</span> : list val) (<span class="nv">x</span> : val),
+listrep s x |-- lseg s x nullval</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk4a" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk4a"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s</span> : list val) (<span class="nv">x</span> : val),
+listrep s x |-- lseg s x nullval</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk4b" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk4b"><span class="kn">Corollary</span> <span class="nf">lseg_listrep_equiv</span>: <span class="kr">forall</span> <span class="nv">s</span> <span class="nv">x</span>,
+  lseg s x nullval = listrep s x.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s</span> : list val) (<span class="nv">x</span> : val),
+lseg s x nullval = listrep s x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk4c" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk4c"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s</span> : list val) (<span class="nv">x</span> : val),
+lseg s x nullval = listrep s x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk4d" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk4d"><span class="nb">intros</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>s</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">lseg s x nullval = listrep s x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk4e" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk4e"><span class="nb">apply</span> pred_ext.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>s</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">lseg s x nullval |-- listrep s x</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk4f" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>s</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk4f"><hr></label><div class="goal-conclusion">listrep s x |-- lseg s x nullval</div></blockquote></div></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk50" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk50">+</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>s</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">lseg s x nullval |-- listrep s x</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">apply</span> lseg2listrep.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk51" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk51">+</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>s</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">listrep s x |-- lseg s x nullval</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">apply</span> listrep2lseg.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Qed</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="sd">(** **** Exercise: 2 stars, standard: (lseg_lseg_inv) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk52" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk52"><span class="kn">Lemma</span> <span class="nf">lseg_lseg_inv</span>: <span class="kr">forall</span> <span class="nv">s1</span> <span class="nv">s2</span> <span class="nv">x</span> <span class="nv">z</span>,
+  lseg (s1 ++ s2) x z |-- EX y: val, lseg s1 x y * lseg s2 y z.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">z</span> : val),
+lseg (s1 ++ s2) x z
+|-- EX y : val, lseg s1 x y * lseg s2 y z</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk53" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk53"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">z</span> : val),
+lseg (s1 ++ s2) x z
+|-- EX y : val, lseg s1 x y * lseg s2 y z</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** **** Exercise: 2 stars, standard: (loopy_lseg_no_connection) *)</span>
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk54" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk54"><span class="kn">Lemma</span> <span class="nf">loopy_lseg_no_connection</span>: <span class="kr">forall</span> <span class="nv">s1</span> <span class="nv">s2</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span>,
+  s1 &lt;&gt; nil -&gt;
+  s2 &lt;&gt; nil -&gt;
+  x = y -&gt;
+  lseg s1 x y * lseg s2 y z |-- FF.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> : val),
+s1 &lt;&gt; [] -&gt;
+s2 &lt;&gt; [] -&gt; x = y -&gt; lseg s1 x y * lseg s2 y z |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk55" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk55"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> : val),
+s1 &lt;&gt; [] -&gt;
+s2 &lt;&gt; [] -&gt; x = y -&gt; lseg s1 x y * lseg s2 y z |-- FF</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="c">(* ================================================================= *)</span>
+<span class="sd">(** ** Additional exercises: loop-free list segments *)</span>
+
+<span class="sd">(** In the following exercise, try to redo the proof above</span>
+<span class="sd">  using a different partial-linked-list predicate.</span>
+
+<span class="sd"> We have mentioned that the [lseg] predicate allows a loopy structure,</span>
+<span class="sd"> which is quite counterintuitive. Here is an alternate definition that</span>
+<span class="sd"> prohibits loops: *)</span>
+
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Fixpoint</span> <span class="nf">nt_lseg</span> (<span class="nv">contents</span>: list val) (<span class="nv">x</span> <span class="nv">z</span>: val) : mpred :=
+  <span class="kr">match</span> contents <span class="kr">with</span>
+  | nil =&gt; !! (x = z) &amp;&amp; emp
+  | h::hs =&gt; EX y:val, !! (x &lt;&gt; z) 
+                   &amp;&amp; data_at Tsh t_list (h, y) x * nt_lseg hs y z
+  <span class="kr">end</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Arguments</span> nt_lseg contents x z : <span class="nb">simpl</span> never.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+<span class="sd">(** Here, &quot;nt&quot; means no-touch. *)</span>
+
+<span class="sd">(** The difference between [nt_lseg] and [lseg] is the extra proposition</span>
+<span class="sd">  [x &lt;&gt; z] in the nonempty situation. This extra clause in [nt_lseg] </span>
+<span class="sd">  prevents loop structures.</span>
+
+<span class="sd">  The proof theories of [nt_lseg] and [lseg] are a bit different as</span>
+<span class="sd">  well. The following diagram shows that the counterpart of [lseg_lseg]</span>
+<span class="sd">  is not valid! </span>
+
+<span class="sd">        +---+---+   +---+---+   +---+---+   +---+---+   </span>
+<span class="sd">  x ==&gt; | a | u ==&gt; | b | y ==&gt; | c | v ==&gt; | d | u ===+</span>
+<span class="sd">        +---+---+   +- -+---+   +---+---+   +---+---+  |</span>
+<span class="sd">                      ^                                |</span>
+<span class="sd">                      |                                |</span>
+<span class="sd">                      +================================+</span>
+
+<span class="sd">  In this example, both [ [a; b] ] and [ [c; d] ] are stored in loop-free </span>
+<span class="sd">  partial linked lists but it is not true for their concatenation. In </span>
+<span class="sd">  general, if [(nt_lseg s1 x y)] and [(nt_lseg s2 y z)] describe two </span>
+<span class="sd">  loop-free partial linked lists, the assertion</span>
+
+<span class="sd">    (nt_lseg s1 x y * nt_lseg s2 y z)</span>
+
+<span class="sd">  cannot ensure that the structure is loop free. Specifically, the address</span>
+<span class="sd">  [z] may be used in [(nt_lseg s1 x y)]. In other words,</span>
+
+<span class="sd">   nt_lseg s1 x y * nt_lseg s2 y z |-/- nt_lseg (s1 ++ s2) x z </span>
+<span class="sd">*)</span>
+
+<span class="sd">(** For [nt_lseg], the following proof rules are useful. *)</span>
+
+<span class="sd">(** **** Exercise: 2 stars, standard, optional (nt_lseg) *)</span> 
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk56" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk56"><span class="kn">Lemma</span> <span class="nf">singleton_nt_lseg</span>: <span class="kr">forall</span> (<span class="nv">contents</span>: list val) (<span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span>: val),
+  data_at Tsh t_list (a, y) x * listrep contents y |--
+  nt_lseg [a] x y * listrep contents y.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">contents</span> : list val) (<span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span> : val),
+data_at Tsh t_list (a, y) x * listrep contents y
+|-- nt_lseg [a] x y * listrep contents y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk57" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk57"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">contents</span> : list val) (<span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span> : val),
+data_at Tsh t_list (a, y) x * listrep contents y
+|-- nt_lseg [a] x y * listrep contents y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** **** Exercise: 2 stars, standard, optional (singleton_nt_lseg&#39;) *)</span> 
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk58" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk58"><span class="kn">Lemma</span> <span class="nf">singleton_nt_lseg&#39;</span>: <span class="kr">forall</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span>: val),
+  data_at Tsh t_list (a, y) x * data_at Tsh t_list (b, z) y |--
+  nt_lseg [a] x y * data_at Tsh t_list (b, z) y.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> : val,
+data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, z) y
+|-- nt_lseg [a] x y * data_at Tsh t_list (b, z) y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk59" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk59"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> : val,
+data_at Tsh t_list (a, y) x
+  * data_at Tsh t_list (b, z) y
+|-- nt_lseg [a] x y * data_at Tsh t_list (b, z) y</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** **** Exercise: 2 stars, standard, optional (nt_lseg_nt_lseg) *)</span> 
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk5a" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk5a"><span class="kn">Lemma</span> <span class="nf">nt_lseg_nt_lseg</span>: <span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span>: list val) (<span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> <span class="nv">u</span>: val),
+  nt_lseg s1 x y * nt_lseg s2 y z * data_at Tsh t_list (a, u) z |--
+  nt_lseg (s1 ++ s2) x z * data_at Tsh t_list (a, u) z.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> <span class="nv">u</span> : val),
+nt_lseg s1 x y * nt_lseg s2 y z
+  * data_at Tsh t_list (a, u) z
+|-- nt_lseg (s1 ++ s2) x z
+      * data_at Tsh t_list (a, u) z</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk5b" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk5b"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">a</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span> <span class="nv">u</span> : val),
+nt_lseg s1 x y * nt_lseg s2 y z
+  * data_at Tsh t_list (a, u) z
+|-- nt_lseg (s1 ++ s2) x z
+      * data_at Tsh t_list (a, u) z</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** Hint:  This lemma illustrates the most classic case where aggressive</span>
+<span class="sd"> [cancel] can turn a provable goal into an unprovable goal.  For that reason,</span>
+<span class="sd">  you may need to use [entailer] rather than [entailer!] at one point. *)</span>
+<span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** **** Exercise: 2 stars, standard, optional (nt_lseg_list) *)</span> 
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk5c" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk5c"><span class="kn">Lemma</span> <span class="nf">nt_lseg_list</span>: <span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span>: list val) (<span class="nv">x</span> <span class="nv">y</span>: val),
+  nt_lseg s1 x y * listrep s2 y |-- listrep (s1 ++ s2) x.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> : val),
+nt_lseg s1 x y * listrep s2 y |-- listrep (s1 ++ s2) x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk5d" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk5d"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">s1</span> <span class="nv">s2</span> : list val) (<span class="nv">x</span> <span class="nv">y</span> : val),
+nt_lseg s1 x y * listrep s2 y |-- listrep (s1 ++ s2) x</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="sd">(** Now, we will use [nt_lseg] instead of [lseg] in the loop invariant to</span>
+<span class="sd">prove [body_append]. *)</span>
+
+<span class="sd">(** **** Exercise: 3 stars, standard, optional (body_append_alter1) *)</span> 
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk5e" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk5e"><span class="kn">Lemma</span> <span class="nf">body_append_alter1</span>: semax_body Vprog Gprog f_append append_spec.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion">semax_body Vprog Gprog f_append append_spec</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk5f" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk5f"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion">semax_body Vprog Gprog f_append append_spec</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk60" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk60">start_function.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y))
+  (<span class="kr">if</span> (_x == (tptr tvoid) (<span class="mi">0</span>)) {
+     <span class="kr">return</span> _y;
+   } <span class="kr">else</span> {
+     (_t = _x;
+      _u = (_t -&gt; _tail);
+      while (_u != (tptr tvoid) (<span class="mi">0</span>)) {
+        (_t = _u;
+         _u = (_t -&gt; _tail);)
+      }
+      (_t -&gt; _tail) = _y;
+      <span class="kr">return</span> _x;)
+   }) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk61" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk61">forward_if. <span class="c">(* if (x == NULL) *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x = nullval</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y)) 
+  (<span class="kr">return</span> _y;) POSTCONDITION</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="verif-append1-v-chk62" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><label class="goal-separator" for="verif-append1-v-chk62"><hr></label><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y))
+  (_t = _x;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk63" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk63">- <span class="c">(* If-then *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x = nullval</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y)) 
+  (<span class="kr">return</span> _y;) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk64" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk64"><span class="nb">rewrite</span> (listrep_null _ x) <span class="bp">by</span> <span class="nb">auto</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x = nullval</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (!! (s1 = []) &amp;&amp; emp; listrep s2 y))
+  (<span class="kr">return</span> _y;) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> <span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="nb">admit</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk65" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk65">- <span class="c">(* If-else *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (listrep s1 x; listrep s2 y))
+  (_t = _x;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk66" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk66"><span class="nb">rewrite</span> (listrep_nonnull _ x) <span class="bp">by</span> <span class="nb">auto</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (EX (h : val) (hs : list val) 
+        (y : val),
+        !! (s1 = h :: hs) &amp;&amp;
+        data_at Tsh t_list (h, y) x
+          * listrep hs y; 
+   listrep s2 y)) (_t = _x;
+                   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk67" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk67">Intros h r u.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _x x; temp _y y)
+   SEP (data_at Tsh t_list (h, u) x; 
+   listrep r u; listrep s2 y)) 
+  (_t = _x;
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk68" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk68">forward. <span class="c">(* t = x; *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _t x; temp _x x; 
+   temp _y y)
+   SEP (data_at Tsh t_list (h, u) x; 
+   listrep r u; listrep s2 y))
+  (_u = (_t -&gt; _tail);
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="verif-append1-v-chk69" style="display: none" type="checkbox"><label class="alectryon-input" for="verif-append1-v-chk69">forward. <span class="c">(* u = t -&gt; tail; *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Espec</var><span class="hyp-type"><b>: </b><span>OracleKind</span></span></span><br><span><var>x, y</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>s1, s2</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>Delta_specs</var><span class="hyp-type"><b>: </b><span>Maps.PTree.t funspec</span></span></span><br><span><var>Delta</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>tycontext</span></span></span></span><br><span><var>POSTCONDITION</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>ret_assert</span></span></span></span><br><span><var>H</var><span class="hyp-type"><b>: </b><span>x &lt;&gt; nullval</span></span></span><br><span><var>h</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>r</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>u</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>H0</var><span class="hyp-type"><b>: </b><span>s1 = h :: r</span></span></span><br><span><var>MORE_COMMANDS</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br><span><var>LOOP_BODY</var><span><span class="hyp-body"><b>:= </b><span>abbreviate</span></span><span class="hyp-type"><b>: </b><span>statement</span></span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">semax Delta
+  (PROP ( )
+   LOCAL (temp _u u; temp _t x; 
+   temp _x x; temp _y y)
+   SEP (data_at Tsh t_list (h, u) x; 
+   listrep r u; listrep s2 y))
+  (while (_u != (tptr tvoid) (<span class="mi">0</span>)) {
+     LOOP_BODY
+   }
+   MORE_COMMANDS) POSTCONDITION</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"> <span class="sd">(** Now use [forward_while] to verify this while loop.  Remember,</span>
+<span class="sd">  [forward_while] will generate four proof goals: current precondition </span>
+<span class="sd">  implies loop invariant; loop test is safe to execute; loop body preserves</span>
+<span class="sd">  invariant; and the correctness of after-loop commands. *)</span>
+<span class="c">(* FILL IN HERE *)</span></span><span class="alectryon-wsp"> </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="sd">(** [] *)</span>
+
+<span class="c">(* 2023-03-25 11:30 *)</span></span></pre>
+</div>
+</div></body>
+</html>
