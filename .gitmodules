@@ -1,12 +1,9 @@
-[submodule "arthur/tlc"]
-	path = arthur/tlc
-	url = https://github.com/charguer/tlc.git
-[submodule "arthur/cfml2"]
-	path = arthur/cfml2
-	url = https://gitlab.inria.fr/charguer/cfml2.git
-[submodule "example-proofs/vendor/tlc"]
-	path = example-proofs/vendor/tlc
-	url = git@github.com:charguer/tlc.git
-[submodule "example-proofs/vendor/cfml"]
-	path = example-proofs/vendor/cfml
-	url = git@github.com:yawen-guan/cfml.git
+[submodule "rocq-sources/iris-example"]
+	path = rocq-sources/iris-example
+	url = git@gitlab.epfl.ch:systemf/sep-viz/iris-tutorial.git
+[submodule "rocq-sources/software-foundations-slf"]
+	path = rocq-sources/software-foundations-slf
+	url = git@gitlab.epfl.ch:systemf/sep-viz/slf.git
+[submodule "rocq-sources/cfml-examples"]
+	path = rocq-sources/cfml-examples
+	url = git@gitlab.epfl.ch:systemf/sep-viz/cfml-examples.git
