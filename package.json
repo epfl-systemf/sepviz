@@ -5,16 +5,17 @@
     "gen:proofs:vc": "./scripts/gen_proofs_vc.sh",
     "gen:proofs:slf": "./scripts/gen_proofs_slf.sh",
     "gen:proofs:iris": "./scripts/gen_proofs_iris.sh",
-    "gen:proofs": "run-s gen:proofs:example gen:proofs:lp gen:proofs:vc gen:proofs:slf gen:proofs:iris",
+    "gen:proofs": "run-s gen:proofs:example gen:proofs:vc gen:proofs:slf gen:proofs:iris",
     "inject": "./scripts/inject.sh",
     "gen:parser": "npx peggy --format es -o src/parser.js src/assets/sep.g",
 
-    "prepare": "run-s gen:proofs inject gen:parser",
+    "prepare": "run-s inject gen:parser",
 
     "typecheck": "tsc --noEmit",
     "dev": "run-s prepare vite",
     "vite:build": "vite build",
     "build": "run-s prepare vite:build",
+    "build:all": "run-s gen:proofs build",
     "preview": "vite preview",
     "test": "vitest"
   },
