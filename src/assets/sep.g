@@ -90,7 +90,9 @@ GallinaTermWithTop
     }
     / [^()\p{White_Space}]+ { return {raw: text()}; }
 
-DefaultTop = t:(NamedTops / Top) { return [{position: "default", ...t}]; }
+DefaultTop
+  = t:NamedTops { return [{position: "pre", ...t}]; }
+    / t:Top { return [{position: "default", ...t}]; }
 
 NamedTops
   = "[*" _ hd:NamedTopsAtom tl:(_ @NamedTopsAtom)* _ "*]" {
