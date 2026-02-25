@@ -1,0 +1,92 @@
+ <!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Animation Test</title>
+        <style>
+            textarea {
+                width: 400px; min-height: 180px;
+                font-size: 12px; line-height: 1.4; padding: 10px;
+                border: 1px solid;
+            }
+
+            .cards-row {
+                display: flex;
+            }
+
+            .card {
+                display: grid;
+                min-width: 400px;
+            }
+
+            label {
+                display: block;
+            }
+
+            svg text {
+                font-family: "Iosevka";
+                font-size: 12;
+            }
+
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js" integrity="sha512-vc58qvvBdrDR4etbxMdlTt4GBQk1qjvyORR2nrsPsFPyrs+/u5c3+1Ct6upOgdZoIl7eq6k3a1UPDSNAQi/32A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-graphviz/5.6.0/d3-graphviz.min.js" integrity="sha512-Le8HpIpS2Tc7SDHLM6AOgAKq6ZR4uDwLhjPSR20DtXE5dFb9xECHRwgpc1nxxnU0Dv+j6FNMoSddky5gyvI3lQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- <script type="module" src="/d3-graphviz/build/d3-graphviz.js"></script> -->
+        <script type="module" src="test-animation.js"></script>
+<link rel="stylesheet" href="sep.css" type="text/css" />
+<script type="module" src="alectryon-viz.js"></script>
+    </head>
+    <body>
+        <div class="cards-row">
+            <div class="card">
+                <label for="prevDot">Previous DOT</label>
+                <textarea id="prevDot">
+digraph {
+graph [rankdir="LR", ranksep="0.05", nodesep="0.2", concentrate="false", splines="true", packmode="array_i", truecolor="true", bgcolor="#00000000", pad="0", fontname="Courier", fontsize="11"]
+node [shape="plaintext", margin="0.05", fontname="Courier", fontsize="11"]
+edge [tailclip="false", arrowsize="0.5", minlen="3", fontname="Courier", fontsize="11"]
+"p2":"car_out":"c" -> "f2":"car_in":"w" [id="p2-car_out-c"]
+"p2$ptr":"e" -> "p2":"car_in":"nw" [tailclip="true", minlen="1"]
+"p2":"cdr_out":"c" -> "f2":"car_in":"w" [id="p2-cdr_out-c"]
+"f2" [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2"><tr><td colspan="2" cellpadding="0" sides="b"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td>f2</td><td>: </td><td>MCell</td></tr></table></td></tr><tr><td port="car_in" sides="tlb">d1</td><td sides="trb"></td></tr><tr><td port="cdr_in" sides="tlb">∅</td><td sides="trb"></td></tr></table>>]
+"p2" [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2"><tr><td colspan="2" cellpadding="0" sides="b"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td>p2</td><td>: </td><td>MCell</td></tr></table></td></tr><tr><td port="car_in" sides="tlb">f2</td><td port="car_out" sides="trb">⏺</td></tr><tr><td port="cdr_in" sides="tlb">f2</td><td port="cdr_out" sides="trb">⏺</td></tr></table>>]
+"p2$ptr" [label="p2", fontsize="10", width="0"]
+}
+                </textarea>
+            </div>
+
+            <div class="card">
+                <label for="currDot">Current DOT</label>
+                <textarea id="currDot">
+digraph {
+graph [rankdir="LR", ranksep="0.05", nodesep="0.2", concentrate="false", splines="true", packmode="array_i", truecolor="true", bgcolor="#00000000", pad="0", fontname="Courier", fontsize="11"]
+node [shape="plaintext", margin="0.05", fontname="Courier", fontsize="11"]
+edge [tailclip="false", arrowsize="0.5", minlen="3", fontname="Courier", fontsize="11"]
+"p2":"car_out":"c" -> "f2":"car_in":"w" [id="p2-car_out-c"]
+"p2$ptr":"e" -> "p2":"car_in":"nw" [tailclip="true", minlen="1"]
+"p2":"cdr_out":"c" -> "f2":"car_in":"w" [id="p2-cdr_out-c"]
+"f2" [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2"><tr><td colspan="2" cellpadding="0" sides="b"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td>f2</td><td>: </td><td>MCell</td></tr></table></td></tr><tr><td port="car_in" sides="tlb">d1</td><td sides="trb"></td></tr><tr><td port="cdr_in" sides="tlb">∅</td><td sides="trb"></td></tr></table>>]
+"p2" [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2"><tr><td colspan="2" cellpadding="0" sides="b"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td>p2</td><td>: </td><td>MCell</td></tr></table></td></tr><tr><td port="car_in" sides="tlb">f2</td><td port="car_out" sides="trb">⏺</td></tr><tr><td port="cdr_in" sides="tlb">f2</td><td port="cdr_out" sides="trb">⏺</td></tr></table>>]
+"p2$ptr" [label="p2", fontsize="10", width="0"]
+}
+                </textarea>
+            </div>
+        </div>
+
+        <button id='renderBtn'>Render</button>
+        <div class="cards-row">
+            <div class="card">
+                <label for="prevSvg">Previous SVG</label>
+                <div id="prevSvg"></div>
+            </div>
+
+            <div class="card">
+                <label for="currSvg">Current SVG</label>
+                <div id="currSvg"></div>
+            </div>
+        </div>
+
+        <button id='animateBtn'>Animate</button>
+        <div id='display'><div>
+    </body>
+</html>

@@ -368,3 +368,11 @@ function setupAnimation(
     subtree: true,
   });
 }
+
+// For testing
+import { parse as peggyParse } from './parser';
+export function testParsing(text: string) {
+  console.log('parse input = ', text);
+  const res = peggyParse(text);
+  console.log('parse result = ', res);
+}

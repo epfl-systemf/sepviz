@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Parsing Test</title>
+    <link rel="stylesheet" href="sep.css" type="text/css" />
+    <script type="module" src="alectryon-viz.js"></script>
+    <style>
+      textarea {
+        width: 400px;
+        min-height: 180px;
+        font-size: 12px;
+        line-height: 1.4;
+        padding: 10px;
+        border: 1px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="input"></textarea>
+    <button id="parseBtn">parse</button>
+  </body>
+  <script type="module">
+    import { testParsing } from './alectryon-viz.js';
+    const elem = document.getElementById('input');
+    const btn = document.getElementById('parseBtn');
+
+    btn?.addEventListener('click', async () => {
+      const input = elem.value.trim();
+      testParsing(input);
+    });
+  </script>
+</html>
