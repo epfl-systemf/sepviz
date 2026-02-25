@@ -3,6 +3,7 @@
   --border-color: black;
   --border-radius: 4px;
   --predicate-gap: 1em;
+  --pure-background: #d3e9f0;
 }
 
 .hidden {
@@ -31,7 +32,7 @@
 
 .sep-pure-pred {
   border-radius: var(--border-radius);
-  background: #d3e9f0;
+  background: var(--pure-background);
   white-space: nowrap;
 }
 
@@ -84,6 +85,11 @@
 
 .sep-op {
   padding: var(--small-space);
+}
+
+.sep-keyword {
+  padding: var(--small-space);
+  font-weight: bold;
 }
 
 .tooltip-copied {

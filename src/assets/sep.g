@@ -20,22 +20,22 @@ cruft
   = .
 
 PlainTriple
-  = "Triple" w1:_ code:GallinaTerm _ pre:Top w2:_ post:GallinaTermWithTop {
-    if (post.parsed) {
-      return [
-        "Triple" + w1 + code,
-        {position: "pre", ...pre},
-        w2 + post.before,
-        {position: "post", ...post},
-        post.after,
-      ];
-    } else {
-      return [
-        "Triple" + w1 + code,
-        {position: "pre", ...pre},
-        w2 + post.raw,
-      ];
-    }
+  = t:("Triple" / "triple") w1:_ code:GallinaTerm _ pre:Top w2:_ post:GallinaTermWithTop {
+        if (post.parsed) {
+        return [
+            t + w1 + code,
+            {position: "pre", ...pre},
+            w2 + post.before,
+            {position: "post", ...post},
+            post.after,
+        ];
+        } else {
+        return [
+            t + w1 + code,
+            {position: "pre", ...pre},
+            w2 + post.raw,
+        ];
+        }
 }
 
 NotatedTriple
@@ -129,13 +129,14 @@ Stars // stars bind tighter than wands
   return { kind: "stars", conjuncts: [hd, ...tl] };
 }
 
-Term // non-recursive base terms
+Term
   = Parenthesized
   / Existential
   / PointsTo
   / PurePredicate
   / GC
   / Modality
+  / IfThenElse
 
 Parenthesized = "(" @WandFormula ")"
 
@@ -164,6 +165,11 @@ Modality
   = op:("▷" / "□") _ body:Term {
     return { kind: "modality", op, body }
 }
+
+IfThenElse
+  = ("If" / "if") _ "(" _ cond:Formula _ ")" _ ("Then" / "then") _ H1:Stars _ ("Else" / "else") _ H2:Stars {
+        return {kind: "ifThenElse", cond, H1, H2}
+    }
 
 Formula = (@Atom _)*
 

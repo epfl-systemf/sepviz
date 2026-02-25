@@ -56,6 +56,7 @@ export enum OtherHeapPredKind {
   Disj,
   Modality,
   Abstract,
+  IfThenElse,
 }
 
 export interface StarHeapPred {
@@ -173,6 +174,18 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           preds: [],
           op: sep.body,
         });
+        break;
+      case 'ifThenElse':
+        const thenPred = newStarHeapPred(),
+          elsePred = newStarHeapPred();
+        const p: OtherHeapPred = {
+          kind: OtherHeapPredKind.IfThenElse,
+          preds: [thenPred, elsePred],
+          op: sep.cond.map((x: string) => (x in ctx ? ctx[x] : x)).join(' '),
+        };
+        loop(sep.H1, ctx, thenPred, binder);
+        loop(sep.H2, ctx, elsePred, binder);
+        pred.otherHeapPreds.push(p);
         break;
       default:
         throw new Error(`Not supported kind: ${sep.kind}`);

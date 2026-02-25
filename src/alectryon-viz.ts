@@ -259,6 +259,16 @@ class Render {
       case OtherHeapPredKind.Abstract:
         host.append(op);
         break;
+      case OtherHeapPredKind.IfThenElse:
+        host.append(
+          createElement('span', ['sep-keyword'], { text: 'if' }),
+          createElement('span', ['sep-pure-pred'], { text: otherPred.op }),
+          createElement('span', ['sep-keyword'], { text: 'then' }),
+          predNodes[0],
+          createElement('span', ['sep-keyword'], { text: 'else' }),
+          predNodes[1]
+        );
+        break;
     }
     return host;
   }
