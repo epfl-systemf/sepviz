@@ -312,6 +312,8 @@ function setupAnimation(
     const previous = previousVids[vid];
     if (!previous) return;
 
+    if (vid.startsWith('vid-default-')) return;
+
     const svgNode = vizNode.querySelector<SVGElement>('.sep-svg');
     const dot =
       vizNode.querySelector<HTMLElement>('.sep-dot .content')?.innerText;
