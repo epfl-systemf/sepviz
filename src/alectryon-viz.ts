@@ -33,7 +33,7 @@ async function init() {
   markGoalResets();
   const config = await loadRenderConfig();
   const previousVids = renderEmbedded(config);
-  setupAnimation(previousVids);
+  setupAnimation();
 }
 
 // Extended HTML elements.
@@ -52,10 +52,14 @@ function markGoalResets() {
 
 type Vid = string;
 
+const Positions = ['pre', 'post', 'default']; // TODO: use enum instead
+
 function renderEmbedded(config: RenderConfig): Record<Vid, Vid> {
   const previousVids: Record<Vid, Vid> = {};
   const nodeOrders: Record<Vid, NodeOrder | null> = {};
-  const latestVids: Record<string, number> = { pre: 0, post: 0, default: 0 };
+  const latestVids: Record<string, number> = Object.fromEntries(
+    Positions.map((pos) => [pos, 0])
+  );
 
   function vidOf(n: number, stream: string): Vid {
     return `vid-${stream}-${n}`;
@@ -85,7 +89,10 @@ function renderEmbedded(config: RenderConfig): Record<Vid, Vid> {
             if (typeof unit === 'string') {
               goalNode.append(unit);
             } else {
-              const host = createElement('div', ['sep-visualization']);
+              const host = createElement('div', [
+                'sep-visualization',
+                `sep-${unit.position}`,
+              ]);
               if (idx === 0) {
                 // Only animate the first goal.
                 host.id = nextVid(sentenceNode.goalReset, unit.position);
@@ -288,40 +295,28 @@ type SVGElement = HTMLElement & { __graphviz__?: GraphvizInstance };
  * Observe Alectryon targets; when a sentence becomes an `.alectryon-target`,
  * animate its `.sep-visualization` diagrams from the previous to the current.
  */
-function setupAnimation(
-  previousVids: Record<Vid, Vid>,
-  defaultDuration = 2000
-): void {
+function setupAnimation(defaultDuration = 2000): void {
   const renderingVids = new Set<Vid>();
 
-  function getDotByVid(vid: Vid): string | null {
-    const node = document.querySelector<HTMLElement>(
-      `#${vid} .sep-dot .content`
-    );
-    if (!node) {
-      console.warn('Cannot find the dot content for vid: ', vid);
-      return null;
-    }
-    return node.innerText;
+  function getDot(vizNode: HTMLElement): string | undefined {
+    return vizNode.querySelector<HTMLElement>('.sep-dot .content')?.innerText;
   }
 
-  async function animate(vizNode: HTMLElement, duration = defaultDuration) {
-    const vid = vizNode.id as Vid;
+  async function animate(
+    vizNode: HTMLElement,
+    prevVizNode: HTMLElement,
+    duration = defaultDuration
+  ) {
+    const vid = vizNode.id;
     if (!vid || renderingVids.has(vid)) return;
 
-    const previous = previousVids[vid];
-    if (!previous) return;
-
-    if (vid.startsWith('vid-default-')) return;
-
     const svgNode = vizNode.querySelector<SVGElement>('.sep-svg');
-    const dot =
-      vizNode.querySelector<HTMLElement>('.sep-dot .content')?.innerText;
     const gviz = svgNode?.__graphviz__;
-    const prevDot = getDotByVid(previous);
 
-    if (!svgNode || !gviz || !dot || !prevDot) return;
-    if (prevDot === dot) return;
+    const dot = getDot(vizNode);
+    const prevDot = getDot(prevVizNode);
+
+    if (!svgNode || !gviz || !dot || !prevDot || prevDot === dot) return;
 
     renderingVids.add(vid);
     // render the previous diagram instantly
@@ -345,11 +340,30 @@ function setupAnimation(
     renderingVids.delete(vid);
   }
 
-  function animateDiagramsInSentence(sentenceNode: HTMLElement) {
-    sentenceNode
-      .querySelectorAll<HTMLElement>('.sep-visualization')
-      .forEach((vizNode) => animate(vizNode));
+  function animateDiagramsInSentence(
+    sentNode: HTMLElement,
+    prevSentNode: HTMLElement
+  ) {
+    function getVizNode(
+      sentNode: HTMLElement,
+      pos: string
+    ): HTMLElement | null {
+      return sentNode.querySelector<HTMLElement>(
+        `.sep-visualization.sep-${pos}`
+      );
+    }
+
+    Positions.forEach((pos) => {
+      if (pos === 'default') return;
+      const vizNode = getVizNode(sentNode, pos);
+      if (!vizNode) return;
+      const prevVizNode = getVizNode(prevSentNode, pos);
+      if (!prevVizNode) return;
+      animate(vizNode, prevVizNode);
+    });
   }
+
+  let prevSentNode: HTMLElement | null = null;
 
   const observer = new MutationObserver((mutations) => {
     for (const m of mutations) {
@@ -359,7 +373,8 @@ function setupAnimation(
         m.target instanceof HTMLElement &&
         m.target.classList.contains('alectryon-target')
       ) {
-        animateDiagramsInSentence(m.target);
+        if (prevSentNode) animateDiagramsInSentence(m.target, prevSentNode);
+        prevSentNode = m.target;
       }
     }
   });
