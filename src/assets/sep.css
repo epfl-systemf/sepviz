@@ -105,3 +105,13 @@
   font-family: 'Iosevka';
   font-size: 10px;
 }
+
+/* Wrap hypotheses */
+.alectryon-windowed
+  .alectryon-io
+  .alectryon-sentence.alectryon-target
+  .alectryon-output
+  .goal-hyps {
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
