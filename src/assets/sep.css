@@ -115,3 +115,12 @@
   flex-flow: row wrap;
   justify-content: flex-start;
 }
+
+/* Disable mouseover rendering of goal */
+@media (any-hover: hover) {
+  .alectryon-io
+    .alectryon-sentence:not(.alectryon-target):hover
+    .alectryon-output:not(:hover) {
+    display: none;
+  }
+}
