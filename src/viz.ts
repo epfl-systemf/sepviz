@@ -57,6 +57,7 @@ export enum OtherHeapPredKind {
   Modality,
   Abstract,
   IfThenElse,
+  BigSepL,
 }
 
 export interface StarHeapPred {
@@ -144,6 +145,22 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           label: `${sep.binder}${num}`,
         };
         loop(sep.body, ctx, pred, binder);
+        break;
+      }
+      case 'bigSepL': {
+        const H = newStarHeapPred();
+        loop(sep.body, ctx, H, binder);
+        const b: OtherHeapPred = {
+          kind: OtherHeapPredKind.BigSepL,
+          preds: [H],
+          op: '⨀',
+          data: [
+            sep.k,
+            sep.x,
+            Array.isArray(sep.l) ? toString(ctx, sep.l) : sep.l,
+          ],
+        };
+        pred.otherHeapPreds.push(b);
         break;
       }
       case 'pointsTo': {

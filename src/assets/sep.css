@@ -124,3 +124,26 @@
     display: none;
   }
 }
+
+/* Iterated separating conjunction: BigSepL */
+.sep-bigsepl-box {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.sep-bigsepl-left {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sep-bigsepl-op {
+  font-size: 1.5em;
+  line-height: 1;
+}
+
+.sep-bigsepl-binder {
+  font-size: 0.7em;
+}

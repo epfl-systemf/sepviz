@@ -134,6 +134,7 @@ Term
   = Parenthesized
   / Existential
   / Forall
+  / BigSepL
   / PointsTo
   / PurePredicate
   / GC
@@ -152,6 +153,17 @@ Forall
   = "∀" _ binder:name _ (":" _ type:name _)? "," _ body:Stars {
   return { kind: "forall", binder, body };
 }
+
+BigSepL
+  = "[∗ list]" _ k:name _ "↦" _ x:name _ "∈" _ l:(name / ParenthesizedFormula) _ "," _ body:Stars {
+      return { kind: "bigSepL", k, x, l, body };
+    }
+  / "[∗ list]" _ x:name _ "∈" _ l:(name / ParenthesizedFormula) _ "," _ body:Stars {
+      return { kind: "bigSepL", k: null, x, l, body };
+    }
+  / "[∗]" _ body:Stars {
+      return { kind: "bigSepL", k: null, x: null, l: null, body };
+    }
 
 PointsTo
   = from:name _ "~>" _ to:Formula {

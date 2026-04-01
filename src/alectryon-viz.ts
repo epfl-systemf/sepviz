@@ -276,6 +276,29 @@ class Render {
           predNodes[1]
         );
         break;
+      case OtherHeapPredKind.BigSepL:
+        const k = otherPred.data[0];
+        const x = otherPred.data[1];
+        const l = otherPred.data[2];
+
+        const box = createElement('div', ['sep-bigsepl-box']);
+        const left = createElement('div', ['sep-bigsepl-left']);
+        const star = createElement('div', ['sep-bigsepl-op'], {
+          text: otherPred.op,
+        });
+        const binder = createElement('div', ['sep-bigsepl-binder']);
+        if (x === null && l === null) {
+          binder.textContent = '';
+        } else if (k === null) {
+          binder.textContent = `${x} ∈ ${l}`;
+        } else {
+          binder.textContent = `${k} ↦ ${x} ∈ ${l}`;
+        }
+
+        left.append(star, binder);
+        box.append(left, predNodes[0]);
+        host.append(box);
+        break;
     }
     return host;
   }
