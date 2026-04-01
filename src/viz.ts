@@ -69,6 +69,7 @@ export interface OtherHeapPred {
   kind: OtherHeapPredKind;
   preds: StarHeapPred[];
   op: string;
+  data?: string[];
 }
 
 export function parse(
@@ -110,6 +111,10 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
     return key in ctx ? ctx[key] : { isGlobal: true, uid: key, label: key };
   }
 
+  function toString(ctx: Record<string, Symbol>, xs: string[]): string {
+    return xs.map((x: string) => (x in ctx ? ctx[x].label : x)).join(' ');
+  }
+
   function loop(
     sep: any,
     ctx: Record<string, Symbol>,
@@ -117,10 +122,11 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
     binder: string
   ) {
     switch (sep.kind) {
-      case 'stars':
+      case 'stars': {
         sep.conjuncts.forEach((c: any) => loop(c, ctx, pred, binder));
         break;
-      case 'existential':
+      }
+      case 'existential': {
         const num = next(sep.binder);
         ctx[sep.binder] = {
           isGlobal: false,
@@ -129,7 +135,18 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
         };
         loop(sep.body, ctx, pred, binder);
         break;
-      case 'pointsTo':
+      }
+      case 'forall': {
+        const num = next(sep.binder);
+        ctx[sep.binder] = {
+          isGlobal: false,
+          uid: sep.binder + '$' + num,
+          label: `${sep.binder}${num}`,
+        };
+        loop(sep.body, ctx, pred, binder);
+        break;
+      }
+      case 'pointsTo': {
         const [constr, ...args] = sep.to as string[];
         pred.heapObjs.push({
           addr: resolve(ctx, sep.from),
@@ -139,7 +156,8 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
           hyp: binder,
         });
         break;
-      case 'wand':
+      }
+      case 'wand': {
         const H1 = newStarHeapPred(),
           H2 = newStarHeapPred();
         const wand: OtherHeapPred = {
@@ -151,14 +169,16 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
         loop(sep.H2, ctx, H2, binder);
         pred.otherHeapPreds.push(wand);
         break;
+      }
       case 'gc':
         break;
-      case 'purePredicate':
+      case 'purePredicate': {
         pred.purePreds.push(
           sep.predicate.map((x: string) => (x in ctx ? ctx[x] : x))
         );
         break;
-      case 'modality':
+      }
+      case 'modality': {
         const H = newStarHeapPred();
         const m: OtherHeapPred = {
           kind: OtherHeapPredKind.Modality,
@@ -168,25 +188,29 @@ function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
         loop(sep.body, ctx, H, binder);
         pred.otherHeapPreds.push(m);
         break;
-      case 'abstract': // FIXME
+      }
+      case 'abstract': {
+        // FIXME
         pred.otherHeapPreds.push({
           kind: OtherHeapPredKind.Abstract,
           preds: [],
-          op: sep.body,
+          op: toString(ctx, sep.body),
         });
         break;
-      case 'ifThenElse':
-        const thenPred = newStarHeapPred(),
-          elsePred = newStarHeapPred();
+      }
+      case 'ifThenElse': {
+        const H1 = newStarHeapPred(),
+          H2 = newStarHeapPred();
         const p: OtherHeapPred = {
           kind: OtherHeapPredKind.IfThenElse,
-          preds: [thenPred, elsePred],
-          op: sep.cond.map((x: string) => (x in ctx ? ctx[x] : x)).join(' '),
+          preds: [H1, H2],
+          op: toString(ctx, sep.cond),
         };
         loop(sep.H1, ctx, thenPred, binder);
         loop(sep.H2, ctx, elsePred, binder);
         pred.otherHeapPreds.push(p);
         break;
+      }
       default:
         throw new Error(`Not supported kind: ${sep.kind}`);
     }

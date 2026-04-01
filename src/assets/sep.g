@@ -119,12 +119,11 @@ WandFormula
       return { kind: "wand", H1, H2 };
     }
   / Stars
-  / AbstractPred
 
 AbstractPred
-  = body: "Φ #()" {
-    return { kind: "abstract", body };
-}
+  = body: Formula {
+     return { kind: "abstract", body };
+  }
 
 Stars // stars bind tighter than wands
   = hd:Term tl:(_ "∗" _ @Term)* {
@@ -134,17 +133,24 @@ Stars // stars bind tighter than wands
 Term
   = Parenthesized
   / Existential
+  / Forall
   / PointsTo
   / PurePredicate
   / GC
   / Modality
   / IfThenElse
+  / AbstractPred
 
 Parenthesized = "(" @WandFormula ")"
 
 Existential
-  = ("exists" / "∃") _ binder:name _ "," _ body:Stars {
+  = ("exists" / "∃") _ binder:name _ (":" _ type:name _)? "," _ body:Stars {
   return { kind: "existential", binder, body };
+}
+
+Forall
+  = "∀" _ binder:name _ (":" _ type:name _)? "," _ body:Stars {
+  return { kind: "forall", binder, body };
 }
 
 PointsTo
@@ -174,6 +180,8 @@ IfThenElse
     }
 
 Formula = (@Atom _)*
+
+ParenthesizedFormula  = "(" _ @Formula _ ")"
 
 Atom = $RawAtom / $ParenthesizedAtom
 
