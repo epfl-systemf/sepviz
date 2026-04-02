@@ -134,7 +134,7 @@ Term
   = Parenthesized
   / Existential
   / Forall
-  / BigSepL
+  / BigOp
   / PointsTo
   / PurePredicate
   / GC
@@ -154,15 +154,9 @@ Forall
   return { kind: "forall", binder, body };
 }
 
-BigSepL
-  = "[∗ list]" _ k:name _ "↦" _ x:name _ "∈" _ l:(name / ParenthesizedFormula) _ "," _ body:Stars {
-      return { kind: "bigSepL", k, x, l, body };
-    }
-  / "[∗ list]" _ x:name _ "∈" _ l:(name / ParenthesizedFormula) _ "," _ body:Stars {
-      return { kind: "bigSepL", k: null, x, l, body };
-    }
-  / "[∗]" _ body:Stars {
-      return { kind: "bigSepL", k: null, x: null, l: null, body };
+BigOp
+  = "BigOp" _ op:[^()\p{White_Space}]+ _ binder:ParenthesizedFormula _? "," _ body:Stars {
+      return { kind: "bigOp", op, binder, body };
     }
 
 PointsTo

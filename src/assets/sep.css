@@ -126,24 +126,24 @@
 }
 
 /* Iterated separating conjunction: BigSepL */
-.sep-bigsepl-box {
+.sep-bigop-box {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
   gap: 12px;
 }
 
-.sep-bigsepl-left {
+.sep-bigop-left {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
 }
 
-.sep-bigsepl-op {
+.sep-bigop-op {
   font-size: 1.5em;
   line-height: 1;
 }
 
-.sep-bigsepl-binder {
+.sep-bigop-binder {
   font-size: 0.7em;
 }
