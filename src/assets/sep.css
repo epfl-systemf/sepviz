@@ -31,7 +31,6 @@
 }
 
 .sep-pure-pred {
-  border-radius: var(--border-radius);
   background: var(--pure-background);
   white-space: nowrap;
 }
@@ -76,6 +75,10 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+}
+
+:is(.sep-other-pred-container, .sep-pure-pred-container):only-child {
+  border: none;
 }
 
 .sep-wand-hyp {
