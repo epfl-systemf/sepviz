@@ -1,5 +1,4 @@
 _plain
 dist
 node_modules
-src/parser.js
 .direnv

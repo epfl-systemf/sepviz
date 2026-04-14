@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
+import peggyPlugin from './vite-plugin-peggy';
 
 export default defineConfig({
+  plugins: [peggyPlugin()],
   publicDir: 'public',
   build: {
     outDir: 'dist',

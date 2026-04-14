@@ -5,8 +5,7 @@
  * - `DotBuilder`: given a heap state, constructs the DOT representation.
  */
 
-// @ts-ignore
-import { parse as peggyParse } from './parser';
+import { parse as sepParse } from './sep-grammar.g';
 
 import {
   Attrs,
@@ -77,7 +76,7 @@ export function parse(
   goalText: string,
   renderConfig: RenderConfig
 ): (HeapState | string)[] {
-  return peggyParse(goalText).map((unit: any) =>
+  return sepParse(goalText).map((unit: any) =>
     typeof unit === 'object'
       ? resolveSymbols(unit, renderConfig)
       : (unit as string)
