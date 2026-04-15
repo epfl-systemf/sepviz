@@ -20,17 +20,17 @@ function tryParse(desc, input) {
 }
 
 test('parse one simple plain region', () => {
-  expect(parse('text ⟬ inside the region ⟭ some more text')).toEqual([
+  expect(parse('text ⟬ ⟬ Opaque ┆ emp ⟭ ⟭ some more text')).toEqual([
     'text ',
-    { formula: 'inside the region' },
+    { hprop: { args: ['emp'], op: 'Opaque' } },
     ' some more text',
   ]);
 });
 
 test('parse one simple named region', () => {
-  expect(parse('text ⟬ PRE @ Hφ: inside the region ⟭ some more text')).toEqual([
+  expect(parse('text ⟬ PRE @ Hφ: ⟬ Opaque ┆ emp ⟭ ⟭ some more text')).toEqual([
     'text ',
-    { binder: 'Hφ', ctx: 'PRE', formula: 'inside the region' },
+    { binder: 'Hφ', ctx: 'PRE', hprop: { args: ['emp'], op: 'Opaque' } },
     ' some more text',
   ]);
 });
@@ -41,24 +41,24 @@ test('parse two regions', () => {
       '⟬ PRE @ Hφ: ⟬ NULL ┆ emp ⟭ ⟭ code do something (fun r => ⟬ POST @ ⟬ PointsTo ┆ r ┆ isList ┆ l1 ++ l2 ⟭⟭) '
     )
   ).toEqual([
-    { binder: 'Hφ', ctx: 'PRE', formula: { args: ['emp'], op: 'NULL' } },
+    { binder: 'Hφ', ctx: 'PRE', hprop: { args: ['emp'], op: 'NULL' } },
     ' code do something (fun r => ',
     {
       ctx: 'POST',
-      formula: { args: ['r', 'isList', 'l1 ++ l2'], op: 'PointsTo' },
+      hprop: { args: ['r', 'isList', 'l1 ++ l2'], op: 'PointsTo' },
     },
     ') ',
   ]);
 });
 
-test('parse nested formulas', () => {
+test('parse nested hprops', () => {
   expect(
     parse(
       '⟬⟬ STAR ┆ A ┆ ⟬ STAR ┆ B ┆ C ⟭ ┆ ⟬ PointsTo ┆ p: Int ┆ isList ┆ l1 ++ l2 ⟭ ⟭⟭'
     )
   ).toEqual([
     {
-      formula: {
+      hprop: {
         op: 'STAR',
         args: [
           'A',

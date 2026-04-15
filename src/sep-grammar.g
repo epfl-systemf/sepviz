@@ -3,7 +3,7 @@
 
    Peggy will generate a parser based on this grammar (handled by
    `vite-plugin-peggy.ts`). One can also run this command for manual generation:
-    `peggy --format es --dts -o sep-parser.js sep-grammar.g`.
+    `peggy --format es --dts -o sepParser.js sep-grammar.g`.
 */
 
 
@@ -30,34 +30,33 @@
 Goal = segs:Segment* { return mergeSegments(segs); }
 
 Segment
-  = Region
-  / !RegionLD @.
+  = HState
+  / !HStateLD @.
 
-RegionLD = "⟬"
-RegionRD = "⟭"
-RegionCtx = "PRE" / "POST"
+HStateLD = "⟬"
+HStateRD = "⟭"
+HStateCtx = "PRE" / "POST"
 
-Region
-  = RegionLD _  ctx:(@RegionCtx _ "@" _)? binder:(@Ident _ ":" _)? formula:Formula _ RegionRD {
-      let res = { formula };
+HState
+  = HStateLD _  ctx:(@HStateCtx _ "@" _)? binder:(@Ident _ ":" _)? hprop:HProp _ HStateRD {
+      let res = { hprop };
       if (ctx) res.ctx = ctx;
       if (binder) res.binder = binder;
       return res;
     }
 
-FormulaLD = "⟬"
-FormulaRD = "⟭"
-FormulaSep = "┆"
+HPropLD = "⟬"
+HPropRD = "⟭"
+HPropSep = "┆"
 
-Formula
-  = FormulaLD _ op:FormulaTerm args:(_ FormulaSep _ @Formula)* _ FormulaRD {
+HProp
+  = HPropLD _ op:HPropTerm args:(_ HPropSep _ @(HProp / HPropTerm))* _ HPropRD {
       return { op, args };
     }
-  / FormulaTerm
 
 
-FormulaTerm = cs:FormulaChar* { return cs.join("").trim(); }
-FormulaChar = !(FormulaSep / FormulaRD) @.
+HPropTerm = cs:HPropChar* { return cs.join("").trim(); }
+HPropChar = !(HPropSep / HPropRD) @.
 
 Ident = $([a-zA-Z_\u0080-\uFFFF] [a-zA-Z0-9_'\u0080-\uFFFF]*)
 

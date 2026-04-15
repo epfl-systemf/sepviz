@@ -5,6 +5,7 @@
  * - `DotBuilder`: given a heap state, constructs the DOT representation.
  */
 
+// @ts-ignore
 import { parse as sepParse } from './sep-grammar.g';
 
 import {
