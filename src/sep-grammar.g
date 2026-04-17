@@ -30,16 +30,16 @@
 Goal = segs:Segment* { return mergeSegments(segs); }
 
 Segment
-  = HState
-  / !HStateLD @.
+  = RichHProp / HProp / !(RichHPropLD / HPropLD) @.
 
-HStateLD = "⟬"
-HStateRD = "⟭"
-HStateCtx = "PRE" / "POST"
+CtxIdent = "PRE" / "POST"
+Sep = "┆"
 
-HState
-  = HStateLD _  ctx:(@HStateCtx _ "@" _)? binder:(@Ident _ ":" _)? hprop:HProp _ HStateRD {
-      let res = { hprop };
+RichHPropLD = "⟬*"
+RichHPropRD = "*⟭"
+RichHProp
+  = RichHPropLD _ ctx:(@CtxIdent _ "@" _)? binder:(@Ident _ ":" _)? hprop:HProp _ RichHPropRD {
+      const res = hprop;
       if (ctx) res.ctx = ctx;
       if (binder) res.binder = binder;
       return res;
@@ -47,20 +47,32 @@ HState
 
 HPropLD = "⟬"
 HPropRD = "⟭"
-HPropSep = "┆"
-
 HProp
-  = HPropLD _ op:HPropTerm args:(_ HPropSep _ @(HProp / HPropTerm))* _ HPropRD {
-      return { op, args };
+  = HPropLD _ op:Ident args:(_ Sep _ @(HProp / HPropTerm))* _ HPropRD {
+      return { kind: "hprop", op, args };
     }
 
+HPropTerm = segs:HPropTermSegment* {
+    const res = mergeSegments(segs)
+      .filter((s) => !(typeof s === "string" && s.trim().length == 0));
+    if (res.length == 1) return (typeof res[0] === "string") ? res[0].trim() : res[0];
+    return res;
+  }
 
-HPropTerm = cs:HPropChar* { return cs.join("").trim(); }
-HPropChar = !(HPropSep / HPropRD) @.
+HPropTermSegment
+  = Value
+   / !(Sep / HPropLD / HPropRD / ValueLD) @.
+
+ValueLD = "⟦"
+ValueRD = "⟧"
+Value
+  = ValueLD _ op:Ident args:(_ Sep _ @(Value / ValueTerm))* _ ValueRD {
+      return { kind: "value", op, args};
+    }
+
+ValueTerm = cs: ValueTermChar* { return cs.join("").trim(); }
+ValueTermChar = !(Sep / ValueLD / ValueRD) @.
 
 Ident = $([a-zA-Z_\u0080-\uFFFF] [a-zA-Z0-9_'\u0080-\uFFFF]*)
-
-IdentCont
-  = [a-zA-Z0-9_'\u0080-\uFFFF]
 
 _ "whitespace" = $[\p{White_Space}]*

@@ -9,8 +9,178 @@
 // @ts-ignore
 import { parse as sepParse } from './sep-grammar.g';
 
-import type { Goal } from './sepGrammar.types';
+function isString(x: unknown): x is string {
+  return typeof x === 'string';
+}
 
-export function parse(input: string): Goal {
-  return sepParse(input) as Goal;
+export type Goal = MaybeHProp[];
+
+export type MaybeHProp = HProp | string;
+
+export function MaybeHProp_isHProp(x: MaybeHProp): x is HProp {
+  return typeof x === 'object';
+}
+
+export type HPropCtx = 'PRE' | 'POST';
+
+export type MaybeValue = Value | MaybeSymbol;
+
+export function MaybeValue_isValue(x: MaybeValue): x is Value {
+  return typeof x === 'object' && 'op' in x;
+}
+
+export interface Value {
+  op: string;
+  args: MaybeValue[];
+}
+
+export type HPropArg = HProp | MaybeSymbol | MaybeValue[];
+
+export function HPropArg_isHProp(x: HPropArg): x is HProp {
+  return typeof x === 'object' && 'op' in x;
+}
+
+export function HPropArg_isMaybeValues(x: HPropArg): x is MaybeValue[] {
+  return Array.isArray(x);
+}
+
+export interface HProp {
+  op: string;
+  args: HPropArg[];
+  ctx?: HPropCtx;
+  binder?: string; // used in iris, hypothesis name
+}
+
+export type Uid = string;
+
+export interface Symbol {
+  isGlobal: boolean;
+  uid: Uid;
+  label: string;
+}
+
+export type MaybeSymbol = Symbol | string;
+
+export function parse(input: string) {
+  let goal = sepParse(input) as Goal;
+  goal.forEach((seg: MaybeHProp) => {
+    if (MaybeHProp_isHProp(seg)) flatten(seg);
+  });
+
+  goal = resolveSymbols(goal);
+
+  return goal;
+}
+
+/**
+ * Flatten nestest binary ops (e.g. [Star]s) into n-ary op (e.g. [Stars]).
+ * Mutate in place.
+ */
+function flatten(hprop: HProp): void {
+  const toFlattenOps = ['Star', 'Conj', 'Disj'];
+
+  function rec(x: HProp): void {
+    x.args.forEach((arg: HPropArg) => {
+      if (HPropArg_isHProp(arg)) flatten(arg);
+    });
+    if (toFlattenOps.includes(x.op)) {
+      const op = x.op + 's';
+      x.op = op;
+      x.args = x.args.flatMap((a: HPropArg) =>
+        HPropArg_isHProp(a) && a.op === op ? a.args : [a]
+      );
+    }
+  }
+
+  rec(hprop);
+}
+
+/**
+ * Resolve symbols and lift local [Exist] and [Forall] quantifiers to global.
+ */
+function resolveSymbols(goal: Goal): Goal {
+  const gensym: Record<string, number> = {};
+  const ctx: Record<string, Symbol> = {};
+
+  function next(prefix: string): number {
+    if (!(prefix in gensym)) gensym[prefix] = 0;
+    return gensym[prefix]++;
+  }
+
+  function resolve(s: string): Symbol {
+    return s in ctx ? ctx[s] : { isGlobal: true, uid: s, label: s };
+  }
+
+  function register(s: string): void {
+    const num = next(s);
+    ctx[s] = {
+      isGlobal: false,
+      uid: s + '$' + num,
+      label: `${s}${num}`,
+    };
+  }
+
+  return goal.map((x: MaybeHProp) =>
+    MaybeHProp_isHProp(x) ? resolveHProp(x) : x
+  );
+
+  function resolveHProp(x: HProp): HProp {
+    switch (x.op) {
+      case 'Exist': {
+        assertArgCount(x.args, 2, 'Exist');
+        assertArgType(isString(x.args[0]), x.args[0], 'string', 'Exist');
+        assertArgType(HPropArg_isHProp(x.args[1]), x.args[1], 'HProp', 'Exist');
+
+        const binder = x.args[0] as string;
+        register(binder);
+        return resolveHProp(x.args[1] as HProp);
+      }
+      default: {
+        return {
+          op: x.op,
+          args: x.args.map((y) => resolveHPropArg(y)),
+          ...(x.ctx !== undefined && { ctx: x.ctx }),
+          ...(x.binder !== undefined && { binder: x.binder }),
+        };
+      }
+    }
+  }
+
+  function resolveHPropArg(x: HPropArg): HPropArg {
+    if (HPropArg_isHProp(x)) return resolveHProp(x);
+    if (HPropArg_isMaybeValues(x)) return x.map((y) => resolveMaybeValue(y));
+    if (typeof x === 'string' && x in ctx) return resolve(x);
+    return x;
+  }
+
+  function resolveMaybeValue(x: MaybeValue): MaybeValue {
+    if (MaybeValue_isValue(x)) return resolveValue(x);
+    if (typeof x === 'string' && x in ctx) return resolve(x);
+    return x;
+  }
+
+  function resolveValue(x: Value): Value {
+    return { op: x.op, args: x.args.map((y) => resolveMaybeValue(y)) };
+  }
+
+  function assertArgCount(args: unknown[], expected: number, name: string) {
+    if (args.length !== expected) {
+      throw new Error(
+        `'${name}' expects ${expected} arguments, got ${args.length}`
+      );
+    }
+  }
+
+  function assertArgType(
+    check: boolean,
+    x: unknown,
+    expected: string,
+    name: string
+  ) {
+    if (!check) {
+      throw new Error(
+        `'${name}' arg expects ${expected}, got ${JSON.stringify(x)}`
+      );
+    }
+  }
 }

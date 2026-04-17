@@ -20,52 +20,91 @@ function tryParse(desc, input) {
 }
 
 test('parse one simple plain region', () => {
-  expect(parse('text ⟬ ⟬ Opaque ┆ emp ⟭ ⟭ some more text')).toEqual([
+  expect(parse('text ⟬ Opaque ┆ emp ⟭ some more text')).toEqual([
     'text ',
-    { hprop: { args: ['emp'], op: 'Opaque' } },
+    { kind: 'hprop', args: ['emp'], op: 'Opaque' },
     ' some more text',
   ]);
 });
 
 test('parse one simple named region', () => {
-  expect(parse('text ⟬ PRE @ Hφ: ⟬ Opaque ┆ emp ⟭ ⟭ some more text')).toEqual([
-    'text ',
-    { binder: 'Hφ', ctx: 'PRE', hprop: { args: ['emp'], op: 'Opaque' } },
-    ' some more text',
-  ]);
+  expect(parse('text ⟬* PRE @ Hφ: ⟬ Opaque ┆ emp ⟭ *⟭ some more text')).toEqual(
+    [
+      'text ',
+      {
+        kind: 'hprop',
+        op: 'Opaque',
+        args: ['emp'],
+        binder: 'Hφ',
+        ctx: 'PRE',
+      },
+      ' some more text',
+    ]
+  );
 });
 
 test('parse two regions', () => {
   expect(
     parse(
-      '⟬ PRE @ Hφ: ⟬ NULL ┆ emp ⟭ ⟭ code do something (fun r => ⟬ POST @ ⟬ PointsTo ┆ r ┆ isList ┆ l1 ++ l2 ⟭⟭) '
+      '⟬* PRE @ Hφ: ⟬ NULL ┆ emp ⟭ *⟭ code do something (fun r => ⟬* POST @ ⟬ PointsTo ┆ r ┆ isList ┆ l1 ++ l2 ⟭ *⟭) '
     )
   ).toEqual([
-    { binder: 'Hφ', ctx: 'PRE', hprop: { args: ['emp'], op: 'NULL' } },
+    {
+      kind: 'hprop',
+      args: ['emp'],
+      op: 'NULL',
+      binder: 'Hφ',
+      ctx: 'PRE',
+    },
     ' code do something (fun r => ',
     {
+      kind: 'hprop',
+      op: 'PointsTo',
+      args: ['r', 'isList', 'l1 ++ l2'],
       ctx: 'POST',
-      hprop: { args: ['r', 'isList', 'l1 ++ l2'], op: 'PointsTo' },
     },
     ') ',
+  ]);
+});
+
+test('parse value', () => {
+  expect(
+    parse(
+      'text ⟬ PointsTo ┆ p ┆ isValue ┆ z + ⟦ SpecialV ┆ x ┆ y ⟧ ⟭ some more text'
+    )
+  ).toEqual([
+    'text ',
+    {
+      kind: 'hprop',
+      args: [
+        'p',
+        'isValue',
+        ['z + ', { kind: 'value', op: 'SpecialV', args: ['x', 'y'] }],
+      ],
+      op: 'PointsTo',
+    },
+    ' some more text',
   ]);
 });
 
 test('parse nested hprops', () => {
   expect(
     parse(
-      '⟬⟬ STAR ┆ A ┆ ⟬ STAR ┆ B ┆ C ⟭ ┆ ⟬ PointsTo ┆ p: Int ┆ isList ┆ l1 ++ l2 ⟭ ⟭⟭'
+      '⟬ STAR ┆ A ┆ ⟬ STAR ┆ B ┆ C ⟭ ┆ ⟬ PointsTo ┆ p: Int ┆ isList ┆ l1 ++ l2 ⟭ ⟭'
     )
   ).toEqual([
     {
-      hprop: {
-        op: 'STAR',
-        args: [
-          'A',
-          { op: 'STAR', args: ['B', 'C'] },
-          { op: 'PointsTo', args: ['p: Int', 'isList', 'l1 ++ l2'] },
-        ],
-      },
+      kind: 'hprop',
+      op: 'STAR',
+      args: [
+        'A',
+        { kind: 'hprop', op: 'STAR', args: ['B', 'C'] },
+        {
+          kind: 'hprop',
+          op: 'PointsTo',
+          args: ['p: Int', 'isList', 'l1 ++ l2'],
+        },
+      ],
     },
   ]);
 });
