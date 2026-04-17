@@ -9,17 +9,11 @@
 // @ts-ignore
 import { parse as sepParse } from './sep-grammar.g';
 
-function isString(x: unknown): x is string {
-  return typeof x === 'string';
-}
+// -- AST Types ----------------------------------------------------------------
 
 export type Goal = MaybeHProp[];
 
 export type MaybeHProp = HProp | string;
-
-export function MaybeHProp_isHProp(x: MaybeHProp): x is HProp {
-  return typeof x === 'object';
-}
 
 export type HPropCtx = 'PRE' | 'POST';
 
@@ -36,19 +30,11 @@ export interface Value {
 
 export type HPropArg = HProp | MaybeSymbol | MaybeValue[];
 
-export function HPropArg_isHProp(x: HPropArg): x is HProp {
-  return typeof x === 'object' && 'op' in x;
-}
-
-export function HPropArg_isMaybeValues(x: HPropArg): x is MaybeValue[] {
-  return Array.isArray(x);
-}
-
 export interface HProp {
   op: string;
   args: HPropArg[];
   ctx?: HPropCtx;
-  binder?: string; // used in iris, hypothesis name
+  binder?: string; // hypothesis name (used in iris)
 }
 
 export type Uid = string;
@@ -59,21 +45,44 @@ export interface Symbol {
   label: string;
 }
 
+function isString(x: unknown): x is string {
+  return typeof x === 'string';
+}
+
 export type MaybeSymbol = Symbol | string;
+
+export function MaybeHProp_isHProp(x: MaybeHProp): x is HProp {
+  return typeof x === 'object';
+}
+
+export function HPropArg_isHProp(x: HPropArg): x is HProp {
+  return typeof x === 'object' && 'op' in x;
+}
+
+export function HPropArg_isMaybeValues(x: HPropArg): x is MaybeValue[] {
+  return Array.isArray(x);
+}
+
+// -- Parsing ------------------------------------------------------------------
 
 export function parse(input: string) {
   let goal = sepParse(input) as Goal;
+  // flatten stars, conjs, disjs
   goal.forEach((seg: MaybeHProp) => {
     if (MaybeHProp_isHProp(seg)) flatten(seg);
   });
-
+  // aggregate pures, points-tos
+  goal = goal.map((seg: MaybeHProp) =>
+    MaybeHProp_isHProp(seg) ? aggregate(seg) : seg
+  );
+  // resolve symbols and lift exists
   goal = resolveSymbols(goal);
 
   return goal;
 }
 
 /**
- * Flatten nestest binary ops (e.g. [Star]s) into n-ary op (e.g. [Stars]).
+ * Flatten nestest binary ops (e.g. `Star`s) into n-ary op (e.g. `Stars`).
  * Mutate in place.
  */
 function flatten(hprop: HProp): void {
@@ -81,7 +90,7 @@ function flatten(hprop: HProp): void {
 
   function rec(x: HProp): void {
     x.args.forEach((arg: HPropArg) => {
-      if (HPropArg_isHProp(arg)) flatten(arg);
+      if (HPropArg_isHProp(arg)) rec(arg);
     });
     if (toFlattenOps.includes(x.op)) {
       const op = x.op + 's';
@@ -96,7 +105,46 @@ function flatten(hprop: HProp): void {
 }
 
 /**
- * Resolve symbols and lift local [Exist] and [Forall] quantifiers to global.
+ * Aggregate repeated `Pure` and `PointsTo` in `Stars`. E.g., tranform
+ * `Stars(Pure(P1), ..., Pure(Pn), ...)` into `Stars(Pures(Pure(P1), ..., Pure(Pn)), ...)`.
+ */
+function aggregate(hprop: HProp): HProp {
+  const toCoalesceOps = ['Pure', 'PointsTo'];
+
+  function rec(x: HProp, op: string): HProp {
+    const isOp = (y: HPropArg) => HPropArg_isHProp(y) && y.op === op;
+    const notOp = (y: HPropArg) => !isOp(y);
+    const args = x.args.map((arg) =>
+      HPropArg_isHProp(arg) ? rec(arg, op) : arg
+    );
+    if (x.op === 'Stars') {
+      const ops: HProp = {
+        op: op + 's',
+        args: args.filter(isOp),
+      };
+      if (ops.args.length !== 0)
+        return {
+          op: x.op,
+          args: [ops, ...args.filter(notOp)],
+          ...(x.ctx !== undefined && { ctx: x.ctx }),
+          ...(x.binder !== undefined && { binder: x.binder }),
+        };
+    }
+    return {
+      op: x.op,
+      args: args,
+      ...(x.ctx !== undefined && { ctx: x.ctx }),
+      ...(x.binder !== undefined && { binder: x.binder }),
+    };
+  }
+
+  let x = hprop;
+  toCoalesceOps.forEach((op) => (x = rec(x, op)));
+  return x;
+}
+
+/**
+ * Resolve symbols and lift local [Exist] quantifiers to the global scope.
  */
 function resolveSymbols(goal: Goal): Goal {
   const gensym: Record<string, number> = {};
