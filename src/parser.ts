@@ -9,6 +9,7 @@
 // @ts-ignore
 import { parse as sepParse } from './sep-grammar.g';
 import * as Sep from './sep-grammar.types';
+import { assert } from './utility';
 
 // -- AST Types ----------------------------------------------------------------
 
@@ -46,10 +47,16 @@ export type Term = Value | Symbol | string;
 
 // Compared to Sep.Value, Value is a class in order to use `instanceof`
 export class Value {
+  public uid: string;
+  public label: string;
   constructor(
     public op: string,
-    public args: Term[]
-  ) {}
+    public args: Term[],
+    config?: ValueConfig
+  ) {
+    this.uid = config ? this.genUid() : '';
+    this.label = config ? this.genLabel(config) : '';
+  }
 
   public genUid(): string {
     return (
@@ -63,16 +70,15 @@ export class Value {
     );
   }
 
-  public genLabel(): string {
-    // FIXME
-    return (
-      this.op +
-      ' ' +
-      this.args
-        .map((x: Term) =>
-          x instanceof Value ? x.genUid() : x instanceof Symbol ? x.uid : x
-        )
-        .join(' ')
+  public genLabel(config: ValueConfig): string {
+    const opConfig = config[this.op];
+    if (!opConfig) {
+      // Fallback: op(arg1, arg2, ...)
+      const argLabels = this.args.map((a) => termLabel(a));
+      return `${this.op}(${argLabels.join(', ')})`;
+    }
+    return opConfig.pattern.replace(/\$(\d+)/g, (_, i) =>
+      termLabel(this.args[parseInt(i) - 1])
     );
   }
 }
@@ -89,196 +95,210 @@ function HPropArg_isTerm(x: HPropArg): x is Term {
   return !(x instanceof HProp) && !Array.isArray(x);
 }
 
+function termLabel(x: Term): string {
+  return x instanceof Value ? x.label : x instanceof Symbol ? x.label : x;
+}
+
 // -- Parsing ------------------------------------------------------------------
 
-export function parse(input: string) {
-  const sepGoal = sepParse(input) as Sep.Goal;
-  let goal: Goal = convertGoal(sepGoal);
-  // flatten `Star`s, `Conj`s, `Disj`s
-  goal.forEach((seg: MaybeHProp) => {
-    if (seg instanceof HProp) flatten(seg);
-  });
-  // aggregate `Pure`s, `PointsTo`s
-  goal = goal.map((seg: MaybeHProp) =>
-    seg instanceof HProp ? aggregate(seg) : seg
-  );
-  // resolve symbols, handle `Exist` and `PointsTo`
-  goal = resolveSymbols(goal);
-  return goal;
+// TODO: move it
+export interface Config {
+  value: ValueConfig;
 }
-
-function convertGoal(goal: Sep.Goal): Goal {
-  return goal.map(convertMaybeHProp);
-
-  function convertValue(x: Sep.Value): Value {
-    return new Value(x.op, x.args.map(convertMaybeValue));
-  }
-
-  function convertMaybeValue(x: Sep.MaybeValue): Term {
-    return typeof x === 'object' ? convertValue(x) : x;
-  }
-
-  function convertHPropArg(x: Sep.HPropArg): HPropArg {
-    if (Array.isArray(x)) return x.map(convertMaybeValue);
-    if (typeof x === 'object' && 'kind' in x) {
-      if (x.kind === 'hprop') return convertHProp(x as Sep.HProp);
-      if (x.kind === 'value') return convertValue(x as Sep.Value);
-    }
-    return x as string;
-  }
-
-  function convertHProp(x: Sep.HProp): HProp {
-    return new HProp(x.op, x.args.map(convertHPropArg), x.ctx, x.binder);
-  }
-
-  function convertMaybeHProp(x: Sep.MaybeHProp): MaybeHProp {
-    return typeof x === 'object' ? convertHProp(x) : x;
-  }
+export interface ValuePatternConfig {
+  argNum: number;
+  pattern: string;
 }
+export type ValueConfig = Record<string, ValuePatternConfig>;
 
-/**
- * Flatten nestest binary ops (e.g. `Star`s) into n-ary op (e.g. `Stars`).
- * Mutate in place.
- */
-function flatten(hprop: HProp): void {
-  const toFlattenOps = ['Star', 'Conj', 'Disj'];
+export class Parser {
+  constructor(private config: Config) {}
 
-  function rec(x: HProp): void {
-    x.args.forEach((arg: HPropArg) => {
-      if (arg instanceof HProp) rec(arg);
+  public parse(input: string) {
+    const sepGoal = sepParse(input) as Sep.Goal;
+    let goal: Goal = this.convertGoal(sepGoal);
+    // flatten `Star`s, `Conj`s, `Disj`s
+    goal.forEach((seg: MaybeHProp) => {
+      if (seg instanceof HProp) this.flatten(seg);
     });
-    if (toFlattenOps.includes(x.op)) {
-      const op = x.op + 's';
-      x.op = op;
-      x.args = x.args.flatMap((a: HPropArg) =>
-        a instanceof HProp && a.op === op ? a.args : [a]
-      );
-    }
-  }
-
-  rec(hprop);
-}
-
-/**
- * Aggregate repeated `Pure` and `PointsTo` in `Stars`. E.g., tranform
- * `Stars(Pure(P1), ..., Pure(Pn), ...)` into `Stars(Pures(Pure(P1), ..., Pure(Pn)), ...)`.
- */
-function aggregate(hprop: HProp): HProp {
-  const toCoalesceOps = ['Pure', 'PointsTo'];
-
-  function rec(x: HProp, op: string): HProp {
-    const isOp = (y: HPropArg) => y instanceof HProp && y.op === op;
-    const notOp = (y: HPropArg) => !isOp(y);
-    const args = x.args.map((arg) =>
-      arg instanceof HProp ? rec(arg, op) : arg
+    // aggregate `Pure`s, `PointsTo`s
+    goal = goal.map((seg: MaybeHProp) =>
+      seg instanceof HProp ? this.aggregate(seg) : seg
     );
-    if (x.op === 'Stars') {
-      const ops = new HProp(op + 's', args.filter(isOp));
-      if (ops.args.length !== 0)
-        return new HProp(x.op, [ops, ...args.filter(notOp)], x.ctx, x.binder);
+    // resolve symbols, handle `Exist` and `PointsTo`
+    goal = this.resolveSymbols(goal);
+    return goal;
+  }
+
+  private convertGoal(goal: Sep.Goal): Goal {
+    return goal.map(convertMaybeHProp);
+
+    function convertValue(x: Sep.Value): Value {
+      return new Value(x.op, x.args.map(convertMaybeValue));
     }
-    return new HProp(x.op, args, x.ctx, x.binder);
-  }
 
-  let x = hprop;
-  toCoalesceOps.forEach((op) => (x = rec(x, op)));
-  return x;
-}
+    function convertMaybeValue(x: Sep.MaybeValue): Term {
+      return typeof x === 'object' ? convertValue(x) : x;
+    }
 
-/**
- * Resolve symbols, handle `Exist` and `PointsTo`:
- * - lift local `Exist` quantifiers to the global scope.
- * - parse `PointsTo` to the `HProp` subtype `HProp_PointsTo`
- */
-function resolveSymbols(goal: Goal): Goal {
-  const gensym: Record<string, number> = {};
-  const ctx: Record<string, Symbol> = {};
-
-  function next(prefix: string): number {
-    if (!(prefix in gensym)) gensym[prefix] = 0;
-    return gensym[prefix]++;
-  }
-
-  function resolve(s: string): Symbol | string {
-    // return s in ctx ? ctx[s] : { isGlobal: true, uid: s, label: s }; // TODO
-    return s in ctx ? ctx[s] : s;
-  }
-
-  function registerLocal(s: string): void {
-    const num = next(s);
-    ctx[s] = new Symbol(false, s + '$' + num, `${s}${num}`);
-  }
-
-  function registerGlobal(uid: string, label: string): Symbol {
-    if (uid in ctx) return ctx[uid];
-    ctx[uid] = new Symbol(true, uid, label);
-    return ctx[uid];
-  }
-
-  return goal.map((x) => (x instanceof HProp ? resolveHProp(x) : x));
-
-  function resolveHProp(x: HProp): HProp {
-    switch (x.op) {
-      case 'Exist': {
-        assert(x.args.length === 2, 'Exist expects 2 arguments');
-        assert(typeof x.args[0] === 'string', ``);
-        assert(x.args[1] instanceof HProp, ``);
-
-        const binder = x.args[0] as string;
-        registerLocal(binder);
-        return resolveHProp(x.args[1] as HProp);
+    function convertHPropArg(x: Sep.HPropArg): HPropArg {
+      if (Array.isArray(x)) return x.map(convertMaybeValue);
+      if (typeof x === 'object' && 'kind' in x) {
+        if (x.kind === 'hprop') return convertHProp(x as Sep.HProp);
+        if (x.kind === 'value') return convertValue(x as Sep.Value);
       }
-      case 'PointsTo': {
-        const args = x.args.map(resolveHPropArg);
-        assert(x.args.length === 2, 'PointsTo expects 2 arguments');
+      return x as string;
+    }
 
-        assert(
-          HPropArg_isTerm(args[0]),
-          `1st argument of PointsTo should be a Term`
-        );
-        const loc_term = args[0] as Term;
-        const loc =
-          loc_term instanceof Value
-            ? registerGlobal(loc_term.genUid(), loc_term.genLabel())
-            : loc_term;
+    function convertHProp(x: Sep.HProp): HProp {
+      return new HProp(x.op, x.args.map(convertHPropArg), x.ctx, x.binder);
+    }
 
-        assert(
-          args[1] instanceof Value,
-          `2nd argument of PointsTo should be a Value`
-        );
-        const repr_value = args[1] as Value;
-        const repr = repr_value.op;
-
-        return new HProp_PointsTo(
-          x.op,
-          loc,
-          repr,
-          repr_value.args,
-          x.ctx,
-          x.binder
-        );
-      }
-      default:
-        return new HProp(x.op, x.args.map(resolveHPropArg), x.ctx, x.binder);
+    function convertMaybeHProp(x: Sep.MaybeHProp): MaybeHProp {
+      return typeof x === 'object' ? convertHProp(x) : x;
     }
   }
 
-  function resolveHPropArg(x: HPropArg): HPropArg {
-    if (x instanceof HProp) return resolveHProp(x);
-    if (Array.isArray(x)) return x.map(resolveTerm);
-    return resolveTerm(x as Term);
+  /**
+   * Flatten nestest binary ops (e.g. `Star`s) into n-ary op (e.g. `Stars`).
+   * Mutate in place.
+   */
+  private flatten(hprop: HProp): void {
+    const toFlattenOps = ['Star', 'Conj', 'Disj'];
+
+    function rec(x: HProp): void {
+      x.args.forEach((arg: HPropArg) => {
+        if (arg instanceof HProp) rec(arg);
+      });
+      if (toFlattenOps.includes(x.op)) {
+        const op = x.op + 's';
+        x.op = op;
+        x.args = x.args.flatMap((a: HPropArg) =>
+          a instanceof HProp && a.op === op ? a.args : [a]
+        );
+      }
+    }
+
+    rec(hprop);
   }
 
-  function resolveTerm(x: Term): Term {
-    if (x instanceof Value) return resolveValue(x);
-    return resolve(x as string);
+  /**
+   * Aggregate repeated `Pure` and `PointsTo` in `Stars`. E.g., tranform
+   * `Stars(Pure(P1), ..., Pure(Pn), ...)` into `Stars(Pures(Pure(P1), ..., Pure(Pn)), ...)`.
+   */
+  private aggregate(hprop: HProp): HProp {
+    const toCoalesceOps = ['Pure', 'PointsTo'];
+
+    function rec(x: HProp, op: string): HProp {
+      const isOp = (y: HPropArg) => y instanceof HProp && y.op === op;
+      const notOp = (y: HPropArg) => !isOp(y);
+      const args = x.args.map((arg) =>
+        arg instanceof HProp ? rec(arg, op) : arg
+      );
+      if (x.op === 'Stars') {
+        const ops = new HProp(op + 's', args.filter(isOp));
+        if (ops.args.length !== 0)
+          return new HProp(x.op, [ops, ...args.filter(notOp)], x.ctx, x.binder);
+      }
+      return new HProp(x.op, args, x.ctx, x.binder);
+    }
+
+    let x = hprop;
+    toCoalesceOps.forEach((op) => (x = rec(x, op)));
+    return x;
   }
 
-  function resolveValue(x: Value): Value {
-    return new Value(x.op, x.args.map(resolveTerm));
-  }
-}
+  /**
+   * Resolve symbols, handle `Exist` and `PointsTo`:
+   * - lift local `Exist` quantifiers to the global scope.
+   * - parse `PointsTo` to the `HProp` subtype `HProp_PointsTo`
+   */
+  private resolveSymbols(goal: Goal): Goal {
+    const gensym: Record<string, number> = {};
+    const ctx: Record<string, Symbol> = {};
+    const valueConfig: ValueConfig = this.config.value;
 
-function assert(condition: boolean, msg: string): asserts condition {
-  if (!condition) throw new Error(msg);
+    function next(prefix: string): number {
+      if (!(prefix in gensym)) gensym[prefix] = 0;
+      return gensym[prefix]++;
+    }
+
+    function resolve(s: string): Symbol | string {
+      return s in ctx ? ctx[s] : s;
+    }
+
+    function registerLocal(s: string): void {
+      const num = next(s);
+      ctx[s] = new Symbol(false, s + '$' + num, `${s}${num}`);
+    }
+
+    function registerGlobal(uid: string, label: string): Symbol {
+      if (uid in ctx) return ctx[uid];
+      ctx[uid] = new Symbol(true, uid, label);
+      return ctx[uid];
+    }
+
+    return goal.map((x) => (x instanceof HProp ? resolveHProp(x) : x));
+
+    function resolveHProp(x: HProp): HProp {
+      switch (x.op) {
+        case 'Exist': {
+          assert(x.args.length === 2, 'Exist expects 2 arguments');
+          assert(typeof x.args[0] === 'string', ``);
+          assert(x.args[1] instanceof HProp, ``);
+
+          const binder = x.args[0] as string;
+          registerLocal(binder);
+          return resolveHProp(x.args[1] as HProp);
+        }
+        case 'PointsTo': {
+          const args = x.args.map(resolveHPropArg);
+          assert(x.args.length === 2, 'PointsTo expects 2 arguments');
+
+          assert(
+            HPropArg_isTerm(args[0]),
+            `1st argument of PointsTo should be a Term`
+          );
+          const loc_term = args[0] as Term;
+          const loc =
+            loc_term instanceof Value
+              ? registerGlobal(loc_term.uid, loc_term.label)
+              : loc_term;
+
+          assert(
+            args[1] instanceof Value,
+            `2nd argument of PointsTo should be a Value`
+          );
+          const repr_value = args[1] as Value;
+          const repr = repr_value.op;
+
+          return new HProp_PointsTo(
+            x.op,
+            loc,
+            repr,
+            repr_value.args,
+            x.ctx,
+            x.binder
+          );
+        }
+        default:
+          return new HProp(x.op, x.args.map(resolveHPropArg), x.ctx, x.binder);
+      }
+    }
+
+    function resolveHPropArg(x: HPropArg): HPropArg {
+      if (x instanceof HProp) return resolveHProp(x);
+      if (Array.isArray(x)) return x.map(resolveTerm);
+      return resolveTerm(x as Term);
+    }
+
+    function resolveTerm(x: Term): Term {
+      if (x instanceof Value) return resolveValue(x);
+      return resolve(x as string);
+    }
+
+    function resolveValue(x: Value): Value {
+      return new Value(x.op, x.args.map(resolveTerm), valueConfig);
+    }
+  }
 }

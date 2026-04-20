@@ -73,6 +73,6 @@ Value
 ValueTerm = cs: ValueTermChar* { return cs.join("").trim(); }
 ValueTermChar = !(Sep / ValueLD / ValueRD) @.
 
-Ident = $([a-zA-Z_\u0080-\uFFFF$] [a-zA-Z0-9_'\u0080-\uFFFF]*)
+Ident = $([a-zA-Z_\u0080-\uFFFF$\@] [a-zA-Z0-9_'\u0080-\uFFFF]*)
 
 _ "whitespace" = $[\p{White_Space}]*

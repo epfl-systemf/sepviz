@@ -1,3 +1,7 @@
+export function assert(condition: boolean, msg: string): asserts condition {
+  if (!condition) throw new Error(msg);
+}
+
 /** HTML Utilities */
 
 // Create a DOM element with given classes and optional text/id.
