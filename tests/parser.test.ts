@@ -1,4 +1,11 @@
-import { parse, Goal, HProp, Value, Symbol } from '../src/parser';
+import {
+  parse,
+  Goal,
+  HProp,
+  HProp_PointsTo,
+  Value,
+  Symbol,
+} from '../src/parser';
 import { expect, test } from 'vitest';
 
 test('flatten stars', () => {
@@ -16,13 +23,11 @@ test('flatten stars', () => {
 test('resolve symbols', () => {
   // instead of `l1 ++ l2`, the rocq output should be ⟦ list_append ┆ l1 ┆ l2 ⟧
   const text =
-    '(fun r => ⟬ Exist ┆ l1 ┆ ⟬ PointsTo ┆ r ┆ isList ┆ ⟦ list_append ┆ l1 ┆ l2 ⟧ ⟭ ⟭)';
+    '(fun r => ⟬ Exist ┆ l1 ┆ ⟬ PointsTo ┆ r ┆ ⟦ isList ┆ ⟦ list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭ ⟭)';
   const goal: Goal = parse(text);
   expect(goal).toEqual([
     '(fun r => ',
-    new HProp('PointsTo', [
-      'r',
-      'isList',
+    new HProp_PointsTo('PointsTo', 'r', 'isList', [
       new Value('list_append', [new Symbol(false, 'l1$0', 'l10'), 'l2']),
     ]),
     ')',
@@ -55,22 +60,36 @@ test('pointsto example', () => {
   expect(goal).toEqual([
     new HProp('Stars', [
       new HProp('PointsTos', [
-        new HProp('PointsTo', ['p1', new Value('$MCell', ['f1', 'b1'])]),
-        new HProp('PointsTo', ['f2', new Value('$MCell', ['x', 'c2'])]),
-        new HProp('PointsTo', ['c2', new Value('$MListSeg', ['b2', "L2'"])]),
-        new HProp('PointsTo', ['p2', new Value('$MCell', ['f2', 'b2'])]),
-        new HProp('PointsTo', ['b2', new Value('$MCell', ['d2', 'null'])]),
-        new HProp('PointsTo', ['f1', new Value('$MListSeg', ['b1', 'L1'])]),
-        new HProp('PointsTo', ['b1', new Value('$MCell', ['d1', 'null'])]),
+        new HProp_PointsTo('PointsTo', 'p1', '$MCell', ['f1', 'b1']),
+        new HProp_PointsTo('PointsTo', 'f2', '$MCell', ['x', 'c2']),
+        new HProp_PointsTo('PointsTo', 'c2', '$MListSeg', ['b2', "L2'"]),
+        new HProp_PointsTo('PointsTo', 'p2', '$MCell', ['f2', 'b2']),
+        new HProp_PointsTo('PointsTo', 'b2', '$MCell', ['d2', 'null']),
+        new HProp_PointsTo('PointsTo', 'f1', '$MListSeg', ['b1', 'L1']),
+        new HProp_PointsTo('PointsTo', 'b1', '$MCell', ['d1', 'null']),
       ]),
     ]),
   ]);
 });
 
-test('test', () => {
+test('term array', () => {
   const text = '⟬ Pure ┆ l3 = ┆ ⟦ Eq ┆ l1 ┆ l2 ⟧ ⟭';
   const goal: Goal = parse(text);
   expect(goal).toEqual([
     new HProp('Pure', ['l3 =', new Value('Eq', ['l1', 'l2'])]),
+  ]);
+});
+
+test('pointsto with loc being value', () => {
+  // p + 1  ->  l1 ++ l2
+  const text = '⟬ PointsTo ┆ ⟦ plus ┆ p ┆ 1 ⟧ ┆ ⟦ list_append ┆ l1 ┆ l2 ⟧ ⟭';
+  const goal: Goal = parse(text);
+  expect(goal).toEqual([
+    new HProp_PointsTo(
+      'PointsTo',
+      new Symbol(true, 'plus-p-1', 'plus p 1'),
+      'list_append',
+      ['l1', 'l2']
+    ),
   ]);
 });
