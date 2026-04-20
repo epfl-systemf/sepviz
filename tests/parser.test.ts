@@ -1,5 +1,4 @@
-import { parse } from '../src/parser';
-import type { Goal } from '../src/parser';
+import { parse, Goal, HProp, Value, Symbol } from '../src/parser';
 import { expect, test } from 'vitest';
 
 test('flatten stars', () => {
@@ -9,10 +8,7 @@ test('flatten stars', () => {
 
   expect(goal).toEqual([
     'text ',
-    {
-      op: 'Stars',
-      args: ['A', 'B', { op: 'Conjs', args: ['E', 'F'] }, 'C', 'D'],
-    },
+    new HProp('Stars', ['A', 'B', new HProp('Conjs', ['E', 'F']), 'C', 'D']),
     ' some more text',
   ]);
 });
@@ -24,24 +20,11 @@ test('resolve symbols', () => {
   const goal: Goal = parse(text);
   expect(goal).toEqual([
     '(fun r => ',
-    {
-      op: 'PointsTo',
-      args: [
-        'r',
-        'isList',
-        {
-          op: 'list_append',
-          args: [
-            {
-              isGlobal: false,
-              label: 'l10',
-              uid: 'l1$0',
-            },
-            'l2',
-          ],
-        },
-      ],
-    },
+    new HProp('PointsTo', [
+      'r',
+      'isList',
+      new Value('list_append', [new Symbol(false, 'l1$0', 'l10'), 'l2']),
+    ]),
     ')',
   ]);
 });
@@ -51,19 +34,13 @@ test('aggregate pures', () => {
     '⟬ Star ┆ ⟬ Star ┆ ⟬ Pure ┆ ⟦ Eq ┆ l1 ┆ l2 ⟧ ⟭ ┆ ⟬ Pure ┆ ⟦ Gt ┆ x ┆ y ⟧ ⟭ ⟭ ┆ A ⟭';
   const goal: Goal = parse(text);
   expect(goal).toEqual([
-    {
-      op: 'Stars',
-      args: [
-        {
-          op: 'Pures',
-          args: [
-            { op: 'Pure', args: [{ op: 'Eq', args: ['l1', 'l2'] }] },
-            { op: 'Pure', args: [{ op: 'Gt', args: ['x', 'y'] }] },
-          ],
-        },
-        'A',
-      ],
-    },
+    new HProp('Stars', [
+      new HProp('Pures', [
+        new HProp('Pure', [new Value('Eq', ['l1', 'l2'])]),
+        new HProp('Pure', [new Value('Gt', ['x', 'y'])]),
+      ]),
+      'A',
+    ]),
   ]);
 });
 
@@ -76,43 +53,24 @@ test('pointsto example', () => {
 ┆ ⟬ Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭`;
   const goal: Goal = parse(text);
   expect(goal).toEqual([
-    {
-      op: 'Stars',
-      args: [
-        {
-          op: 'PointsTos',
-          args: [
-            {
-              op: 'PointsTo',
-              args: ['p1', { op: '$MCell', args: ['f1', 'b1'] }],
-            },
-            {
-              op: 'PointsTo',
-              args: ['f2', { op: '$MCell', args: ['x', 'c2'] }],
-            },
-            {
-              op: 'PointsTo',
-              args: ['c2', { op: '$MListSeg', args: ['b2', "L2'"] }],
-            },
-            {
-              op: 'PointsTo',
-              args: ['p2', { op: '$MCell', args: ['f2', 'b2'] }],
-            },
-            {
-              op: 'PointsTo',
-              args: ['b2', { op: '$MCell', args: ['d2', 'null'] }],
-            },
-            {
-              op: 'PointsTo',
-              args: ['f1', { op: '$MListSeg', args: ['b1', 'L1'] }],
-            },
-            {
-              op: 'PointsTo',
-              args: ['b1', { op: '$MCell', args: ['d1', 'null'] }],
-            },
-          ],
-        },
-      ],
-    },
+    new HProp('Stars', [
+      new HProp('PointsTos', [
+        new HProp('PointsTo', ['p1', new Value('$MCell', ['f1', 'b1'])]),
+        new HProp('PointsTo', ['f2', new Value('$MCell', ['x', 'c2'])]),
+        new HProp('PointsTo', ['c2', new Value('$MListSeg', ['b2', "L2'"])]),
+        new HProp('PointsTo', ['p2', new Value('$MCell', ['f2', 'b2'])]),
+        new HProp('PointsTo', ['b2', new Value('$MCell', ['d2', 'null'])]),
+        new HProp('PointsTo', ['f1', new Value('$MListSeg', ['b1', 'L1'])]),
+        new HProp('PointsTo', ['b1', new Value('$MCell', ['d1', 'null'])]),
+      ]),
+    ]),
+  ]);
+});
+
+test('test', () => {
+  const text = '⟬ Pure ┆ l3 = ┆ ⟦ Eq ┆ l1 ┆ l2 ⟧ ⟭';
+  const goal: Goal = parse(text);
+  expect(goal).toEqual([
+    new HProp('Pure', ['l3 =', new Value('Eq', ['l1', 'l2'])]),
   ]);
 });

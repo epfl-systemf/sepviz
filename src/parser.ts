@@ -8,6 +8,7 @@
 
 // @ts-ignore
 import { parse as sepParse } from './sep-grammar.g';
+import * as Sep from './sep-grammar.types';
 
 // -- AST Types ----------------------------------------------------------------
 
@@ -15,70 +16,83 @@ export type Goal = MaybeHProp[];
 
 export type MaybeHProp = HProp | string;
 
-export type HPropCtx = 'PRE' | 'POST';
-
-export type MaybeValue = Value | MaybeSymbol;
-
-export function MaybeValue_isValue(x: MaybeValue): x is Value {
-  return typeof x === 'object' && 'op' in x;
+export class HProp {
+  constructor(
+    public op: string,
+    public args: HPropArg[],
+    public ctx?: HPropCtx,
+    public binder?: string
+  ) {}
 }
 
-export interface Value {
-  op: string;
-  args: MaybeValue[];
+export type HPropArg = HProp | Term | Term[];
+
+export type HPropCtx = Sep.HPropCtx;
+
+export type Term = Value | Symbol | string;
+
+// Compared to Sep.Value, Value is a class in order to use `instanceof`
+export class Value {
+  constructor(
+    public op: string,
+    public args: Term[]
+  ) {}
 }
 
-export type HPropArg = HProp | MaybeSymbol | MaybeValue[];
-
-export interface HProp {
-  op: string;
-  args: HPropArg[];
-  ctx?: HPropCtx;
-  binder?: string; // hypothesis name (used in iris)
-}
-
-export type Uid = string;
-
-export interface Symbol {
-  isGlobal: boolean;
-  uid: Uid;
-  label: string;
-}
-
-function isString(x: unknown): x is string {
-  return typeof x === 'string';
-}
-
-export type MaybeSymbol = Symbol | string;
-
-export function MaybeHProp_isHProp(x: MaybeHProp): x is HProp {
-  return typeof x === 'object';
-}
-
-export function HPropArg_isHProp(x: HPropArg): x is HProp {
-  return typeof x === 'object' && 'op' in x;
-}
-
-export function HPropArg_isMaybeValues(x: HPropArg): x is MaybeValue[] {
-  return Array.isArray(x);
+export class Symbol {
+  constructor(
+    public isGlobal: boolean,
+    public uid: string,
+    public label: string
+  ) {}
 }
 
 // -- Parsing ------------------------------------------------------------------
 
 export function parse(input: string) {
-  let goal = sepParse(input) as Goal;
+  const sepGoal = sepParse(input) as Sep.Goal;
+  let goal: Goal = convertGoal(sepGoal);
   // flatten stars, conjs, disjs
   goal.forEach((seg: MaybeHProp) => {
-    if (MaybeHProp_isHProp(seg)) flatten(seg);
+    if (seg instanceof HProp) flatten(seg);
   });
   // aggregate pures, points-tos
   goal = goal.map((seg: MaybeHProp) =>
-    MaybeHProp_isHProp(seg) ? aggregate(seg) : seg
+    seg instanceof HProp ? aggregate(seg) : seg
   );
   // resolve symbols and lift exists
   goal = resolveSymbols(goal);
 
   return goal;
+}
+
+function convertGoal(goal: Sep.Goal): Goal {
+  return goal.map(convertMaybeHProp);
+
+  function convertValue(x: Sep.Value): Value {
+    return new Value(x.op, x.args.map(convertMaybeValue));
+  }
+
+  function convertMaybeValue(x: Sep.MaybeValue): Term {
+    return typeof x === 'object' ? convertValue(x) : x;
+  }
+
+  function convertHPropArg(x: Sep.HPropArg): HPropArg {
+    if (Array.isArray(x)) return x.map(convertMaybeValue);
+    if (typeof x === 'object' && 'kind' in x) {
+      if (x.kind === 'hprop') return convertHProp(x as Sep.HProp);
+      if (x.kind === 'value') return convertValue(x as Sep.Value);
+    }
+    return x;
+  }
+
+  function convertHProp(x: Sep.HProp): HProp {
+    return new HProp(x.op, x.args.map(convertHPropArg), x.ctx, x.binder);
+  }
+
+  function convertMaybeHProp(x: Sep.MaybeHProp): MaybeHProp {
+    return typeof x === 'object' ? convertHProp(x) : x;
+  }
 }
 
 /**
@@ -90,13 +104,13 @@ function flatten(hprop: HProp): void {
 
   function rec(x: HProp): void {
     x.args.forEach((arg: HPropArg) => {
-      if (HPropArg_isHProp(arg)) rec(arg);
+      if (arg instanceof HProp) rec(arg);
     });
     if (toFlattenOps.includes(x.op)) {
       const op = x.op + 's';
       x.op = op;
       x.args = x.args.flatMap((a: HPropArg) =>
-        HPropArg_isHProp(a) && a.op === op ? a.args : [a]
+        a instanceof HProp && a.op === op ? a.args : [a]
       );
     }
   }
@@ -112,10 +126,10 @@ function aggregate(hprop: HProp): HProp {
   const toCoalesceOps = ['Pure', 'PointsTo'];
 
   function rec(x: HProp, op: string): HProp {
-    const isOp = (y: HPropArg) => HPropArg_isHProp(y) && y.op === op;
+    const isOp = (y: HPropArg) => y instanceof HProp && y.op === op;
     const notOp = (y: HPropArg) => !isOp(y);
     const args = x.args.map((arg) =>
-      HPropArg_isHProp(arg) ? rec(arg, op) : arg
+      arg instanceof HProp ? rec(arg, op) : arg
     );
     if (x.op === 'Stars') {
       const ops: HProp = {
@@ -123,19 +137,9 @@ function aggregate(hprop: HProp): HProp {
         args: args.filter(isOp),
       };
       if (ops.args.length !== 0)
-        return {
-          op: x.op,
-          args: [ops, ...args.filter(notOp)],
-          ...(x.ctx !== undefined && { ctx: x.ctx }),
-          ...(x.binder !== undefined && { binder: x.binder }),
-        };
+        return new HProp(x.op, [ops, ...args.filter(notOp)], x.ctx, x.binder);
     }
-    return {
-      op: x.op,
-      args: args,
-      ...(x.ctx !== undefined && { ctx: x.ctx }),
-      ...(x.binder !== undefined && { binder: x.binder }),
-    };
+    return new HProp(x.op, args, x.ctx, x.binder);
   }
 
   let x = hprop;
@@ -155,60 +159,52 @@ function resolveSymbols(goal: Goal): Goal {
     return gensym[prefix]++;
   }
 
-  function resolve(s: string): Symbol {
-    return s in ctx ? ctx[s] : { isGlobal: true, uid: s, label: s };
+  function resolve(s: string): Symbol | string {
+    // return s in ctx ? ctx[s] : { isGlobal: true, uid: s, label: s }; // TODO
+    return s in ctx ? ctx[s] : s;
   }
 
   function register(s: string): void {
     const num = next(s);
-    ctx[s] = {
-      isGlobal: false,
-      uid: s + '$' + num,
-      label: `${s}${num}`,
-    };
+    ctx[s] = new Symbol(false, s + '$' + num, `${s}${num}`);
   }
 
-  return goal.map((x: MaybeHProp) =>
-    MaybeHProp_isHProp(x) ? resolveHProp(x) : x
-  );
+  return goal.map((x) => (x instanceof HProp ? resolveHProp(x) : x));
 
   function resolveHProp(x: HProp): HProp {
     switch (x.op) {
       case 'Exist': {
         assertArgCount(x.args, 2, 'Exist');
-        assertArgType(isString(x.args[0]), x.args[0], 'string', 'Exist');
-        assertArgType(HPropArg_isHProp(x.args[1]), x.args[1], 'HProp', 'Exist');
+        assertArgType(
+          typeof x.args[0] === 'string',
+          x.args[0],
+          'string',
+          'Exist'
+        );
+        assertArgType(x.args[1] instanceof HProp, x.args[1], 'HProp', 'Exist');
 
         const binder = x.args[0] as string;
         register(binder);
         return resolveHProp(x.args[1] as HProp);
       }
-      default: {
-        return {
-          op: x.op,
-          args: x.args.map((y) => resolveHPropArg(y)),
-          ...(x.ctx !== undefined && { ctx: x.ctx }),
-          ...(x.binder !== undefined && { binder: x.binder }),
-        };
-      }
+      default:
+        return new HProp(x.op, x.args.map(resolveHPropArg), x.ctx, x.binder);
     }
   }
 
   function resolveHPropArg(x: HPropArg): HPropArg {
-    if (HPropArg_isHProp(x)) return resolveHProp(x);
-    if (HPropArg_isMaybeValues(x)) return x.map((y) => resolveMaybeValue(y));
-    if (typeof x === 'string' && x in ctx) return resolve(x);
-    return x;
+    if (x instanceof HProp) return resolveHProp(x);
+    if (Array.isArray(x)) return x.map(resolveTerm);
+    return resolveTerm(x as Term);
   }
 
-  function resolveMaybeValue(x: MaybeValue): MaybeValue {
-    if (MaybeValue_isValue(x)) return resolveValue(x);
-    if (typeof x === 'string' && x in ctx) return resolve(x);
-    return x;
+  function resolveTerm(x: Term): Term {
+    if (x instanceof Value) return resolveValue(x);
+    return resolve(x as string);
   }
 
   function resolveValue(x: Value): Value {
-    return { op: x.op, args: x.args.map((y) => resolveMaybeValue(y)) };
+    return new Value(x.op, x.args.map(resolveTerm));
   }
 
   function assertArgCount(args: unknown[], expected: number, name: string) {
