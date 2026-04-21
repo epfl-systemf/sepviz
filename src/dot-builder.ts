@@ -40,7 +40,7 @@ type NodeAttrs = Record<AttrKey, NodeAttrValue>;
 interface DotNode {
   uid: string;
   label: XMLElement | string;
-  otherAttrs: NodeAttrs;
+  attrs: NodeAttrs;
 }
 interface DotEdge {
   srcUid: string;
@@ -93,7 +93,7 @@ export class DotBuilder {
       return {
         uid: pt.locUid(),
         label: this.buildNodeLabel(pt),
-        otherAttrs:
+        attrs:
           pt.binder !== undefined ? { tooltip: pt.binder } : ({} as NodeAttrs), // FIXME: tooltip
       };
     });
@@ -118,7 +118,7 @@ export class DotBuilder {
     edges.forEach((edge) => {
       const u = edge.dstUid;
       if (!this.nodeUids.has(u)) {
-        nodes.push({ uid: u, label: u, otherAttrs: { width: '0' } });
+        nodes.push({ uid: u, label: u, attrs: { width: '0' } });
         this.nodeUids.add(u);
       }
     });
@@ -182,7 +182,7 @@ export class DotBuilder {
     const node: DotNode = {
       uid: ptrUid,
       label: label,
-      otherAttrs: { fontsize: '10', width: '0' }, // FIXME: read from config
+      attrs: { fontsize: '10', width: '0' }, // FIXME: read from config
     };
     const edge: DotEdge = {
       srcUid: ptrUid,
@@ -229,7 +229,7 @@ export class DotBuilder {
     }
 
     const renderNode = (node: DotNode) =>
-      `"${node.uid}" ${renderAttrs({ id: node.uid, label: node.label, ...node.otherAttrs })}`;
+      `"${node.uid}" ${renderAttrs({ id: node.uid, label: node.label, ...node.attrs })}`;
 
     const renderExtremity = (uid: string, ports: string[]) =>
       [uid, ...ports].map((a) => `"${a}"`).join(':');
@@ -237,7 +237,18 @@ export class DotBuilder {
     const renderEdge = (edge: DotEdge) => {
       const src = renderExtremity(edge.srcUid, edge.srcOutPorts);
       const dst = renderExtremity(edge.dstUid, edge.dstInPorts);
-      return `${src} -> ${dst} ${renderAttrs(edge.attrs)}`;
+      /**
+       * In graphviz, an edge is identified by its end points (ignoring middle
+       * ports). For example, edge "p1":"car_out":"c" -> "f1":"car_in":"w" has
+       * auto-generated title "p1:c->f1:w". By default, d3-graphviz uses these
+       * titles to identify nodes and edges.
+       * d3-graphviz allows users to set the key mode to "id" to use user-defined
+       * or auto-generated id for identification. Here, we generated the id using
+       * only `src`, so that when src -> dst0 gets animated to src -> dst1, d3
+       * will make the edge point to dst1 instead of fading out old edge and
+       * fading in the new one.
+       */
+      return `${src} -> ${dst} ${renderAttrs({ id: `${edge.srcUid}-${edge.srcOutPorts.join('-')}`, ...edge.attrs })}`;
     };
 
     const renderTarget = (target: DotTarget) => {
