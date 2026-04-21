@@ -41,12 +41,14 @@ constr:
     expect(fetch).toHaveBeenCalledWith('renderConfig.yaml');
     const constrConfig = {
       TestConstr: {
+        label: 'TestConstr',
         argNum: 0,
         args: {},
         drawBorder: false,
         inPort: null,
       },
       MCell: {
+        label: 'MCell',
         argNum: 2,
         args: {
           '0': {
@@ -66,6 +68,7 @@ constr:
         inPort: 'in$0',
       },
       MListSeg: {
+        label: 'MListSeg',
         argNum: 2,
         args: {
           '0': {

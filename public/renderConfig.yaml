@@ -1,4 +1,25 @@
 constr:
+  # Example: CFML Queue
+  '$MQueue':
+    label: 'MQueue'
+    args:
+      0:
+        inTable: true
+  '$MCell':
+    label: 'MCell'
+    drawBorder: true
+    argNum: 2
+  '$MListSeg':
+    label: 'MListSeg'
+    inPort: list
+    args:
+      0:
+        forceEdge: true # forceEdge=true means there is always an edge to this argument
+        outPort: list
+      1:
+        inTable: true
+        inPort: list
+        outPort: list
   TestConstr:
   MCell:
     drawBorder: true
@@ -90,3 +111,11 @@ constr:
   # iris-tutorial linked list
   isList:
     argNum: 1
+value:
+  # example: CFML Queue
+  '$list_app':
+    argNum: 2
+    pattern: '$1 ++ $2'
+  '$list_cons':
+    argNum: 2
+    pattern: '$1 :: $2'

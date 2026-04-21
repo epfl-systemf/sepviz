@@ -6,7 +6,7 @@
  *   2. Transforming the tree into a heap state.
  */
 
-import { ConstrEntryConfig } from './config';
+import { RenderConfig, ValueConfig, ConstrEntryConfig } from './config';
 // @ts-ignore
 import { parse as sepParse } from './sep-grammar.g';
 import * as Sep from './sep-grammar.types';
@@ -55,7 +55,7 @@ export class HProp_PointsTo extends HProp {
 
 export type HPropArg = HProp | Term | Term[];
 
-export type HPropCtx = Sep.HPropCtx;
+export type HPropCtx = Sep.HPropCtx | 'DEFAULT';
 
 export type Term = Value | Symbol | string;
 
@@ -105,7 +105,7 @@ export class Symbol {
   ) {}
 }
 
-function HPropArg_isTerm(x: HPropArg): x is Term {
+export function HPropArg_isTerm(x: HPropArg): x is Term {
   return !(x instanceof HProp) && !Array.isArray(x);
 }
 
@@ -118,18 +118,8 @@ export function termLabel(x: Term): string {
 
 // -- Parsing ------------------------------------------------------------------
 
-// TODO: move it to config
-export interface Config {
-  value: ValueConfig;
-}
-export interface ValueEntryConfig {
-  argNum: number;
-  pattern: string;
-}
-export type ValueConfig = Record<string, ValueEntryConfig>;
-
 export class Parser {
-  constructor(private readonly config: Config) {}
+  constructor(private readonly config: RenderConfig) {}
 
   public parse(input: string) {
     const sepGoal = sepParse(input) as Sep.Goal;
@@ -206,22 +196,25 @@ export class Parser {
   private aggregate(hprop: HProp): HProp {
     const toCoalesceOps = ['Pure', 'PointsTo'];
 
-    function rec(x: HProp, op: string): HProp {
+    function rec(x: HProp, op: string, isTop: boolean): HProp {
       const isOp = (y: HPropArg) => y instanceof HProp && y.op === op;
       const notOp = (y: HPropArg) => !isOp(y);
       const args = x.args.map((arg) =>
-        arg instanceof HProp ? rec(arg, op) : arg
+        arg instanceof HProp ? rec(arg, op, false) : arg
       );
       if (x.op === 'Stars') {
         const ops = new HProp(op + 's', args.filter(isOp));
         if (ops.args.length !== 0)
           return new HProp(x.op, [ops, ...args.filter(notOp)], x.ctx, x.binder);
+      } else if (isTop && x.op === op) {
+        // If it's a single top-level `Pure` or `PointsTo`, wrap it.
+        return new HProp(op + 's', [new HProp(x.op, args, x.ctx, x.binder)]);
       }
       return new HProp(x.op, args, x.ctx, x.binder);
     }
 
     let x = hprop;
-    toCoalesceOps.forEach((op) => (x = rec(x, op)));
+    toCoalesceOps.forEach((op) => (x = rec(x, op, true)));
     return x;
   }
 

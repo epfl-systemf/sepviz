@@ -1,18 +1,6 @@
 import yaml from 'js-yaml';
 import merge from 'lodash.merge';
 
-/**
- * https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
- * Use 'keyMode: id' to ensure that d3-graphviz treats nodes or edges of the
- * same id as the same object in transitions.
- */
-export const GraphvizOptions = {
-  fit: false,
-  zoom: true,
-  keyMode: 'id',
-  useWorker: false,
-};
-
 export const ResetKeywords = [
   'Goal',
   'Lemma',
@@ -43,9 +31,17 @@ export interface RenderConfig {
   edge: Attrs;
   node: Attrs;
   constr: ConstrConfig;
+  value: ValueConfig;
 }
 
 export type ConstrConfig = Record<string, ConstrEntryConfig>;
+
+export type ValueConfig = Record<string, ValueEntryConfig>;
+
+export interface ValueEntryConfig {
+  argNum: number;
+  pattern: string;
+}
 
 export interface FontConfig {
   name: string;
@@ -54,6 +50,8 @@ export interface FontConfig {
 }
 
 export interface ConstrEntryConfig {
+  /** The printed label. Default: use the entry key if unset. */
+  label: string;
   /** Default: the input port for the first in-table arg, null if no arg is in table. */
   inPort: string | null;
   /** Default: false */
@@ -118,6 +116,7 @@ export function defaultRenderConfig(): RenderConfig {
       fontsize: defaultFontConfig.size,
     },
     constr: {},
+    value: {},
   };
 }
 
@@ -139,9 +138,9 @@ export async function loadRenderConfig(
     userRenderConfig
   );
   renderConfig.constr = Object.fromEntries(
-    Object.entries(renderConfig.constr).map(([name, config]) => [
-      name,
-      fillConstrEntryConfig(config),
+    Object.entries(renderConfig.constr).map(([key, config]) => [
+      key,
+      fillConstrEntryConfig(key, config),
     ])
   );
   return renderConfig;
@@ -151,6 +150,7 @@ export async function loadRenderConfig(
  * Fill a partial `ConstrEntryConfig` with default values.
  */
 function fillConstrEntryConfig(
+  key: string,
   c: Partial<ConstrEntryConfig>
 ): ConstrEntryConfig {
   const argNum =
@@ -171,6 +171,7 @@ function fillConstrEntryConfig(
     if (!inPort && args[i].inTable) inPort = args[i].inPort;
   }
   return {
+    label: c?.label ?? key,
     drawBorder: drawBorder,
     inPort: inPort,
     argNum: argNum,

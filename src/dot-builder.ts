@@ -5,7 +5,6 @@ import {
   AttrValue,
   ArgEntryConfig,
   RenderConfig,
-  ConstrConfig,
   InTablePointerEdgeAttrs,
 } from './config';
 import { assert } from './utility';
@@ -300,7 +299,7 @@ export class DotBuilder {
       {},
       td(
         { colspan: 2, cellpadding: 0, sides: 'b' },
-        box({}, row(pt.locLabel(), ': ', pt.repr))
+        box({}, row(pt.locLabel(), ': ', pt.config?.label ?? ''))
       )
     );
 

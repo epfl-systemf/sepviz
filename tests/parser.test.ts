@@ -19,7 +19,7 @@ const valueConfig = {
     pattern: '$1 > $2',
   },
 };
-const parser = new Parser({ value: valueConfig });
+const parser = new Parser({ value: valueConfig }); // FIXME
 
 test('flatten stars', () => {
   const text =
@@ -108,9 +108,11 @@ test('term array', () => {
   const text = '⟬ Pure ┆ l3 = ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp('Pure', [
-      'l3 =',
-      { op: '@eq', args: ['l1', 'l2'], uid: '@eq-l1-l2', label: 'l1 == l2' },
+    new HProp('Pures', [
+      new HProp('Pure', [
+        'l3 =',
+        { op: '@eq', args: ['l1', 'l2'], uid: '@eq-l1-l2', label: 'l1 == l2' },
+      ]),
     ]),
   ]);
 });
@@ -121,18 +123,20 @@ test('pointsto with loc being value', () => {
     '⟬ PointsTo ┆ ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp_PointsTo(
-      'PointsTo',
-      new Symbol(true, '@plus-p-1', 'p + 1'),
-      'isList',
-      [
-        {
-          op: '@list_append',
-          args: ['l1', 'l2'],
-          label: 'l1 ++ l2',
-          uid: '@list_append-l1-l2',
-        },
-      ]
-    ),
+    new HProp('PointsTos', [
+      new HProp_PointsTo(
+        'PointsTo',
+        new Symbol(true, '@plus-p-1', 'p + 1'),
+        'isList',
+        [
+          {
+            op: '@list_append',
+            args: ['l1', 'l2'],
+            label: 'l1 ++ l2',
+            uid: '@list_append-l1-l2',
+          },
+        ]
+      ),
+    ]),
   ]);
 });

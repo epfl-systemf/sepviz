@@ -21,7 +21,7 @@
 
 /* Pure Predicates */
 
-.sep-pure-pred-container {
+.sep-pures-container {
   border: 1px dotted var(--border-color);
   border-radius: var(--border-radius);
   padding: var(--small-space);
@@ -30,7 +30,7 @@
   gap: var(--predicate-gap);
 }
 
-.sep-pure-pred {
+.sep-pure {
   background: var(--pure-background);
   white-space: nowrap;
 }
@@ -41,7 +41,7 @@
 
 /* Heap Objects */
 
-.sep-heap-obj-container {
+.sep-pointstos-container {
 }
 
 .sep-dot {
@@ -77,7 +77,7 @@
   gap: 0.5rem;
 }
 
-:is(.sep-other-pred-container, .sep-pure-pred-container):only-child {
+:is(.sep-other-pred-container, .sep-pures-container):only-child {
   border: none;
 }
 
