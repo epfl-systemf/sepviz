@@ -36,7 +36,6 @@ const config: RenderConfig = {
     '@MListSeg': {
       label: 'MListSeg',
       argNum: 2,
-      argNum: 2,
       args: {
         '0': {
           forceEdge: true,

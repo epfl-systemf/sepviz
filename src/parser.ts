@@ -122,7 +122,10 @@ export class Parser {
   constructor(private readonly config: RenderConfig) {}
 
   public parse(input: string) {
-    const sepGoal = sepParse(input) as Sep.Goal;
+    let sepGoal = sepParse(input) as Sep.Goal;
+    // flatten rich-hprops
+    sepGoal = this.flattenRichHProps(sepGoal);
+    // convert to classes
     let goal: Goal = this.convertGoal(sepGoal);
     // flatten `Star`s, `Conj`s, `Disj`s
     goal.forEach((seg: MaybeHProp) => {
@@ -135,6 +138,24 @@ export class Parser {
     // resolve symbols, handle `Exist` and `PointsTo`
     goal = this.resolveSymbols(goal);
     return goal;
+  }
+
+  private flattenRichHProps(goal: Sep.Goal): Sep.Goal {
+    return goal.flatMap((seg) => {
+      if (
+        typeof seg === 'object' &&
+        'kind' in seg &&
+        seg.kind === 'rich-hprop'
+      ) {
+        const x = seg as Sep.RichHProp;
+        return [
+          ...(x.prefix !== '' ? [x.prefix] : []),
+          x.hprop,
+          ...(x.postfix !== '' ? [x.postfix] : []),
+        ];
+      }
+      return [seg];
+    });
   }
 
   private convertGoal(goal: Sep.Goal): Goal {
@@ -162,7 +183,9 @@ export class Parser {
     }
 
     function convertMaybeHProp(x: Sep.MaybeHProp): MaybeHProp {
-      return typeof x === 'object' ? convertHProp(x) : x;
+      return typeof x === 'object' && 'kind' in x
+        ? convertHProp(x as Sep.HProp)
+        : (x as string);
     }
   }
 

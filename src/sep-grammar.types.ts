@@ -1,6 +1,12 @@
 export type Goal = MaybeHProp[];
 
-export type MaybeHProp = HProp | string;
+export type MaybeHProp = HProp | RichHProp | string;
+
+export interface RichHProp {
+  prefix: string;
+  hprop: HProp;
+  postfix: string;
+}
 
 export interface HProp {
   op: string;

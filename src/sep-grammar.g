@@ -38,12 +38,16 @@ Sep = "┆"
 RichHPropLD = "⟬*"
 RichHPropRD = "*⟭"
 RichHProp
-  = RichHPropLD _ ctx:(@CtxIdent _ "@" _)? binder:(@Ident _ ":" _)? hprop:HProp _ RichHPropRD {
+  = RichHPropLD _ ctx:(@CtxIdent _ "@" _)? binder:(@Ident _ ":" _)? prefix:(@RichHPropTerm _)? hprop:HProp _ postfix:(@RichHPropTerm _)? RichHPropRD {
       const res = hprop;
       if (ctx) res.ctx = ctx;
       if (binder) res.binder = binder;
+      if(prefix || postfix) return { kind: "rich-hprop", prefix, hprop: res, postfix };
       return res;
     }
+
+RichHPropTerm = cs: RichHPropTermChar* { return cs.join("").trim(); }
+RichHPropTermChar = !(HPropLD / RichHPropRD) @.
 
 HPropLD = "⟬"
 HPropRD = "⟭"

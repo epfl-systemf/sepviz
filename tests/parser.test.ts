@@ -140,3 +140,13 @@ test('pointsto with loc being value', () => {
     ]),
   ]);
 });
+
+test('cfml triple', () => {
+  const text = '⟬* POST @ (fun x: A => and some more ⟬ Opaque ┆ GC ⟭ ) *⟭';
+  const goal: Goal = parser.parse(text);
+  expect(goal).toEqual([
+    '(fun x: A => and some more',
+    new HProp('Opaque', ['GC'], 'POST'),
+    ')',
+  ]);
+});
