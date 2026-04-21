@@ -1,9 +1,9 @@
 [submodule "rocq-sources/iris-example"]
 	path = rocq-sources/iris-example
-	url = git@gitlab.epfl.ch:systemf/sep-viz/iris-tutorial.git
+	url = git@github.com:epfl-systemf/sepviz-iris-tutorial.git
 [submodule "rocq-sources/software-foundations-slf"]
 	path = rocq-sources/software-foundations-slf
-	url = git@gitlab.epfl.ch:systemf/sep-viz/slf.git
+	url = git@github.com:epfl-systemf/sepviz-software-foundations-slf.git
 [submodule "rocq-sources/cfml-examples"]
 	path = rocq-sources/cfml-examples
-	url = git@gitlab.epfl.ch:systemf/sep-viz/cfml-examples.git
+        url = git@github.com:epfl-systemf/sepviz-cfml-examples.git
