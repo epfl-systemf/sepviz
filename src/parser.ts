@@ -6,6 +6,7 @@
  *   2. Transforming the tree into a heap state.
  */
 
+import { ConstrEntryConfig } from './config';
 // @ts-ignore
 import { parse as sepParse } from './sep-grammar.g';
 import * as Sep from './sep-grammar.types';
@@ -33,9 +34,22 @@ export class HProp_PointsTo extends HProp {
     public repr: string,
     public reprArgs: Term[],
     public ctx?: HPropCtx,
-    public binder?: string
+    public binder?: string,
+    public config?: ConstrEntryConfig
   ) {
     super(op, [], ctx, binder);
+  }
+
+  public locUid(): string {
+    return this.loc instanceof Symbol ? this.loc.uid : this.loc;
+  }
+
+  public locLabel(): string {
+    return this.loc instanceof Symbol ? this.loc.label : this.loc;
+  }
+
+  public locIsGlobal(): boolean {
+    return this.loc instanceof Symbol ? this.loc.isGlobal : true;
   }
 }
 
@@ -95,24 +109,27 @@ function HPropArg_isTerm(x: HPropArg): x is Term {
   return !(x instanceof HProp) && !Array.isArray(x);
 }
 
-function termLabel(x: Term): string {
+export function termUid(x: Term): string {
+  return x instanceof Value ? x.uid : x instanceof Symbol ? x.uid : x;
+}
+export function termLabel(x: Term): string {
   return x instanceof Value ? x.label : x instanceof Symbol ? x.label : x;
 }
 
 // -- Parsing ------------------------------------------------------------------
 
-// TODO: move it
+// TODO: move it to config
 export interface Config {
   value: ValueConfig;
 }
-export interface ValuePatternConfig {
+export interface ValueEntryConfig {
   argNum: number;
   pattern: string;
 }
-export type ValueConfig = Record<string, ValuePatternConfig>;
+export type ValueConfig = Record<string, ValueEntryConfig>;
 
 export class Parser {
-  constructor(private config: Config) {}
+  constructor(private readonly config: Config) {}
 
   public parse(input: string) {
     const sepGoal = sepParse(input) as Sep.Goal;

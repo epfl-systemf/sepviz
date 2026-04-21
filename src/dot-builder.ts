@@ -1,243 +1,16 @@
-/**
- * Core logic for turning separation-logic formulas into Graphviz DOT
- * visualizations. Provides:
- * - `parse`: parses a goal text into a heap state if it's a formula;
- * - `DotBuilder`: given a heap state, constructs the DOT representation.
- */
-
-// @ts-ignore
-import { parse as sepParse } from './sep-grammar.g';
-
+import * as AST from './parser';
 import {
   Attrs,
   AttrKey,
   AttrValue,
-  ArgConfig,
-  ConstrConfig,
+  ArgEntryConfig,
   RenderConfig,
+  ConstrConfig,
   InTablePointerEdgeAttrs,
 } from './config';
+import { assert } from './utility';
 
-import { sort } from './sort';
-
-type Uid = string;
-
-export interface Symbol {
-  isGlobal: boolean;
-  uid: Uid;
-  label: string;
-  // config: ArgConfig;
-}
-
-export type PurePredicate = (Symbol | string)[];
-
-export interface HeapPredicate {
-  addr: Symbol;
-  obj: HeapObject;
-}
-
-export interface HeapObject {
-  addr: Symbol;
-  constr: string;
-  args: Symbol[];
-  config: ConstrConfig;
-  hyp: string;
-}
-
-export interface HeapState {
-  position: string;
-  raw: string;
-  pred: StarHeapPred;
-}
-
-export enum OtherHeapPredKind {
-  Wand,
-  Conj,
-  Disj,
-  Modality,
-  Abstract,
-  IfThenElse,
-  BigOp,
-}
-
-export interface StarHeapPred {
-  heapObjs: HeapObject[];
-  purePreds: PurePredicate[];
-  otherHeapPreds: OtherHeapPred[];
-}
-
-export interface OtherHeapPred {
-  kind: OtherHeapPredKind;
-  preds: StarHeapPred[];
-  op: string;
-  binder?: string;
-}
-
-export function parse(
-  goalText: string,
-  renderConfig: RenderConfig
-): (HeapState | string)[] {
-  return sepParse(goalText).map((unit: any) =>
-    typeof unit === 'object'
-      ? resolveSymbols(unit, renderConfig)
-      : (unit as string)
-  );
-}
-
-function newStarHeapPred(): StarHeapPred {
-  return { heapObjs: [], purePreds: [], otherHeapPreds: [] };
-}
-
-function resolveSymbols(unit: any, renderConfig: RenderConfig): HeapState {
-  let pred: StarHeapPred = newStarHeapPred();
-  let gensym: Record<string, number> = {};
-
-  function getConstrConfig(constrName: string): ConstrConfig {
-    const config = renderConfig.constr?.[constrName];
-    if (!config) throw new Error(`Missing config for constr ${constrName}.`);
-    return config;
-  }
-
-  function next(prefix: string): number {
-    if (!(prefix in gensym)) gensym[prefix] = 0;
-    return gensym[prefix]++;
-  }
-
-  function removeHeadingHash(s: string): string {
-    return s.replace(/^#/, '');
-  }
-
-  function resolve(ctx: Record<string, Symbol>, s: string): Symbol {
-    const key = removeHeadingHash(s); // FIXME: hack for iris "#x"
-    return key in ctx ? ctx[key] : { isGlobal: true, uid: key, label: key };
-  }
-
-  function toString(ctx: Record<string, Symbol>, xs: string[]): string {
-    return xs.map((x: string) => (x in ctx ? ctx[x].label : x)).join(' ');
-  }
-
-  function loop(
-    sep: any,
-    ctx: Record<string, Symbol>,
-    pred: StarHeapPred,
-    binder: string
-  ) {
-    switch (sep.kind) {
-      case 'stars': {
-        sep.conjuncts.forEach((c: any) => loop(c, ctx, pred, binder));
-        break;
-      }
-      case 'existential': {
-        const num = next(sep.binder);
-        ctx[sep.binder] = {
-          isGlobal: false,
-          uid: sep.binder + '$' + num,
-          label: `?${sep.binder}${num}`, // ['font', {}, `?${sep.binder}`, ['sub', {}, `${num}`]]
-        };
-        loop(sep.body, ctx, pred, binder);
-        break;
-      }
-      case 'forall': {
-        const num = next(sep.binder);
-        ctx[sep.binder] = {
-          isGlobal: false,
-          uid: sep.binder + '$' + num,
-          label: `${sep.binder}${num}`,
-        };
-        loop(sep.body, ctx, pred, binder);
-        break;
-      }
-      case 'bigOp': {
-        const H = newStarHeapPred();
-        loop(sep.body, ctx, H, binder);
-        const b: OtherHeapPred = {
-          kind: OtherHeapPredKind.BigOp,
-          preds: [H],
-          op: sep.op,
-          binder: sep.binder,
-        };
-        pred.otherHeapPreds.push(b);
-        break;
-      }
-      case 'pointsTo': {
-        const [constr, ...args] = sep.to as string[];
-        pred.heapObjs.push({
-          addr: resolve(ctx, sep.from),
-          constr: constr,
-          args: args.map((arg) => resolve(ctx, arg)),
-          config: getConstrConfig(constr),
-          hyp: binder,
-        });
-        break;
-      }
-      case 'wand': {
-        const H1 = newStarHeapPred(),
-          H2 = newStarHeapPred();
-        const wand: OtherHeapPred = {
-          kind: OtherHeapPredKind.Wand,
-          preds: [H1, H2],
-          op: '-∗',
-        };
-        loop(sep.H1, ctx, H1, binder);
-        loop(sep.H2, ctx, H2, binder);
-        pred.otherHeapPreds.push(wand);
-        break;
-      }
-      case 'gc':
-        break;
-      case 'purePredicate': {
-        pred.purePreds.push(
-          sep.predicate.map((x: string) => (x in ctx ? ctx[x] : x))
-        );
-        break;
-      }
-      case 'modality': {
-        const H = newStarHeapPred();
-        const m: OtherHeapPred = {
-          kind: OtherHeapPredKind.Modality,
-          preds: [H],
-          op: sep.op,
-        };
-        loop(sep.body, ctx, H, binder);
-        pred.otherHeapPreds.push(m);
-        break;
-      }
-      case 'abstract': {
-        // FIXME
-        pred.otherHeapPreds.push({
-          kind: OtherHeapPredKind.Abstract,
-          preds: [],
-          op: toString(ctx, sep.body),
-        });
-        break;
-      }
-      case 'ifThenElse': {
-        const H1 = newStarHeapPred(),
-          H2 = newStarHeapPred();
-        const p: OtherHeapPred = {
-          kind: OtherHeapPredKind.IfThenElse,
-          preds: [H1, H2],
-          op: toString(ctx, sep.cond),
-        };
-        loop(sep.H1, ctx, thenPred, binder);
-        loop(sep.H2, ctx, elsePred, binder);
-        pred.otherHeapPreds.push(p);
-        break;
-      }
-      default:
-        throw new Error(`Not supported kind: ${sep.kind}`);
-    }
-  }
-
-  if (unit.kind === 'namedtops') {
-    const ctx = {};
-    unit.tops.forEach((top: any) =>
-      loop(top.top.parsed, ctx, pred, top.binder)
-    );
-  } else loop(unit.parsed, {}, pred, '');
-
-  return { position: unit.position, raw: unit.raw, pred: pred };
-}
+// -- XML ----------------------------------------------------------------------
 
 type XMLChild = XMLElement | string;
 
@@ -260,188 +33,137 @@ class XMLElement extends XMLContainer {
   }
 }
 
+// -- Dot Builder --------------------------------------------------------------
+
 type NodeAttrValue = XMLElement | AttrValue;
 type NodeAttrs = Record<AttrKey, NodeAttrValue>;
 
-class DotNode {
-  public readonly attrs: Record<string, NodeAttrValue>;
-  constructor(
-    public readonly uid: Uid,
-    label: XMLElement | string,
-    otherAttrs: NodeAttrs = {}
-  ) {
-    this.uid = uid;
-    this.attrs = { id: uid, label: label, ...otherAttrs };
-  }
+interface DotNode {
+  uid: string;
+  label: XMLElement | string;
+  otherAttrs: NodeAttrs;
 }
-
-class DotEdge {
-  constructor(
-    public readonly srcUid: Uid,
-    public readonly srcOutPorts: string[],
-    public readonly dstUid: Uid,
-    public readonly dstInPorts: string[],
-    public readonly attrs: Attrs = {}
-  ) {
-    this.srcUid = srcUid;
-    this.srcOutPorts = srcOutPorts;
-    this.dstUid = dstUid;
-    this.dstInPorts = dstInPorts;
-    /**
-     * In graphviz, an edge is identified by its end points (ignoring middle
-     * ports). For example, edge "p1":"car_out":"c" -> "f1":"car_in":"w" has
-     * auto-generated title "p1:c->f1:w". By default, d3-graphviz uses these
-     * titles to identify nodes and edges.
-     * d3-graphviz allows users to set the key mode to "id" to use user-defined
-     * or auto-generated id for identification. Here, we generated the id using
-     * only `src`, so that when src -> dst0 gets animated to src -> dst1, d3
-     * will make the edge point to dst1 instead of fading out old edge and
-     * fading in the new one.
-     */
-    this.attrs = { id: `${srcUid}-${srcOutPorts.join('-')}`, ...attrs };
-  }
-
-  toString(): string {
-    return [
-      this.srcUid,
-      ...this.srcOutPorts,
-      this.dstUid,
-      ...this.dstInPorts,
-    ].join('-');
-  }
+interface DotEdge {
+  srcUid: string;
+  srcOutPorts: string[];
+  dstUid: string;
+  dstInPorts: string[];
+  attrs: Attrs;
 }
-
-class DotTarget {
-  constructor(
-    public readonly name: 'graph' | 'node' | 'edge',
-    public readonly attrs: Attrs = {}
-  ) {
-    this.name = name;
-    this.attrs = attrs;
-  }
-}
-
 interface DotCluster {
-  root: Uid;
+  root: string;
   nodes: DotNode[];
   edges: DotEdge[];
 }
+interface DotTarget {
+  name: 'graph' | 'node' | 'edge';
+  attrs: Attrs;
+}
 
-export type NodeOrder = Record<Uid, number>;
-
-// TODO: rename RenderConfig to DotConfig ?
 export class DotBuilder {
-  private readonly config: RenderConfig;
-  private readonly heapObjs: HeapObject[];
-  private readonly knownPtrUids: Set<Uid>;
-  private readonly inPortOfUid: Record<Uid, string | null>;
-  private readonly previousOrder: NodeOrder | null;
   public readonly dot: string;
-  public readonly nodeOrder: NodeOrder;
+  private readonly nodeUids: Set<string>;
+  private readonly inPortOfUid: Record<string, string | null>;
+
+  /** @internal: Exposed for testing. */
+  public readonly clusters: DotCluster[];
 
   constructor(
-    config: RenderConfig,
-    heapObjs: HeapObject[],
-    previousOrder: NodeOrder | null
+    private readonly config: RenderConfig,
+    public readonly pts: AST.HProp_PointsTo[]
   ) {
-    this.config = config;
-    this.heapObjs = heapObjs;
-    // this.heapObjs.forEach((obj) => {
-    //   // below does not work because some args are aliased between heap objs with
-    //   // different constrs. specifically, existential args are unique across
-    //   // heap objs, and this would reset .config once for each of them
-    //   // obj.args.forEach((arg, idx) => {
-    //   //   arg.config = obj.config.args[idx];
-    //   // });
-    // });
-    this.knownPtrUids = new Set(heapObjs.map((obj) => obj.addr.uid));
+    // check config
+    pts.forEach((pt) => {
+      assert(
+        pt.repr in config.constr,
+        `config for constr ${pt.repr} not found`
+      );
+      pt.config = config.constr[pt.repr];
+    });
+    this.nodeUids = new Set(pts.map((pt) => pt.locUid()));
     this.inPortOfUid = Object.fromEntries(
-      heapObjs.map((obj) => [obj.addr.uid, obj.config.inPort ?? null])
-    ) as Record<Uid, string | null>;
-    this.previousOrder = previousOrder;
-
+      pts.map((pt) => [pt.locUid(), config.constr[pt.repr].inPort])
+    );
     const [clusters, targets] = this.buildComponents();
-    this.nodeOrder = this.buildNodeOrder(clusters);
+    this.clusters = clusters;
     this.dot = this.buildText(clusters, targets);
   }
 
   protected buildComponents(): [DotCluster[], DotTarget[]] {
-    const nodes: DotNode[] = this.heapObjs.map(
-      (obj) =>
-        new DotNode(obj.addr.uid, this.buildNodeLabel(obj), {
-          tooltip: obj.hyp,
-        })
-    );
-    const edges: DotEdge[] = this.heapObjs.flatMap((obj) =>
-      this.buildEdges(obj)
-    );
+    const nodes: DotNode[] = this.pts.map((pt) => {
+      return {
+        uid: pt.locUid(),
+        label: this.buildNodeLabel(pt),
+        otherAttrs: pt.binder ? { tooltip: pt.binder } : {}, // FIXME: tooltip
+      };
+    });
+    const edges: DotEdge[] = this.pts.flatMap((pt) => this.buildEdges(pt));
 
     // For each root pointer, add a node for the pointer and a edge from the
     // pointer to the pointed-to object.
-    let hasIncomingEdges: Record<Uid, boolean> = {};
-    edges.forEach((edge) => (hasIncomingEdges[edge.dstUid] = true));
-    this.heapObjs
-      .filter((obj) => obj.addr.isGlobal && !hasIncomingEdges[obj.addr.uid])
-      .forEach((obj) => {
-        const [node, edge] = this.buildRootPointerNodeAndEdge(obj.addr);
+    let hasIncomingEdges: Record<string, boolean> = {};
+    edges.forEach((e) => (hasIncomingEdges[e.dstUid] = true));
+    this.pts
+      .filter((pt) => pt.locIsGlobal() && !hasIncomingEdges[pt.locUid()])
+      .forEach((pt) => {
+        const [node, edge] = this.buildRootPointerNodeEdge(
+          pt.locUid(),
+          pt.locLabel()
+        );
         nodes.push(node);
         edges.push(edge);
       });
 
-    // Add missing target nodes.
+    // Add missing dst nodes.
     edges.forEach((edge) => {
-      const uid = edge.dstUid;
-      if (!this.knownPtrUids.has(uid))
-        nodes.push(new DotNode(uid, uid, { width: '0' }));
+      const u = edge.dstUid;
+      if (!this.nodeUids.has(u)) {
+        nodes.push({ uid: u, label: u, otherAttrs: { width: '0' } });
+        this.nodeUids.add(u);
+      }
     });
 
-    const targets = [
-      new DotTarget('graph', this.config.graph),
-      new DotTarget('node', this.config.node),
-      new DotTarget('edge', this.config.edge),
-    ];
-
     const clusters = this.partition(nodes, edges);
-    clusters
-      .sort((c1, c2) => c2.root.localeCompare(c1.root))
-      .map((c) => this.sortNodes(c));
+    clusters.sort((c1, c2) => c2.root.localeCompare(c1.root)); // TODO: sort nodes?
+
+    const targets: DotTarget[] = [
+      { name: 'graph', attrs: this.config.graph },
+      { name: 'node', attrs: this.config.node },
+      { name: 'edge', attrs: this.config.edge },
+    ];
 
     return [clusters, targets];
   }
 
-  protected buildNodeOrder(clusters: DotCluster[]): NodeOrder {
-    const nodeOrder: NodeOrder = {};
-    clusters
-      .flatMap((cluster) => cluster.nodes.flatMap((n) => n.uid))
-      .forEach((uid, idx) => (nodeOrder[uid] = idx));
-    return nodeOrder;
-  }
-
-  // Run a union-find to cluster the graph into weakly connected components.
+  /**
+   * Run a union-find to cluster the graph into weakly connected components.
+   */
   protected partition(nodes: DotNode[], edges: DotEdge[]): DotCluster[] {
-    let parents: Record<Uid, Uid> = {};
+    const parents: Record<string, string> = {};
     nodes.forEach((n) => (parents[n.uid] = n.uid));
 
-    function find(uid: Uid): Uid {
+    function find(uid: string): string {
       let parent = parents[uid];
       return uid == parent ? parent : (parents[uid] = find(parent));
     }
 
-    function union(src: Uid, dst: Uid): void {
-      // LATER: Add a size heuristic if this is too slow
+    function union(src: string, dst: string): void {
+      // TODO: Add a size heuristic if this is too slow
       parents[find(dst)] = find(src);
     }
 
-    // Sort the edges before union find to make sure equivalent states that
-    // contain circles ends up having the same roots.
-    // Example: {* p ~> MCell q null \* q ~> MCell p null *}
-    //   and {* q ~> MCell p null \* p ~> MCell q null *}
-    //   should end up with the same cluster with root 'p'.
+    /**
+     * Sort the edges before union find to make sure equivalent states that
+     * contain circles ends up having the same roots.
+     * Example: `p ~> MCell q null * q ~> MCell p null`
+     *      and `q ~> MCell p null * p ~> MCell q null`
+     *      should end up with the same cluster with root `p`.
+     */
     edges.sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
     edges.forEach((edge) => union(edge.srcUid, edge.dstUid));
 
-    const clusters: Record<Uid, DotCluster> = {};
-    Object.keys(parents).forEach((uid: Uid) => {
+    const clusters: Record<string, DotCluster> = {};
+    Object.keys(parents).forEach((uid: string) => {
       const root = find(uid);
       if (!(root in clusters))
         clusters[root] = { root: root, nodes: [], edges: [] };
@@ -452,17 +174,26 @@ export class DotBuilder {
     return Object.values(clusters);
   }
 
-  protected sortNodes(cluster: DotCluster): DotCluster {
-    const order = sort(
-      cluster.root,
-      cluster.nodes.map((n) => n.uid),
-      cluster.edges.map((e) => {
-        return { src: e.srcUid, dst: e.dstUid };
-      }),
-      this.previousOrder
-    );
-    cluster.nodes.sort((n1, n2) => order[n1.uid] - order[n2.uid]);
-    return cluster;
+  protected buildRootPointerNodeEdge(
+    uid: string,
+    label: string
+  ): [DotNode, DotEdge] {
+    const ptrUid = uid + '$ptr';
+    const node: DotNode = {
+      uid: ptrUid,
+      label: label,
+      otherAttrs: { fontsize: '10', width: '0' }, // FIXME: read from config
+    };
+    const edge: DotEdge = {
+      srcUid: ptrUid,
+      srcOutPorts: ['e'],
+      dstUid: uid,
+      dstInPorts: this.inPortOfUid[uid]
+        ? [this.inPortOfUid[uid], 'nw']
+        : ['nw'],
+      attrs: { tailclip: 'true', minlen: '1' }, // FIXME: read from config
+    };
+    return [node, edge];
   }
 
   protected buildText(clusters: DotCluster[], targets: DotTarget[]): string {
@@ -481,11 +212,8 @@ export class DotBuilder {
           ...xml.children.map(renderXML),
           `</${xml.tag}>`,
         ].join('');
-      } else if (xml instanceof XMLContainer) {
-        return xml.children.map(renderXML).join('');
-      } else {
-        return xml;
       }
+      return xml;
     }
 
     function renderAttr(k: AttrKey, v: AttrValue | NodeAttrValue): string {
@@ -501,9 +229,9 @@ export class DotBuilder {
     }
 
     const renderNode = (node: DotNode) =>
-      `"${node.uid}" ${renderAttrs(node.attrs)}`;
+      `"${node.uid}" ${renderAttrs({ id: node.uid, label: node.label, ...node.otherAttrs })}`;
 
-    const renderExtremity = (uid: Uid, ports: string[]) =>
+    const renderExtremity = (uid: string, ports: string[]) =>
       [uid, ...ports].map((a) => `"${a}"`).join(':');
 
     const renderEdge = (edge: DotEdge) => {
@@ -528,7 +256,7 @@ export class DotBuilder {
     ].join('\n');
   }
 
-  protected buildNodeLabel(heapObj: HeapObject): XMLElement {
+  protected buildNodeLabel(pt: AST.HProp_PointsTo): XMLElement {
     const xml =
       (tag: string, defaultAttrs: Attrs = {}) =>
       (attrs: Attrs = {}, ...children: XMLChild[]) =>
@@ -561,18 +289,22 @@ export class DotBuilder {
       return font({ color: color }, label);
     };
 
-    const label: (sym: Symbol) => XMLChild = (sym) =>
-      sym.isGlobal ? globalLabel(sym.label) : localLabel(sym.label);
+    const label: (term: AST.Term) => XMLChild = (term) => {
+      const isLocal = term instanceof AST.Symbol && !term.isGlobal;
+      const s = AST.termLabel(term);
+      return isLocal ? localLabel(s) : globalLabel(s);
+    };
 
     const header: XMLElement = tr(
       {},
       td(
         { colspan: 2, cellpadding: 0, sides: 'b' },
-        box({}, row(label(heapObj.addr), ': ', heapObj.constr))
+        box({}, row(pt.locLabel(), ': ', pt.repr))
       )
     );
 
-    /** See: https://github.com/magjac/d3-graphviz#maintaining-object-constancy
+    /**
+     * See: https://github.com/magjac/d3-graphviz#maintaining-object-constancy
      * To keep Graphviz’s auto-generated tag indices stable (for smooth
      * transitions), value fields and pointer fields must have the same table
      * shape.
@@ -590,90 +322,80 @@ export class DotBuilder {
       );
     }
 
-    const value = (port: string, sym: Symbol) =>
-      constrField(port, label(sym), null, '');
-
-    const pointer = (inPort: string, outPort: string, sym: Symbol) =>
+    const value = (port: string, x: AST.Term) =>
+      constrField(port, label(x), null, '');
+    const pointer = (inPort: string, outPort: string, x: AST.Term) =>
       // Or: use '⏺' here and disable InTablePointerEdgeAttr
-      constrField(inPort, label(sym), outPort, '');
+      constrField(inPort, label(x), outPort, '');
 
-    function getArgConfig(
-      arg: Symbol,
+    function getConfig(
+      arg: AST.Term,
       idx: number
-    ): [arg: Symbol, config: ArgConfig] {
-      return [arg, heapObj.config.args[idx]];
+    ): [arg: AST.Term, config: ArgEntryConfig] {
+      assert(pt.config !== undefined, '');
+      assert(pt.config.args[idx] !== undefined, '');
+      return [arg, pt.config.args[idx]];
     }
 
     return table(
-      { cellborder: heapObj.config.drawBorder ? 1 : 0 },
+      { cellborder: pt.config?.drawBorder ? 1 : 0 },
       header,
-      ...heapObj.args
-        .map(getArgConfig)
+      ...pt.reprArgs
+        .map(getConfig)
         .filter(([, config]) => config.inTable)
         .map(([arg, config]) =>
-          this.knownPtrUids.has(arg.uid) || config.forceEdge
+          this.nodeUids.has(AST.termUid(arg)) || config.forceEdge
             ? pointer(config.inPort, config.outPort, arg)
             : value(config.inPort, arg)
         )
     );
   }
 
-  protected buildEdges(heapObj: HeapObject): DotEdge[] {
-    const srcUid = heapObj.addr.uid;
-    const allEdges = heapObj.args.flatMap((arg, idx) => {
-      const config = heapObj.config.args[idx];
-      if (!(this.knownPtrUids.has(arg.uid) || config.forceEdge)) return [];
-      const srcOutPorts = [config.outPort, config.inTable ? 'c' : 'e'];
-      const dstUid = arg.uid;
+  protected buildEdges(pt: AST.HProp_PointsTo): DotEdge[] {
+    const srcUid = pt.locUid();
+    const seen = new Set<string>();
+
+    const edges = pt.reprArgs.flatMap((arg, idx) => {
+      assert(pt.config !== undefined, '');
+      assert(pt.config.args[idx] !== undefined, '');
+      const c: ArgEntryConfig = pt.config.args[idx];
+
+      const uid = AST.termUid(arg);
+      if (!(this.nodeUids.has(uid) || c.forceEdge)) return [];
+      const srcOutPorts = [c.outPort, c.inTable ? 'c' : 'e'];
+      const dstUid = uid;
       const dstInPorts = this.inPortOfUid[dstUid]
         ? [this.inPortOfUid[dstUid], 'w']
         : ['w'];
-      const edge = new DotEdge(
-        srcUid,
-        srcOutPorts,
-        dstUid,
-        dstInPorts,
-        config.inTable ? InTablePointerEdgeAttrs : {}
-      );
+      const edge: DotEdge = {
+        srcUid: srcUid,
+        srcOutPorts: srcOutPorts,
+        dstUid: dstUid,
+        dstInPorts: dstInPorts,
+        attrs: c.inTable ? InTablePointerEdgeAttrs : {},
+      };
       if (srcOutPorts.length == 1 && dstInPorts.length == 1) return [edge];
       // If `edge` starts or ends inside a table, add an invisible node-level
       // edge to reduce edge crossing.
-      const nodeLevelEdge = new DotEdge(srcUid, ['e'], dstUid, ['w'], {
-        style: 'invis',
-        constraint: false,
-      });
-      return [edge, nodeLevelEdge];
+      const key = `${srcUid}-${dstUid}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        const nodeLevelEdge: DotEdge = {
+          srcUid: srcUid,
+          srcOutPorts: ['e'],
+          dstUid: dstUid,
+          dstInPorts: ['w'],
+          attrs: {
+            // FIXME
+            style: 'invis',
+            constraint: false,
+          },
+        };
+        return [edge, nodeLevelEdge];
+      }
+      return [edge];
     });
 
-    // The node-level edges might have duplicates.
-    const seen = new Set<string>();
-    const uniqueEdges = allEdges.filter((e) => {
-      if (e.srcOutPorts.length > 1 || e.dstInPorts.length > 1) return true;
-      const key = `${e.srcUid}-${e.dstUid}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-
-    return uniqueEdges;
-  }
-
-  protected buildRootPointerNodeAndEdge(sym: Symbol): [DotNode, DotEdge] {
-    // `sym.uid` is the name of the Dot node representing the pointed-to object.
-    const ptrUid = sym.uid + '$ptr';
-    const node = new DotNode(ptrUid, sym.label, {
-      fontsize: '10',
-      width: '0',
-    });
-    const edge = new DotEdge(
-      ptrUid,
-      ['e'],
-      sym.uid,
-      (this.inPortOfUid[sym.uid]
-        ? [this.inPortOfUid[sym.uid], 'nw']
-        : ['nw']) as string[],
-      { tailclip: 'true', minlen: '1' }
-    );
-    return [node, edge];
+    return edges;
   }
 }
