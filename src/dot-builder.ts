@@ -94,7 +94,8 @@ export class DotBuilder {
       return {
         uid: pt.locUid(),
         label: this.buildNodeLabel(pt),
-        otherAttrs: pt.binder ? { tooltip: pt.binder } : {}, // FIXME: tooltip
+        otherAttrs:
+          pt.binder !== undefined ? { tooltip: pt.binder } : ({} as NodeAttrs), // FIXME: tooltip
       };
     });
     const edges: DotEdge[] = this.pts.flatMap((pt) => this.buildEdges(pt));
