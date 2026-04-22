@@ -3,10 +3,9 @@ import './assets/sep.css'; // FIXME: move css out of assets?
 import { loadRenderConfig, ResetKeywords, RenderConfig } from './config';
 import { assert, createElement } from './utility';
 import * as AST from './parser';
-import { DotBuilder } from './dot-builder';
+import { Render } from './render';
 
 import * as d3 from 'd3';
-import { graphviz, KeyMode } from 'd3-graphviz';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -17,18 +16,6 @@ async function init() {
   renderEmbedded(config);
   setupAnimation();
 }
-
-/**
- * https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
- * Use 'keyMode: id' to ensure that d3-graphviz treats nodes or edges of the
- * same id as the same object in transitions.
- */
-const GraphvizOptions = {
-  fit: false,
-  zoom: true,
-  keyMode: 'id' as KeyMode,
-  useWorker: false,
-};
 
 type ExtHTMLElement = HTMLElement & { goalReset?: boolean };
 
@@ -86,187 +73,6 @@ function renderEmbedded(config: RenderConfig) {
           });
         });
     });
-}
-
-class Render {
-  constructor(private readonly config: RenderConfig) {}
-
-  private hide(node: HTMLElement) {
-    node.classList.add('hidden');
-  }
-
-  private show(node: HTMLElement) {
-    node.classList.remove('hidden');
-  }
-
-  private toggle(toShow: HTMLElement, toHide: HTMLElement) {
-    this.show(toShow);
-    this.hide(toHide);
-  }
-
-  public render(hprop: AST.HProp, host: HTMLElement) {
-    const srcView = createElement('div', ['sep-source'], { text: '' }); // FIXME: text = hprop.raw
-    const dgmView = createElement('div', ['sep-diagram']);
-    host.append(dgmView, srcView);
-    this.hide(srcView); // default: diagram view
-    srcView.addEventListener('click', () => this.toggle(dgmView, srcView));
-
-    const srcButton = createElement('button', ['src-button'], {
-      text: 'formula',
-    });
-    srcButton.addEventListener('click', () => this.toggle(srcView, dgmView));
-
-    dgmView.append(srcButton, this.renderHProp(hprop));
-  }
-
-  protected renderHProp(x: AST.HProp): HTMLElement {
-    switch (x.op) {
-      case 'PointsTo': {
-        return this.renderPointsTos([x as AST.HProp_PointsTo]);
-      }
-      case 'PointsTos': {
-        assert(
-          x.args.every((arg) => arg instanceof AST.HProp_PointsTo),
-          'PointsTos: expected HProp_PointsTo[]'
-        );
-        return this.renderPointsTos(x.args as AST.HProp_PointsTo[]);
-      }
-      case 'Pure': {
-        return this.renderPures([x]);
-      }
-      case 'Pures': {
-        assert(
-          x.args.every((arg) => arg instanceof AST.HProp),
-          'Pures: expected HProp[]'
-        );
-        return this.renderPures(x.args as AST.HProp[]);
-      }
-      case 'Stars': {
-        const host = createElement('div', []);
-        host.append(...x.args.map((arg) => this.renderHPropArg(arg)));
-        return host;
-      }
-      case 'Wand': {
-        const host = createElement('div', ['sep-pred-container']);
-        assert(
-          x.args.length === 2,
-          `Wand: expected 2 arguments, wand = ${JSON.stringify(x)}`
-        );
-        // x.args.forEach((arg) =>
-        //   console.log('Wand arg = ', JSON.stringify(arg))
-        // );
-        // assert(
-        //   x.args.every((arg) => arg instanceof AST.HProp),
-        //   `Wand: expected HProp arguments`
-        // );
-        const nodes = x.args.map((arg) => this.renderHPropArg(arg));
-        const op = createElement('div', ['sep-op'], { text: '-∗' }); // FIXME: read from config
-        host.append(nodes[0], op, nodes[1]);
-        return host;
-      }
-      case 'Conjs': {
-        // FIXME
-        return createElement('span', []);
-      }
-      case 'Disjs': {
-        // FIXME
-        return createElement('span', []);
-      }
-      case 'BigSep': {
-        // FIXME
-        return createElement('span', []);
-      }
-      case 'IfThenElse': {
-        // FIXME
-        return createElement('span', []);
-      }
-      case 'Opaque': {
-        // FIXME: check anything?
-        const host = createElement('div', []);
-        host.append(...x.args.map((arg) => this.renderHPropArg(arg)));
-        return host;
-      }
-      case 'Later': {
-        // FIXME
-        return createElement('span', []);
-      }
-      default: {
-        throw new Error(`unrecognized hprop ${x.op}: ${JSON.stringify(x)}`);
-      }
-    }
-  }
-
-  protected renderHPropArg(x: AST.HPropArg): HTMLElement {
-    if (x instanceof AST.HProp) return this.renderHProp(x);
-    const s = Array.isArray(x)
-      ? x.map((t) => AST.termLabel(t as AST.Term)).join('')
-      : AST.termLabel(x as AST.Term);
-    return createElement('span', [], { text: s });
-  }
-
-  protected renderPures(xs: AST.HProp[]): HTMLElement {
-    const host = createElement('div', ['sep-pures-container']);
-    xs.forEach((x) => {
-      let pureNode = createElement('div', ['sep-pure']);
-      x.args.forEach((t, idx) => {
-        assert(AST.HPropArg_isTerm(t), `expected Term`);
-        if (idx != 0) pureNode.appendChild(document.createTextNode(' '));
-        const node = createElement('span', [], {
-          text: AST.termLabel(t as AST.Term),
-        });
-        if (t instanceof AST.Symbol && !t.isGlobal)
-          node.classList.add('sep-exist-var');
-        pureNode.appendChild(node);
-      });
-      host.appendChild(pureNode);
-    });
-    return host;
-  }
-
-  protected renderPointsTos(pts: AST.HProp_PointsTo[]): HTMLElement {
-    const host = createElement('div', ['sep-pointstos-container']);
-    const dotNode = createElement('div', ['sep-dot']);
-    this.hide(dotNode);
-    const svgNode = createElement('div', ['sep-svg']);
-    host.append(dotNode, svgNode);
-
-    const dot = new DotBuilder(this.config, pts).dot;
-    const dotCopy = createElement('button', ['copy-button'], { text: 'Copy' });
-    const dotContent = createElement('div', ['content'], { text: dot });
-    dotNode.append(dotCopy, dotContent);
-
-    /**
-     * Call `dot` then `render` instead of `renderDot` to do the computational
-     * intensive layout stages for graphs before doing the potentially
-     * synchronized rendering of all the graphs simultaneously.
-     */
-    graphviz(svgNode, GraphvizOptions).dot(dot).render();
-    // d3.select(svgNode).graphviz(GraphvizOptions).dot(dot).render(); // FIXME: to delete
-
-    svgNode.addEventListener('click', () => {
-      navigator.clipboard
-        .writeText(dotContent.textContent)
-        .then(() => {
-          const tooltip = createElement('div', ['tooltip-copied'], {
-            text: 'DOT source copied',
-          });
-          const rect = svgNode.getBoundingClientRect();
-          tooltip.style.left = `${rect.left + window.scrollX}px`;
-          tooltip.style.top = `${rect.top + window.scrollY - 20}px`;
-          document.body.appendChild(tooltip);
-          // fade in
-          requestAnimationFrame(() => (tooltip.style.opacity = '1'));
-          // fade out after 1s
-          setTimeout(() => {
-            tooltip.style.opacity = '0';
-            tooltip.addEventListener('transitionend', () => tooltip.remove());
-          }, 1000);
-        })
-        .catch((err) => console.error('Copy failed', err));
-    });
-
-    return host;
-  }
 }
 
 interface GraphvizInstance {
