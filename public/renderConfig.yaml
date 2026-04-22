@@ -3,7 +3,7 @@ constr:
   '$MQueue':
     label: 'MQueue'
     args:
-      0:
+      0: # FIXME: count from 1
         inTable: true
   '$MCell':
     label: 'MCell'
@@ -20,6 +20,40 @@ constr:
         inTable: true
         inPort: list
         outPort: list
+  # Example: CFML Tree
+  '$MTree':
+    label: 'MTree'
+    args:
+      0:
+        inTable: true
+  '$MNode':
+    label: 'MNode'
+    drawBorder: true
+    argNum: 3
+  # Example: Iris Queue
+  '$isQueue':
+    label: 'isQueue'
+    args:
+      0:
+        inTable: true
+  '$isCell':
+    label: 'isCell'
+    drawBorder: true
+    argNum: 2
+  '$isListSeg':
+    label: 'isListSeg'
+    inPort: list
+    args:
+      0:
+        forceEdge: true # forceEdge=true means there is always an edge to this argument
+        outPort: list
+      1:
+        inTable: true
+        inPort: list
+        outPort: list
+  '$PairV':
+    drawBorder: 1
+    argNum: 2
   TestConstr:
   MCell:
     drawBorder: true
@@ -40,9 +74,6 @@ constr:
     args:
       0:
         inTable: true
-  MNode:
-    drawBorder: true
-    argNum: 3
   MTree:
     args:
       0:
@@ -112,10 +143,14 @@ constr:
   isList:
     argNum: 1
 value:
-  # example: CFML Queue
+  # example: CFML Queue, CFML Tree
   '$list_app':
     argNum: 2
     pattern: '$1 ++ $2'
   '$list_cons':
     argNum: 2
     pattern: '$1 :: $2'
+  # example: Iris
+  '$LitV':
+    argNum: 1
+    pattern: '#$1'

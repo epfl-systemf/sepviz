@@ -121,12 +121,18 @@ class Render {
 
   protected renderHProp(x: AST.HProp): HTMLElement {
     switch (x.op) {
+      case 'PointsTo': {
+        return this.renderPointsTos([x as AST.HProp_PointsTo]);
+      }
       case 'PointsTos': {
         assert(
           x.args.every((arg) => arg instanceof AST.HProp_PointsTo),
           'PointsTos: expected HProp_PointsTo[]'
         );
         return this.renderPointsTos(x.args as AST.HProp_PointsTo[]);
+      }
+      case 'Pure': {
+        return this.renderPures([x]);
       }
       case 'Pures': {
         assert(
@@ -141,15 +147,18 @@ class Render {
         return host;
       }
       case 'Wand': {
-        const host = createElement('div', ['sep-other-pred-container']); // FIXME: rename other-pred-container
+        const host = createElement('div', ['sep-pred-container']);
         assert(
           x.args.length === 2,
           `Wand: expected 2 arguments, wand = ${JSON.stringify(x)}`
         );
-        assert(
-          x.args.every((arg) => arg instanceof AST.HProp),
-          `Wand: expected HProp arguments`
-        );
+        // x.args.forEach((arg) =>
+        //   console.log('Wand arg = ', JSON.stringify(arg))
+        // );
+        // assert(
+        //   x.args.every((arg) => arg instanceof AST.HProp),
+        //   `Wand: expected HProp arguments`
+        // );
         const nodes = x.args.map((arg) => this.renderHPropArg(arg));
         const op = createElement('div', ['sep-op'], { text: '-∗' }); // FIXME: read from config
         host.append(nodes[0], op, nodes[1]);
@@ -176,6 +185,10 @@ class Render {
         const host = createElement('div', []);
         host.append(...x.args.map((arg) => this.renderHPropArg(arg)));
         return host;
+      }
+      case 'Later': {
+        // FIXME
+        return createElement('span', []);
       }
       default: {
         throw new Error(`unrecognized hprop ${x.op}: ${JSON.stringify(x)}`);

@@ -18,6 +18,14 @@ const valueConfig = {
     argNum: 2,
     pattern: '$1 > $2',
   },
+  $LitV: {
+    argNum: 1,
+    pattern: '#$1',
+  },
+  $list_cons: {
+    argNum: 2,
+    pattern: '$1 :: $2',
+  },
 };
 const parser = new Parser({ value: valueConfig }); // FIXME
 
@@ -40,7 +48,7 @@ test('resolve symbols', () => {
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     '(fun r => ',
-    new HProp_PointsTo('PointsTo', 'r', 'isList', [
+    new HProp_PointsTo('r', 'isList', [
       {
         op: '@list_append',
         args: [new Symbol(false, 'l1$0', 'l10'), 'l2'],
@@ -92,13 +100,13 @@ test('pointsto example', () => {
   expect(goal).toEqual([
     new HProp('Stars', [
       new HProp('PointsTos', [
-        new HProp_PointsTo('PointsTo', 'p1', '@MCell', ['f1', 'b1']),
-        new HProp_PointsTo('PointsTo', 'f2', '@MCell', ['x', 'c2']),
-        new HProp_PointsTo('PointsTo', 'c2', '@MListSeg', ['b2', "L2'"]),
-        new HProp_PointsTo('PointsTo', 'p2', '@MCell', ['f2', 'b2']),
-        new HProp_PointsTo('PointsTo', 'b2', '@MCell', ['d2', 'null']),
-        new HProp_PointsTo('PointsTo', 'f1', '@MListSeg', ['b1', 'L1']),
-        new HProp_PointsTo('PointsTo', 'b1', '@MCell', ['d1', 'null']),
+        new HProp_PointsTo('p1', '@MCell', ['f1', 'b1']),
+        new HProp_PointsTo('f2', '@MCell', ['x', 'c2']),
+        new HProp_PointsTo('c2', '@MListSeg', ['b2', "L2'"]),
+        new HProp_PointsTo('p2', '@MCell', ['f2', 'b2']),
+        new HProp_PointsTo('b2', '@MCell', ['d2', 'null']),
+        new HProp_PointsTo('f1', '@MListSeg', ['b1', 'L1']),
+        new HProp_PointsTo('b1', '@MCell', ['d1', 'null']),
       ]),
     ]),
   ]);
@@ -108,11 +116,9 @@ test('term array', () => {
   const text = '⟬ Pure ┆ l3 = ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp('Pures', [
-      new HProp('Pure', [
-        'l3 =',
-        { op: '@eq', args: ['l1', 'l2'], uid: '@eq-l1-l2', label: 'l1 == l2' },
-      ]),
+    new HProp('Pure', [
+      'l3 =',
+      { op: '@eq', args: ['l1', 'l2'], uid: '@eq-l1-l2', label: 'l1 == l2' },
     ]),
   ]);
 });
@@ -123,20 +129,13 @@ test('pointsto with loc being value', () => {
     '⟬ PointsTo ┆ ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp('PointsTos', [
-      new HProp_PointsTo(
-        'PointsTo',
-        new Symbol(true, '@plus-p-1', 'p + 1'),
-        'isList',
-        [
-          {
-            op: '@list_append',
-            args: ['l1', 'l2'],
-            label: 'l1 ++ l2',
-            uid: '@list_append-l1-l2',
-          },
-        ]
-      ),
+    new HProp_PointsTo(new Symbol(true, '@plus-p-1', 'p + 1'), 'isList', [
+      {
+        op: '@list_append',
+        args: ['l1', 'l2'],
+        label: 'l1 ++ l2',
+        uid: '@list_append-l1-l2',
+      },
     ]),
   ]);
 });
@@ -148,5 +147,129 @@ test('cfml triple', () => {
     '(fun x: A => and some more',
     new HProp('Opaque', ['GC'], 'POST'),
     ')',
+  ]);
+});
+
+test('iris', () => {
+  const text = `
+  ⟬* PRE @ "HQ1" : ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ L1 ⟧ ⟭ *⟭
+  ⟬* PRE @ "HQ2" : ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ L2 ⟧ ⟭ *⟭
+  ⟬* PRE @ "HΦ" : ⟬ Later ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭
+                                       ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭ ⟭ *⟭
+  --------------------------------------∗
+  WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
+`.trim();
+
+  const goal: Goal = parser.parse(text);
+  expect(goal).toEqual([
+    {
+      op: 'Stars',
+      ctx: 'PRE',
+      args: [
+        {
+          op: 'PointsTos',
+          ctx: 'PRE',
+          args: [
+            {
+              op: 'PointsTo',
+              binder: 'HQ1',
+              ctx: 'PRE',
+              loc: 'p1',
+              repr: '$isQueue',
+              reprArgs: ['L1'],
+              args: [],
+            },
+            {
+              op: 'PointsTo',
+              binder: 'HQ2',
+              ctx: 'PRE',
+              loc: 'p2',
+              repr: '$isQueue',
+              reprArgs: ['L2'],
+              args: [],
+            },
+          ],
+        },
+        {
+          op: 'Later',
+          binder: 'HΦ',
+          ctx: 'PRE',
+          args: [
+            {
+              op: 'Wand',
+              args: [
+                {
+                  op: 'Stars',
+                  args: [
+                    {
+                      op: 'PointsTos',
+                      args: [
+                        {
+                          op: 'PointsTo',
+                          loc: 'p1',
+                          repr: '$isQueue',
+                          reprArgs: [
+                            {
+                              op: '$list_app',
+                              args: ['L1', 'L2'],
+                              label: '$list_app(L1, L2)',
+                              uid: '$list_app-L1-L2',
+                            },
+                          ],
+                          args: [],
+                        },
+                        {
+                          op: 'PointsTo',
+                          loc: 'p2',
+                          repr: '$isQueue',
+                          reprArgs: ['[]'],
+                          args: [],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                [
+                  'Φ ',
+                  {
+                    op: '$LitV',
+                    args: ['()%V'],
+                    label: '#()%V',
+                    uid: '$LitV-()%V',
+                  },
+                ],
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    '\n  --------------------------------------∗\n  WP transfer #p1 #p2 {{ v, Φ v }}',
+  ]);
+});
+
+test('value inside a value argument', () => {
+  const text = `
+WP if: ~ ⟦ $LitV ┆ bool_decide (⟦ $list_cons ┆ x ┆ L2' ⟧ = [])⟧
+    then let: "b1" := Snd ! ⟦ $LitV ┆ p1 ⟧ in
+         let: "f2" := Fst ! ⟦ $LitV ┆ p2 ⟧ in
+         let: "d" := Fst ! "b1" in
+         "b1" <- (Fst ! "f2", Snd ! "f2");;
+         ⟦ $LitV ┆ p1 ⟧ <- (Fst ! ⟦ $LitV ┆ p1 ⟧, Snd ! ⟦ $LitV ┆ p2 ⟧);;
+         "f2" <- ("d", InjLV ⟦ $LitV ┆ ()%V ⟧);; ⟦ $LitV ┆ p2 ⟧ <- (Fst ! ⟦ $LitV ┆ p2 ⟧, "f2")
+    else ⟦ $LitV ┆ ()%V ⟧
+{{ v, Φ v }}
+`.trim();
+  const goal = parser.parse(text);
+  expect(goal).toEqual([
+    `WP if: ~ #bool_decide (x :: L2' = [])
+    then let: "b1" := Snd ! #p1 in
+         let: "f2" := Fst ! #p2 in
+         let: "d" := Fst ! "b1" in
+         "b1" <- (Fst ! "f2", Snd ! "f2");;
+         #p1 <- (Fst ! #p1, Snd ! #p2);;
+         "f2" <- ("d", InjLV #()%V);; #p2 <- (Fst ! #p2, "f2")
+    else #()%V
+{{ v, Φ v }}`,
   ]);
 });

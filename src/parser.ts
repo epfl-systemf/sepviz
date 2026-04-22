@@ -29,7 +29,6 @@ export class HProp {
 
 export class HProp_PointsTo extends HProp {
   constructor(
-    public op: string,
     public loc: Symbol | string,
     public repr: string,
     public reprArgs: Term[],
@@ -37,7 +36,7 @@ export class HProp_PointsTo extends HProp {
     public binder?: string,
     public config?: ConstrEntryConfig
   ) {
-    super(op, [], ctx, binder);
+    super('PointsTo', [], ctx, binder);
   }
 
   public locUid(): string {
@@ -123,6 +122,8 @@ export class Parser {
 
   public parse(input: string) {
     let sepGoal = sepParse(input) as Sep.Goal;
+    // remove whitespace string between two hprops
+    sepGoal = this.filter(sepGoal);
     // flatten rich-hprops
     sepGoal = this.flattenRichHProps(sepGoal);
     // convert to classes
@@ -131,13 +132,33 @@ export class Parser {
     goal.forEach((seg: MaybeHProp) => {
       if (seg instanceof HProp) this.flatten(seg);
     });
-    // aggregate `Pure`s, `PointsTo`s
+    // aggregate top-level adjacent hprops into a stars
+    goal = this.aggregateTopLevel(goal);
+    // aggregate `Pure`s, `PointsTo`s in arguments of `Stars`
     goal = goal.map((seg: MaybeHProp) =>
-      seg instanceof HProp ? this.aggregate(seg) : seg
+      seg instanceof HProp ? this.aggregateInStars(seg) : seg
     );
     // resolve symbols, handle `Exist` and `PointsTo`
     goal = this.resolveSymbols(goal);
     return goal;
+  }
+
+  private filter(goal: Sep.Goal): Sep.Goal {
+    const res: Sep.MaybeHProp[] = [];
+    goal.forEach((seg, idx) => {
+      if (
+        typeof seg === 'string' &&
+        seg.trim().length === 0 &&
+        idx - 1 >= 0 &&
+        Sep.isHProp(goal[idx - 1]) &&
+        idx + 1 < goal.length &&
+        Sep.isHProp(goal[idx + 1])
+      ) {
+        return;
+      }
+      res.push(seg);
+    });
+    return res;
   }
 
   private flattenRichHProps(goal: Sep.Goal): Sep.Goal {
@@ -159,14 +180,31 @@ export class Parser {
   }
 
   private convertGoal(goal: Sep.Goal): Goal {
-    return goal.map(convertMaybeHProp);
+    const valueConfig: ValueConfig = this.config.value;
+    return goal
+      .map(convertMaybeHProp)
+      .reduce((acc: MaybeHProp[], seg: MaybeHProp) => {
+        if (typeof seg === 'string') {
+          const last = acc[acc.length - 1];
+          if (typeof last === 'string') acc[acc.length - 1] += seg;
+          else acc.push(seg);
+        } else acc.push(seg);
+        return acc;
+      }, []);
 
     function convertValue(x: Sep.Value): Value {
-      return new Value(x.op, x.args.map(convertMaybeValue));
+      return new Value(x.op, x.args.map(convertMaybeValue), valueConfig);
     }
 
     function convertMaybeValue(x: Sep.MaybeValue): Term {
-      return typeof x === 'object' ? convertValue(x) : x;
+      if (Sep.isValue(x)) return convertValue(x);
+      if (Array.isArray(x))
+        // Value inside a MaybeValue is a Value inside a Gallina term,
+        // directly convert it into a string.
+        return x
+          .map((y) => (Sep.isValue(y) ? convertValue(y).label : y))
+          .join('');
+      return x as string;
     }
 
     function convertHPropArg(x: Sep.HPropArg): HPropArg {
@@ -184,7 +222,10 @@ export class Parser {
 
     function convertMaybeHProp(x: Sep.MaybeHProp): MaybeHProp {
       return typeof x === 'object' && 'kind' in x
-        ? convertHProp(x as Sep.HProp)
+        ? x.kind === 'hprop'
+          ? convertHProp(x as Sep.HProp)
+          : // parse values in segments into string
+            convertValue(x as Sep.Value).label
         : (x as string);
     }
   }
@@ -213,31 +254,72 @@ export class Parser {
   }
 
   /**
+   * Aggregate top-level adjacent hprops into a `Stars`.
+   * e.g., the goal [string1, hprop1, hprop2, hprop3, string2] will be
+   *  tranformed to [string1, Stars(hprop1, hprop2, hprop3), string2]
+   */
+  private aggregateTopLevel(goal: Goal): Goal {
+    return goal.reduce((acc: MaybeHProp[], seg: MaybeHProp) => {
+      if (seg instanceof HProp) {
+        const last = acc[acc.length - 1];
+        if (last instanceof HProp) {
+          if (last.op === 'Stars') {
+            last.args.push(seg);
+            if (last.ctx !== seg.ctx) last.ctx = undefined;
+          } else {
+            acc[acc.length - 1] = new HProp(
+              'Stars',
+              [last, seg],
+              last.ctx === seg.ctx ? last.ctx : undefined
+            );
+          }
+        } else {
+          // last is a string
+          acc.push(seg);
+        }
+      } else {
+        // seg is a string
+        acc.push(seg);
+      }
+      return acc;
+    }, []);
+  }
+
+  /**
    * Aggregate repeated `Pure` and `PointsTo` in `Stars`. E.g., tranform
    * `Stars(Pure(P1), ..., Pure(Pn), ...)` into `Stars(Pures(Pure(P1), ..., Pure(Pn)), ...)`.
    */
-  private aggregate(hprop: HProp): HProp {
+  private aggregateInStars(hprop: HProp): HProp {
     const toCoalesceOps = ['Pure', 'PointsTo'];
 
-    function rec(x: HProp, op: string, isTop: boolean): HProp {
+    function aggregateCtx(args: HPropArg[]): HPropCtx | undefined {
+      let ctx: HPropCtx | undefined = undefined;
+      args.forEach((x, idx) => {
+        if (x instanceof HProp) {
+          if (idx === 0) ctx = x.ctx;
+          else if (ctx !== x.ctx) ctx = undefined;
+        }
+      });
+      return ctx;
+    }
+
+    function rec(x: HProp, op: string): HProp {
       const isOp = (y: HPropArg) => y instanceof HProp && y.op === op;
       const notOp = (y: HPropArg) => !isOp(y);
       const args = x.args.map((arg) =>
-        arg instanceof HProp ? rec(arg, op, false) : arg
+        arg instanceof HProp ? rec(arg, op) : arg
       );
       if (x.op === 'Stars') {
-        const ops = new HProp(op + 's', args.filter(isOp));
+        const isOpArgs = args.filter(isOp);
+        const ops = new HProp(op + 's', isOpArgs, aggregateCtx(isOpArgs));
         if (ops.args.length !== 0)
           return new HProp(x.op, [ops, ...args.filter(notOp)], x.ctx, x.binder);
-      } else if (isTop && x.op === op) {
-        // If it's a single top-level `Pure` or `PointsTo`, wrap it.
-        return new HProp(op + 's', [new HProp(x.op, args, x.ctx, x.binder)]);
       }
       return new HProp(x.op, args, x.ctx, x.binder);
     }
 
     let x = hprop;
-    toCoalesceOps.forEach((op) => (x = rec(x, op, true)));
+    toCoalesceOps.forEach((op) => (x = rec(x, op)));
     return x;
   }
 
@@ -285,8 +367,9 @@ export class Parser {
           return resolveHProp(x.args[1] as HProp);
         }
         case 'PointsTo': {
+          // Arguments after the first two will be discarded.
           const args = x.args.map(resolveHPropArg);
-          assert(x.args.length === 2, 'PointsTo expects 2 arguments');
+          assert(x.args.length >= 2, 'PointsTo expects at least 2 arguments');
 
           assert(
             HPropArg_isTerm(args[0]),
@@ -306,7 +389,6 @@ export class Parser {
           const repr = repr_value.op;
 
           return new HProp_PointsTo(
-            x.op,
             loc,
             repr,
             repr_value.args,

@@ -30,7 +30,7 @@
 Goal = segs:Segment* { return mergeSegments(segs); }
 
 Segment
-  = RichHProp / HProp / !(RichHPropLD / HPropLD) @.
+  = RichHProp / HProp / Value / !(RichHPropLD / HPropLD) @.
 
 CtxIdent = "PRE" / "POST"
 Sep = "┆"
@@ -38,7 +38,7 @@ Sep = "┆"
 RichHPropLD = "⟬*"
 RichHPropRD = "*⟭"
 RichHProp
-  = RichHPropLD _ ctx:(@CtxIdent _ "@" _)? binder:(@Ident _ ":" _)? prefix:(@RichHPropTerm _)? hprop:HProp _ postfix:(@RichHPropTerm _)? RichHPropRD {
+  = RichHPropLD _ ctx:(@CtxIdent _ "@" _)? binder:("\"" @Ident "\"" _ ":" _)? prefix:(@RichHPropTerm _)? hprop:HProp _ postfix:(@RichHPropTerm _)? RichHPropRD {
       const res = hprop;
       if (ctx) res.ctx = ctx;
       if (binder) res.binder = binder;
@@ -65,17 +65,23 @@ HPropTerm = segs:HPropTermSegment* {
 
 HPropTermSegment
   = Value
-   / !(Sep / HPropLD / HPropRD / ValueLD) @.
+   / !(Sep / HPropLD / HPropRD / ValueLD / ValueRD) @.
 
 ValueLD = "⟦"
 ValueRD = "⟧"
 Value
-  = ValueLD _ op:Ident args:(_ Sep _ @(Value / ValueTerm))* _ ValueRD {
+  = ValueLD _ op:Ident args:(_ Sep _ @(Value / GallinaTerm))* _ ValueRD {
       return { kind: "value", op, args};
     }
-
-ValueTerm = cs: ValueTermChar* { return cs.join("").trim(); }
-ValueTermChar = !(Sep / ValueLD / ValueRD) @.
+GallinaTerm = segs:GallinaTermSegment* {
+    const res = mergeSegments(segs)
+      .filter((s) => !(typeof s === "string" && s.trim().length == 0));
+    if (res.length == 1) return (typeof res[0] === "string") ? res[0].trim() : res[0];
+    return res;
+  }
+GallinaTermSegment
+  = Value
+  / !(Sep / ValueLD / ValueRD / HPropLD / HPropRD) @.
 
 Ident = $([a-zA-Z_\u0080-\uFFFF$\@] [a-zA-Z0-9_'\u0080-\uFFFF]*)
 

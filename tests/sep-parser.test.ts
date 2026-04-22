@@ -28,25 +28,25 @@ test('parse one simple plain region', () => {
 });
 
 test('parse one simple named region', () => {
-  expect(parse('text ⟬* PRE @ Hφ: ⟬ Opaque ┆ emp ⟭ *⟭ some more text')).toEqual(
-    [
-      'text ',
-      {
-        kind: 'hprop',
-        op: 'Opaque',
-        args: ['emp'],
-        binder: 'Hφ',
-        ctx: 'PRE',
-      },
-      ' some more text',
-    ]
-  );
+  expect(
+    parse('text ⟬* PRE @ "Hφ": ⟬ Opaque ┆ emp ⟭ *⟭ some more text')
+  ).toEqual([
+    'text ',
+    {
+      kind: 'hprop',
+      op: 'Opaque',
+      args: ['emp'],
+      binder: 'Hφ',
+      ctx: 'PRE',
+    },
+    ' some more text',
+  ]);
 });
 
 test('parse two regions', () => {
   expect(
     parse(
-      '⟬* PRE @ Hφ: ⟬ NULL ┆ emp ⟭ *⟭ code do something (fun r => ⟬* POST @ ⟬ PointsTo ┆ r ┆ isList ┆ l1 ++ l2 ⟭ *⟭) '
+      '⟬* PRE @ "Hφ": ⟬ NULL ┆ emp ⟭ *⟭ code do something (fun r => ⟬* POST @ ⟬ PointsTo ┆ r ┆ isList ┆ l1 ++ l2 ⟭ *⟭) '
     )
   ).toEqual([
     {
@@ -127,91 +127,76 @@ test('cfml triple', () => {
   ]);
 });
 
-// test('test', () => {
-//   const text = `⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-// CODE Wpgen_app_untyped (trm_apps val_neg \`\`[ isTrue (L2 = nil)])
-// ⟬* POST @ fun X : bool =>
-//           Wptag
-//             (Wpgen_if X
-//                (Wptag
-//                   (Wpgen_let
-//                      (Wptag
-//                         (Wpgen_app_untyped
-//                            (trm_apps (val_get_field tail) ⟦ $list_cons ┆ p1 ┆ nil ⟧)))
-//                      (fun (A : Type) (EA : Enc A) (X0 : A) =>
-//                       Wptag
-//                         (Wpgen_let
-//                            (Wptag
-//                               (Wpgen_app_untyped
-//                                  (trm_apps (val_get_field head) ⟦ $list_cons ┆ p2 ┆ nil ⟧)))
-//                            (fun (A0 : Type) (EA0 : Enc A0) (X1 : A0) =>
-//                             Wptag
-//                               (Wpgen_let
-//                                  (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) \`\`[ X0])))
-//                                  (fun (A1 : Type) (EA1 : Enc A1) (X2 : A1) =>
-//                                   Wptag
-//                                     (Wpgen_seq
-//                                        (Wptag
-//                                           (Wpgen_let
-//                                              (Wptag
-//                                                 (Wpgen_app_untyped
-//                                                    (trm_apps (val_get_field head) \`\`[ X1])))
-//                                              (fun (A2 : Type) (EA2 : Enc A2) (V1 : A2) =>
-//                                               Wptag
-//                                                 (Wpgen_app_untyped
-//                                                    (trm_apps (val_set_field head) \`\`[ X0, V1])))))
-//                                        (Wptag
-//                                           (Wpgen_seq
-//                                              (Wptag
-//                                                 (Wpgen_let
-//                                                    (Wptag
-//                                                       (Wpgen_app_untyped
-//                                                          (trm_apps (val_get_field tail) \`\`[ X1])))
-//                                                    (fun (A2 : Type) (EA2 : Enc A2) (V1 : A2) =>
-//                                                     Wptag
-//                                                       (Wpgen_app_untyped
-//                                                          (trm_apps (val_set_field tail) \`\`[ X0, V1])))))
-//                                              (Wptag
-//                                                 (Wpgen_seq
-//                                                    (Wptag
-//                                                       (Wpgen_let
-//                                                          (Wptag
-//                                                             (Wpgen_app_untyped
-//                                                                (trm_apps
-//                                                                   (val_get_field tail)
-//                                                                   ⟦ $list_cons ┆ p2 ┆ nil ⟧)))
-//                                                          (fun (A2 : Type) (EA2 : Enc A2) (V1 : A2)
-//                                                           =>
-//                                                           Wptag
-//                                                             (Wpgen_app_untyped
-//                                                                (trm_apps
-//                                                                   (val_set_field tail)
-//                                                                   ⟦ $list_cons ┆ p1 ┆ \`\`[ V1] ⟧)))))
-//                                                    (Wptag
-//                                                       (Wpgen_seq
-//                                                          (Wptag
-//                                                             (Wpgen_app_untyped
-//                                                                (trm_apps
-//                                                                   (val_set_field head)
-//                                                                   \`\`[ X1, X2])))
-//                                                          (Wptag
-//                                                             (Wpgen_seq
-//                                                                (Wptag
-//                                                                   (Wpgen_app_untyped
-//                                                                      (trm_apps
-//                                                                       (val_set_field tail)
-//                                                                       \`\`[ X1, null])))
-//                                                                (Wptag
-//                                                                   (Wpgen_app_untyped
-//                                                                      (trm_apps
-//                                                                       (val_set_field tail)
-//                                                                       ⟦ $list_cons ┆ p2 ┆ \`\`[ X1] ⟧)))))))))))))))))))
-//                (Wptag (Wpgen_val_unlifted \`\`tt))) Enc_unit
-//             (fun _ : unit =>
-//              ⟬
-//              Star ┆ ⟬
-//                     Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭
-//                     ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ Opaque ┆ GC ⟭ ⟭) *⟭
-// `;
-//   tryParse('test', text);
-// });
+test('values in segments', () => {
+  const text = `
+⟬* PRE @ "HQ1" : ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ L1 ⟧ ⟭ *⟭
+⟬* PRE @ "HQ2" : ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ L2 ⟧ ⟭ *⟭
+⟬* PRE @ "HΦ" : ⟬ Later ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭
+                                    ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭ ⟭ *⟭
+--------------------------------------∗
+WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
+`.trim();
+  expect(parse(text)).toEqual([
+    {
+      args: ['p1', { args: ['L1'], kind: 'value', op: '$isQueue' }],
+      binder: 'HQ1',
+      ctx: 'PRE',
+      kind: 'hprop',
+      op: 'PointsTo',
+    },
+    '\n',
+    {
+      args: ['p2', { args: ['L2'], kind: 'value', op: '$isQueue' }],
+      binder: 'HQ2',
+      ctx: 'PRE',
+      kind: 'hprop',
+      op: 'PointsTo',
+    },
+    '\n',
+    {
+      args: [
+        {
+          args: [
+            {
+              args: [
+                {
+                  args: [
+                    'p1',
+                    {
+                      args: [
+                        { args: ['L1', 'L2'], kind: 'value', op: '$list_app' },
+                      ],
+                      kind: 'value',
+                      op: '$isQueue',
+                    },
+                  ],
+                  kind: 'hprop',
+                  op: 'PointsTo',
+                },
+                {
+                  args: ['p2', { args: ['[]'], kind: 'value', op: '$isQueue' }],
+                  kind: 'hprop',
+                  op: 'PointsTo',
+                },
+              ],
+              kind: 'hprop',
+              op: 'Star',
+            },
+            ['Φ ', { args: ['()%V'], kind: 'value', op: '$LitV' }],
+          ],
+          kind: 'hprop',
+          op: 'Wand',
+        },
+      ],
+      binder: 'HΦ',
+      ctx: 'PRE',
+      kind: 'hprop',
+      op: 'Later',
+    },
+    `\n--------------------------------------∗\nWP transfer `,
+    { args: ['p1'], kind: 'value', op: '$LitV' },
+    ' ',
+    { args: ['p2'], kind: 'value', op: '$LitV' },
+    ' {{ v, Φ v }}',
+  ]);
+});

@@ -67,7 +67,7 @@
 
 /* Wand / Non-separating Conjunction / Disjunction */
 
-.sep-other-pred-container {
+.sep-pred-container {
   border: 1px dotted var(--border-color);
   border-radius: var(--border-radius);
   padding: var(--small-space);
@@ -77,7 +77,7 @@
   gap: 0.5rem;
 }
 
-:is(.sep-other-pred-container, .sep-pures-container):only-child {
+:is(.sep-pred-container, .sep-pures-container):only-child {
   border: none;
 }
 
