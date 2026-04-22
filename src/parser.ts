@@ -67,30 +67,30 @@ export class Value {
     public args: Term[],
     config?: ValueConfig
   ) {
-    this.uid = config ? this.genUid() : '';
+    this.uid = config ? this.genUid(config) : '';
     this.label = config ? this.genLabel(config) : '';
   }
 
-  public genUid(): string {
-    return (
-      this.op +
-      '-' +
-      this.args
-        .map((x: Term) =>
-          x instanceof Value ? x.genUid() : x instanceof Symbol ? x.uid : x
-        )
-        .join('-')
+  public genUid(config: ValueConfig): string {
+    const opConfig = config[this.op];
+    if (!opConfig || !opConfig.uid) {
+      // Fallback: op-arg1-arg2-...
+      const argUids = this.args.map((a) => termUid(a));
+      return `${this.op}-${argUids.join('-')}`;
+    }
+    return opConfig.uid.replace(/\$(\d+)/g, (_, i) =>
+      termUid(this.args[parseInt(i) - 1])
     );
   }
 
   public genLabel(config: ValueConfig): string {
     const opConfig = config[this.op];
-    if (!opConfig) {
+    if (!opConfig || !opConfig.label) {
       // Fallback: op(arg1, arg2, ...)
       const argLabels = this.args.map((a) => termLabel(a));
       return `${this.op}(${argLabels.join(', ')})`;
     }
-    return opConfig.pattern.replace(/\$(\d+)/g, (_, i) =>
+    return opConfig.label.replace(/\$(\d+)/g, (_, i) =>
       termLabel(this.args[parseInt(i) - 1])
     );
   }

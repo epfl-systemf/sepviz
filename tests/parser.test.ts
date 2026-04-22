@@ -4,27 +4,28 @@ import { expect, test } from 'vitest';
 const valueConfig = {
   '@plus': {
     argNum: 2,
-    pattern: '$1 + $2',
+    label: '$1 + $2',
   },
   '@list_append': {
     argNum: 2,
-    pattern: '$1 ++ $2',
+    label: '$1 ++ $2',
   },
   '@eq': {
     argNum: 2,
-    pattern: '$1 == $2',
+    label: '$1 == $2',
   },
   '@gt': {
     argNum: 2,
-    pattern: '$1 > $2',
+    label: '$1 > $2',
   },
   $LitV: {
     argNum: 1,
-    pattern: '#$1',
+    label: '#$1',
+    uid: '$1',
   },
   $list_cons: {
     argNum: 2,
-    pattern: '$1 :: $2',
+    label: '$1 :: $2',
   },
 };
 const parser = new Parser({ value: valueConfig }); // FIXME
@@ -235,7 +236,7 @@ test('iris', () => {
                     op: '$LitV',
                     args: ['()%V'],
                     label: '#()%V',
-                    uid: '$LitV-()%V',
+                    uid: '()%V',
                   },
                 ],
               ],

@@ -46,7 +46,8 @@ export interface HPropEntryConfig {
 
 export interface ValueEntryConfig {
   argNum: number;
-  pattern: string;
+  label?: string;
+  uid?: string;
 }
 
 export interface FontConfig {

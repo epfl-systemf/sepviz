@@ -45,11 +45,11 @@ constr:
     inPort: list
     args:
       0:
-        forceEdge: true # forceEdge=true means there is always an edge to this argument
-        outPort: list
-      1:
         inTable: true
         inPort: list
+        outPort: list
+      1:
+        forceEdge: true
         outPort: list
   '$PairV':
     drawBorder: 1
@@ -146,11 +146,12 @@ value:
   # example: CFML Queue, CFML Tree
   '$list_app':
     argNum: 2
-    pattern: '$1 ++ $2'
+    label: '$1 ++ $2'
   '$list_cons':
     argNum: 2
-    pattern: '$1 :: $2'
+    label: '$1 :: $2'
   # example: Iris
   '$LitV':
     argNum: 1
-    pattern: '#$1'
+    label: '#$1'
+    uid: '$1'

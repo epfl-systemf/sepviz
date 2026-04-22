@@ -110,19 +110,13 @@ test('pointsto example', () => {
   ]);
 });
 
-test('test', () => {
-  const valueConfig = {
-    '@list_append': {
-      argNum: 2,
-      pattern: '$1 ++ $2',
-    },
-  };
+test('a single pointsto', () => {
+  const valueConfig = { '@list_append': { argNum: 2, label: '$1 ++ $2' } };
   const pts = [
     new HProp_PointsTo(new Symbol(true, '@plus-p-1', 'p + 1'), '@MCell', [
       new Value('@list_append', ['l1', 'l2'], valueConfig),
     ]),
   ];
-
   const dotBuilder = new DotBuilder(config, pts);
   const dot = `
 digraph {

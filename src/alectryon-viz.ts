@@ -199,7 +199,7 @@ class Render {
   protected renderHPropArg(x: AST.HPropArg): HTMLElement {
     if (x instanceof AST.HProp) return this.renderHProp(x);
     const s = Array.isArray(x)
-      ? x.map((t) => AST.termLabel(t as AST.Term)).join()
+      ? x.map((t) => AST.termLabel(t as AST.Term)).join('')
       : AST.termLabel(x as AST.Term);
     return createElement('span', [], { text: s });
   }
