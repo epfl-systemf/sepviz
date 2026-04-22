@@ -6,6 +6,8 @@ export interface RichHProp {
   prefix: string;
   hprop: HProp;
   postfix: string;
+  _start: number;
+  _end: number;
 }
 
 export interface HProp {
@@ -13,6 +15,8 @@ export interface HProp {
   args: HPropArg[];
   ctx?: HPropCtx;
   binder?: string; // hypothesis name (used in iris)
+  _start: number;
+  _end: number;
 }
 
 export function isHProp(x: any): x is HProp {
@@ -28,6 +32,9 @@ export type MaybeValue = Value | string | (Value | string)[];
 export interface Value {
   op: string;
   args: MaybeValue[];
+  _start: number;
+  _end: number;
+  _raw: string;
 }
 
 export function isValue(x: any): x is Value {

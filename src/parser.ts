@@ -20,6 +20,8 @@ export type MaybeHProp = HProp | string;
 
 export class HProp {
   constructor(
+    public _start: number,
+    public _end: number,
     public op: string,
     public args: HPropArg[],
     public ctx?: HPropCtx,
@@ -29,6 +31,8 @@ export class HProp {
 
 export class HProp_PointsTo extends HProp {
   constructor(
+    public _start: number,
+    public _end: number,
     public loc: Symbol | string,
     public repr: string,
     public reprArgs: Term[],
@@ -36,7 +40,7 @@ export class HProp_PointsTo extends HProp {
     public binder?: string,
     public config?: ConstrEntryConfig
   ) {
-    super('PointsTo', [], ctx, binder);
+    super(_start, _end, 'PointsTo', [], ctx, binder);
   }
 
   public locUid(): string {
@@ -63,6 +67,8 @@ export class Value {
   public uid: string;
   public label: string;
   constructor(
+    public _start: number,
+    public _end: number,
     public op: string,
     public args: Term[],
     config?: ValueConfig
@@ -193,7 +199,13 @@ export class Parser {
       }, []);
 
     function convertValue(x: Sep.Value): Value {
-      return new Value(x.op, x.args.map(convertMaybeValue), valueConfig);
+      return new Value(
+        x._start,
+        x._end,
+        x.op,
+        x.args.map(convertMaybeValue),
+        valueConfig
+      );
     }
 
     function convertMaybeValue(x: Sep.MaybeValue): Term {
@@ -217,7 +229,14 @@ export class Parser {
     }
 
     function convertHProp(x: Sep.HProp): HProp {
-      return new HProp(x.op, x.args.map(convertHPropArg), x.ctx, x.binder);
+      return new HProp(
+        x._start,
+        x._end,
+        x.op,
+        x.args.map(convertHPropArg),
+        x.ctx,
+        x.binder
+      );
     }
 
     function convertMaybeHProp(x: Sep.MaybeHProp): MaybeHProp {
@@ -265,9 +284,12 @@ export class Parser {
         if (last instanceof HProp) {
           if (last.op === 'Stars') {
             last.args.push(seg);
+            last._end = seg._end;
             if (last.ctx !== seg.ctx) last.ctx = undefined;
           } else {
             acc[acc.length - 1] = new HProp(
+              last._start,
+              seg._end,
               'Stars',
               [last, seg],
               last.ctx === seg.ctx ? last.ctx : undefined
@@ -311,11 +333,24 @@ export class Parser {
       );
       if (x.op === 'Stars') {
         const isOpArgs = args.filter(isOp);
-        const ops = new HProp(op + 's', isOpArgs, aggregateCtx(isOpArgs));
+        const ops = new HProp(
+          -1,
+          -1,
+          op + 's',
+          isOpArgs,
+          aggregateCtx(isOpArgs)
+        );
         if (ops.args.length !== 0)
-          return new HProp(x.op, [ops, ...args.filter(notOp)], x.ctx, x.binder);
+          return new HProp(
+            x._start,
+            x._end,
+            x.op,
+            [ops, ...args.filter(notOp)],
+            x.ctx,
+            x.binder
+          );
       }
-      return new HProp(x.op, args, x.ctx, x.binder);
+      return new HProp(x._start, x._end, x.op, args, x.ctx, x.binder);
     }
 
     let x = hprop;
@@ -389,6 +424,8 @@ export class Parser {
           const repr = repr_value.op;
 
           return new HProp_PointsTo(
+            x._start,
+            x._end,
             loc,
             repr,
             repr_value.args,
@@ -397,7 +434,14 @@ export class Parser {
           );
         }
         default:
-          return new HProp(x.op, x.args.map(resolveHPropArg), x.ctx, x.binder);
+          return new HProp(
+            x._start,
+            x._end,
+            x.op,
+            x.args.map(resolveHPropArg),
+            x.ctx,
+            x.binder
+          );
       }
     }
 
@@ -413,7 +457,13 @@ export class Parser {
     }
 
     function resolveValue(x: Value): Value {
-      return new Value(x.op, x.args.map(resolveTerm), valueConfig);
+      return new Value(
+        x._start,
+        x._end,
+        x.op,
+        x.args.map(resolveTerm),
+        valueConfig
+      );
     }
   }
 }

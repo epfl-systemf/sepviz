@@ -52,6 +52,7 @@ constr:
         forceEdge: true
         outPort: list
   '$PairV':
+    label: 'PairV'
     drawBorder: 1
     argNum: 2
   TestConstr:

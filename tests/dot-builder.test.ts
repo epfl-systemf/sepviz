@@ -58,13 +58,13 @@ const config: RenderConfig = {
 
 test('pointsto example', () => {
   const pts = [
-    new HProp_PointsTo('p1', '@MCell', ['f1', 'b1']),
-    new HProp_PointsTo('f2', '@MCell', ['x', 'c2']),
-    new HProp_PointsTo('c2', '@MListSeg', ['b2', "L2'"]),
-    new HProp_PointsTo('p2', '@MCell', ['f2', 'b2']),
-    new HProp_PointsTo('b2', '@MCell', ['d2', 'null']),
-    new HProp_PointsTo('f1', '@MListSeg', ['b1', 'L1']),
-    new HProp_PointsTo('b1', '@MCell', ['d1', 'null']),
+    new HProp_PointsTo(9, 49, 'p1', '@MCell', ['f1', 'b1']),
+    new HProp_PointsTo(61, 100, 'f2', '@MCell', ['x', 'c2']),
+    new HProp_PointsTo(112, 156, 'c2', '@MListSeg', ['b2', "L2'"]),
+    new HProp_PointsTo(168, 208, 'p2', '@MCell', ['f2', 'b2']),
+    new HProp_PointsTo(220, 262, 'b2', '@MCell', ['d2', 'null']),
+    new HProp_PointsTo(274, 317, 'f1', '@MListSeg', ['b1', 'L1']),
+    new HProp_PointsTo(320, 362, 'b1', '@MCell', ['d1', 'null']),
   ];
   const dotBuilder = new DotBuilder(config, pts);
   const clusters = dotBuilder.clusters;
@@ -113,9 +113,13 @@ test('pointsto example', () => {
 test('a single pointsto', () => {
   const valueConfig = { '@list_append': { argNum: 2, label: '$1 ++ $2' } };
   const pts = [
-    new HProp_PointsTo(new Symbol(true, '@plus-p-1', 'p + 1'), '@MCell', [
-      new Value('@list_append', ['l1', 'l2'], valueConfig),
-    ]),
+    new HProp_PointsTo(
+      -1,
+      -1,
+      new Symbol(true, '@plus-p-1', 'p + 1'),
+      '@MCell',
+      [new Value(-1, -1, '@list_append', ['l1', 'l2'], valueConfig)]
+    ),
   ];
   const dotBuilder = new DotBuilder(config, pts);
   const dot = `

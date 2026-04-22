@@ -22,7 +22,13 @@ function tryParse(desc, input) {
 test('parse one simple plain region', () => {
   expect(parse('text ⟬ Opaque ┆ emp ⟭ some more text')).toEqual([
     'text ',
-    { kind: 'hprop', args: ['emp'], op: 'Opaque' },
+    {
+      _start: 5,
+      _end: 21,
+      kind: 'hprop',
+      args: ['emp'],
+      op: 'Opaque',
+    },
     ' some more text',
   ]);
 });
@@ -33,6 +39,8 @@ test('parse one simple named region', () => {
   ).toEqual([
     'text ',
     {
+      _start: 5,
+      _end: 39,
       kind: 'hprop',
       op: 'Opaque',
       args: ['emp'],
@@ -50,6 +58,8 @@ test('parse two regions', () => {
     )
   ).toEqual([
     {
+      _start: 0,
+      _end: 32,
       kind: 'hprop',
       args: ['emp'],
       op: 'NULL',
@@ -58,6 +68,8 @@ test('parse two regions', () => {
     },
     ' code do something (fun r => ',
     {
+      _start: 61,
+      _end: 110,
       kind: 'hprop',
       op: 'PointsTo',
       args: ['r', 'isList', 'l1 ++ l2'],
@@ -76,12 +88,23 @@ test('parse value', () => {
     'text ',
     {
       kind: 'hprop',
+      op: 'PointsTo',
       args: [
         'p',
         'isValue',
-        ['z + ', { kind: 'value', op: 'SpecialV', args: ['x', 'y'] }],
+        [
+          'z + ',
+          {
+            _start: 36,
+            _end: 56,
+            kind: 'value',
+            op: 'SpecialV',
+            args: ['x', 'y'],
+          },
+        ],
       ],
-      op: 'PointsTo',
+      _start: 5,
+      _end: 58,
     },
     ' some more text',
   ]);
@@ -94,12 +117,22 @@ test('parse nested hprops', () => {
     )
   ).toEqual([
     {
+      _start: 0,
+      _end: 75,
       kind: 'hprop',
       op: 'STAR',
       args: [
         'A',
-        { kind: 'hprop', op: 'STAR', args: ['B', 'C'] },
         {
+          kind: 'hprop',
+          op: 'STAR',
+          args: ['B', 'C'],
+          _start: 13,
+          _end: 29,
+        },
+        {
+          _start: 32,
+          _end: 73,
           kind: 'hprop',
           op: 'PointsTo',
           args: ['p: Int', 'isList', 'l1 ++ l2'],
@@ -114,9 +147,13 @@ test('cfml triple', () => {
     parse('⟬* POST @ (fun x: A => and some more ⟬ Opaque ┆ GC ⟭ ) *⟭')
   ).toEqual([
     {
+      _start: 0,
+      _end: 57,
       kind: 'rich-hprop',
       prefix: '(fun x: A => and some more',
       hprop: {
+        _start: 37,
+        _end: 52,
         kind: 'hprop',
         args: ['GC'],
         ctx: 'POST',
@@ -130,73 +167,122 @@ test('cfml triple', () => {
 test('values in segments', () => {
   const text = `
 ⟬* PRE @ "HQ1" : ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ L1 ⟧ ⟭ *⟭
-⟬* PRE @ "HQ2" : ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ L2 ⟧ ⟭ *⟭
-⟬* PRE @ "HΦ" : ⟬ Later ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭
-                                    ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭ ⟭ *⟭
+⟬* PRE @ "HΦ" : ⟬ Later ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭ ⟭ *⟭
 --------------------------------------∗
 WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
 `.trim();
   expect(parse(text)).toEqual([
     {
-      args: ['p1', { args: ['L1'], kind: 'value', op: '$isQueue' }],
+      _start: 0,
+      _end: 57,
+      kind: 'hprop',
+      op: 'PointsTo',
+      ctx: 'PRE',
       binder: 'HQ1',
-      ctx: 'PRE',
-      kind: 'hprop',
-      op: 'PointsTo',
-    },
-    '\n',
-    {
-      args: ['p2', { args: ['L2'], kind: 'value', op: '$isQueue' }],
-      binder: 'HQ2',
-      ctx: 'PRE',
-      kind: 'hprop',
-      op: 'PointsTo',
-    },
-    '\n',
-    {
       args: [
+        'p1',
         {
-          args: [
-            {
-              args: [
-                {
-                  args: [
-                    'p1',
-                    {
-                      args: [
-                        { args: ['L1', 'L2'], kind: 'value', op: '$list_app' },
-                      ],
-                      kind: 'value',
-                      op: '$isQueue',
-                    },
-                  ],
-                  kind: 'hprop',
-                  op: 'PointsTo',
-                },
-                {
-                  args: ['p2', { args: ['[]'], kind: 'value', op: '$isQueue' }],
-                  kind: 'hprop',
-                  op: 'PointsTo',
-                },
-              ],
-              kind: 'hprop',
-              op: 'Star',
-            },
-            ['Φ ', { args: ['()%V'], kind: 'value', op: '$LitV' }],
-          ],
-          kind: 'hprop',
-          op: 'Wand',
+          _start: 35,
+          _end: 52,
+          kind: 'value',
+          op: '$isQueue',
+          args: ['L1'],
         },
       ],
+    },
+    '\n',
+    {
+      _start: 58,
+      _end: 230,
       binder: 'HΦ',
       ctx: 'PRE',
       kind: 'hprop',
       op: 'Later',
+      args: [
+        {
+          _start: 84,
+          _end: 225,
+          kind: 'hprop',
+          op: 'Wand',
+          args: [
+            {
+              _start: 93,
+              _end: 202,
+              kind: 'hprop',
+              op: 'Star',
+              args: [
+                {
+                  _start: 102,
+                  _end: 160,
+                  kind: 'hprop',
+                  op: 'PointsTo',
+                  args: [
+                    'p1',
+                    {
+                      _start: 120,
+                      _end: 158,
+                      kind: 'value',
+                      op: '$isQueue',
+                      args: [
+                        {
+                          _start: 133,
+                          _end: 156,
+                          kind: 'value',
+                          op: '$list_app',
+                          args: ['L1', 'L2'],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  _start: 163,
+                  _end: 200,
+                  kind: 'hprop',
+                  op: 'PointsTo',
+                  args: [
+                    'p2',
+                    {
+                      _start: 181,
+                      _end: 198,
+                      kind: 'value',
+                      op: '$isQueue',
+                      args: ['[]'],
+                    },
+                  ],
+                },
+              ],
+            },
+            [
+              'Φ ',
+              {
+                _start: 207,
+                _end: 223,
+                kind: 'value',
+                op: '$LitV',
+                args: ['()%V'],
+              },
+            ],
+          ],
+        },
+      ],
     },
     `\n--------------------------------------∗\nWP transfer `,
-    { args: ['p1'], kind: 'value', op: '$LitV' },
+    {
+      kind: 'value',
+      op: '$LitV',
+      args: ['p1'],
+      _start: 283,
+      _end: 297,
+    },
     ' ',
-    { args: ['p2'], kind: 'value', op: '$LitV' },
+    {
+      kind: 'value',
+      op: '$LitV',
+      args: ['p2'],
+      _start: 298,
+      _end: 312,
+    },
     ' {{ v, Φ v }}',
   ]);
 });
