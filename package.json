@@ -2,9 +2,8 @@
   "scripts": {
     "gen:proofs": "./scripts/gen_proofs.sh cfml-examples iris-example software-foundations-slf",
     "inject": "./scripts/inject.sh",
-    "typecheck": "tsc --noEmit",
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc --noEmit && vite build",
     "build:all": "run-s gen:proofs inject build",
     "preview": "vite preview",
     "test": "vitest"
