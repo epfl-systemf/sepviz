@@ -20,11 +20,11 @@ function tryParse(desc, input) {
 }
 
 test('parse one simple plain region', () => {
-  expect(parse('text ⟬ Opaque ┆ emp ⟭ some more text')).toEqual([
+  expect(parse('text ⟬Opaque┆emp⟭ some more text')).toEqual([
     'text ',
     {
       _start: 5,
-      _end: 21,
+      _end: 17,
       kind: 'hprop',
       args: ['emp'],
       op: 'Opaque',
