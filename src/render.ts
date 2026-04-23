@@ -17,7 +17,41 @@ const GraphvizOptions = {
 };
 
 export class Render {
-  constructor(private readonly config: RenderConfig) {}
+  private readonly parser: AST.Parser;
+  private counts: Record<string, number>;
+  constructor(private readonly config: RenderConfig) {
+    this.parser = new AST.Parser(config);
+    this.counts = {};
+  }
+
+  private nextVid(stream: string): string {
+    if (this.counts[stream] === undefined) this.counts[stream] = 0;
+    this.counts[stream]++;
+    return `vid-${stream}-${this.counts[stream]}`;
+  }
+
+  public render(
+    goalText: string,
+    goalNode: HTMLElement,
+    animate: boolean
+  ): void {
+    const goal: AST.Goal = this.parser.parse(goalText);
+    goalNode.innerText = '';
+    goal.forEach((seg) => {
+      if (seg instanceof AST.HProp) {
+        const stream = seg.ctx !== undefined ? seg.ctx : 'DEFAULT';
+        const host = createElement('div', [
+          'sep-visualization',
+          `sep-stream-${stream}`, // FIXME
+        ]);
+        if (animate) host.id = this.nextVid(stream);
+        this.buildViews(seg, host);
+        goalNode.append(host);
+      } else {
+        goalNode.append(createElement('span', [], { text: seg })); // string
+      }
+    });
+  }
 
   private hide(node: HTMLElement) {
     node.classList.add('hidden');
@@ -32,7 +66,7 @@ export class Render {
     this.hide(toHide);
   }
 
-  public render(hprop: AST.HProp, host: HTMLElement) {
+  public buildViews(hprop: AST.HProp, host: HTMLElement) {
     const srcView = createElement('div', ['sep-source'], { text: '' }); // FIXME: text = hprop.raw
     const dgmView = createElement('div', ['sep-diagram']);
     host.append(dgmView, srcView);
@@ -172,7 +206,7 @@ export class Render {
 
     svgNode.addEventListener('click', () => {
       navigator.clipboard
-        .writeText(dotContent.textContent)
+        .writeText(dotContent.textContent ? dotContent.textContent : '')
         .then(() => {
           const tooltip = createElement('div', ['tooltip-copied'], {
             text: 'DOT source copied',

@@ -189,7 +189,7 @@ export class DotBuilder {
       srcOutPorts: ['e'],
       dstUid: uid,
       dstInPorts: this.inPortOfUid[uid]
-        ? [this.inPortOfUid[uid], 'nw']
+        ? [this.inPortOfUid[uid] as string, 'nw']
         : ['nw'],
       attrs: { tailclip: 'true', minlen: '1' }, // FIXME: read from config
     };
@@ -376,7 +376,7 @@ export class DotBuilder {
       const srcOutPorts = [c.outPort, c.inTable ? 'c' : 'e'];
       const dstUid = uid;
       const dstInPorts = this.inPortOfUid[dstUid]
-        ? [this.inPortOfUid[dstUid], 'w']
+        ? [this.inPortOfUid[dstUid] as string, 'w']
         : ['w'];
       const edge: DotEdge = {
         srcUid: srcUid,

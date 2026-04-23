@@ -1,8 +1,6 @@
 import './assets/sep.css'; // FIXME: move css out of assets?
 
 import { loadRenderConfig, ResetKeywords, RenderConfig } from './config';
-import { assert, createElement } from './utility';
-import * as AST from './parser';
 import { Render } from './render';
 
 import * as d3 from 'd3';
@@ -33,15 +31,7 @@ function markGoalResets() {
 type Vid = string;
 
 function renderEmbedded(config: RenderConfig) {
-  const parser = new AST.Parser(config);
   const render = new Render(config);
-  const counts: Record<string, number> = {};
-
-  function next(stream: string): string {
-    if (counts[stream] === undefined) counts[stream] = 0;
-    counts[stream]++;
-    return `vid-${stream}-${counts[stream]}`;
-  }
 
   // TODO: handle classes "coq-message" and "goal-hyp" as well.
   document
@@ -52,25 +42,7 @@ function renderEmbedded(config: RenderConfig) {
       sentenceNode
         .querySelectorAll<HTMLElement>('.goal-conclusion')
         .forEach((goalNode, idx) => {
-          const goal: AST.Goal = parser.parse(goalNode.innerText);
-          goalNode.innerText = '';
-          goal.forEach((seg) => {
-            if (seg instanceof AST.HProp) {
-              const stream = seg.ctx !== undefined ? seg.ctx : 'DEFAULT';
-              const host = createElement('div', [
-                'sep-visualization',
-                `sep-stream-${stream}`, // FIXME
-              ]);
-              if (idx === 0) {
-                // Only animate the first hprop
-                host.id = next(stream);
-              }
-              goalNode.append(host);
-              render.render(seg, host);
-            } else {
-              goalNode.append(seg); // string
-            }
-          });
+          render.render(goalNode.innerText, goalNode, idx === 0); // Only animate the first hprop
         });
     });
 }
