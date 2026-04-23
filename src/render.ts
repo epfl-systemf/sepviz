@@ -3,6 +3,7 @@ import { assert, createElement } from './utility';
 import * as AST from './parser';
 import { DotBuilder } from './dot-builder';
 import { graphviz, KeyMode, Graphviz } from 'd3-graphviz';
+import { BaseType } from 'd3';
 
 /**
  * https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
@@ -17,7 +18,7 @@ const GraphvizOptions = {
 };
 
 export type ExtHTMLElement = HTMLElement & {
-  __graphviz__?: Graphviz<HTMLElement, any, HTMLElement, any>;
+  __graphviz__?: Graphviz<BaseType, any, BaseType, any>;
   dot?: string;
   goalReset?: boolean;
 };
@@ -206,7 +207,9 @@ export class Render {
      * intensive layout stages for graphs before doing the potentially
      * synchronized rendering of all the graphs simultaneously.
      */
-    graphviz(svgNode, GraphvizOptions).dot(dot).render();
+    const gviz = graphviz(svgNode, GraphvizOptions).dot(dot);
+    svgNode.__graphviz__ = gviz;
+    gviz.render();
 
     svgNode.addEventListener('click', () => {
       navigator.clipboard
