@@ -1,4 +1,4 @@
-import './assets/sep.css'; // FIXME: move css out of assets?
+import './sep.css';
 
 import { loadRenderConfig, ResetKeywords, RenderConfig } from './config';
 import { Render, ExtHTMLElement } from './render';
