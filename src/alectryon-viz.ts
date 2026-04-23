@@ -1,7 +1,7 @@
 import './assets/sep.css'; // FIXME: move css out of assets?
 
 import { loadRenderConfig, ResetKeywords, RenderConfig } from './config';
-import { Render } from './render';
+import { Render, ExtHTMLElement } from './render';
 
 import * as d3 from 'd3';
 
@@ -14,8 +14,6 @@ async function init() {
   renderEmbedded(config);
   setupAnimation();
 }
-
-type ExtHTMLElement = HTMLElement & { goalReset?: boolean };
 
 function markGoalResets() {
   document
@@ -65,7 +63,7 @@ function setupAnimation(defaultDuration = 2000): void {
   const renderingVids = new Set<Vid>();
 
   function getDot(vizNode: HTMLElement): string | undefined {
-    return vizNode.querySelector<HTMLElement>('.sep-dot .content')?.innerText;
+    return vizNode.querySelector<ExtHTMLElement>('.sep-svg')?.dot;
   }
 
   async function animate(

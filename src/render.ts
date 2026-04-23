@@ -2,7 +2,7 @@ import { RenderConfig } from './config';
 import { assert, createElement } from './utility';
 import * as AST from './parser';
 import { DotBuilder } from './dot-builder';
-import { graphviz, KeyMode } from 'd3-graphviz';
+import { graphviz, KeyMode, Graphviz } from 'd3-graphviz';
 
 /**
  * https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
@@ -14,6 +14,12 @@ const GraphvizOptions = {
   zoom: true,
   keyMode: 'id' as KeyMode,
   useWorker: false,
+};
+
+export type ExtHTMLElement = HTMLElement & {
+  __graphviz__?: Graphviz<HTMLElement, any, HTMLElement, any>;
+  dot?: string;
+  goalReset?: boolean;
 };
 
 export class Render {
@@ -67,7 +73,9 @@ export class Render {
   }
 
   public buildViews(hprop: AST.HProp, host: HTMLElement) {
-    const srcView = createElement('div', ['sep-source'], { text: '' }); // FIXME: text = hprop.raw
+    const srcView = createElement('div', ['sep-source'], {
+      text: '', // FIXME: text = hprop.raw
+    }) as ExtHTMLElement;
     const dgmView = createElement('div', ['sep-diagram']);
     host.append(dgmView, srcView);
     this.hide(srcView); // default: diagram view
@@ -187,15 +195,11 @@ export class Render {
 
   protected renderPointsTos(pts: AST.HProp_PointsTo[]): HTMLElement {
     const host = createElement('div', ['sep-pointstos-container']);
-    const dotNode = createElement('div', ['sep-dot']);
-    this.hide(dotNode);
-    const svgNode = createElement('div', ['sep-svg']);
-    host.append(dotNode, svgNode);
+    const svgNode = createElement('div', ['sep-svg']) as ExtHTMLElement;
+    host.append(svgNode);
 
     const dot = new DotBuilder(this.config, pts).dot;
-    const dotCopy = createElement('button', ['copy-button'], { text: 'Copy' });
-    const dotContent = createElement('div', ['content'], { text: dot });
-    dotNode.append(dotCopy, dotContent);
+    svgNode.dot = dot;
 
     /**
      * Call `dot` then `render` instead of `renderDot` to do the computational
@@ -206,7 +210,7 @@ export class Render {
 
     svgNode.addEventListener('click', () => {
       navigator.clipboard
-        .writeText(dotContent.textContent ? dotContent.textContent : '')
+        .writeText(svgNode.dot ? svgNode.dot : '')
         .then(() => {
           const tooltip = createElement('div', ['tooltip-copied'], {
             text: 'DOT source copied',
