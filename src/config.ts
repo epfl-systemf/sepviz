@@ -140,7 +140,11 @@ export async function loadRenderConfig(
   url = 'renderConfig.yaml'
 ): Promise<RenderConfig> {
   const text = await fetchText(url);
-  const userRenderConfig = (await yaml.load(text)) as Partial<RenderConfig>;
+  return readRenderConfig(text);
+}
+
+export function readRenderConfig(text: string): RenderConfig {
+  const userRenderConfig = yaml.load(text) as Partial<RenderConfig>;
   const renderConfig: RenderConfig = merge(
     defaultRenderConfig(),
     userRenderConfig
