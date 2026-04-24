@@ -137,7 +137,7 @@ async function fetchText(url: string): Promise<string> {
 }
 
 export async function loadRenderConfig(
-  url = 'renderConfig.yaml'
+  url = 'sepviz.yaml'
 ): Promise<RenderConfig> {
   const text = await fetchText(url);
   return readRenderConfig(text);

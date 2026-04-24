@@ -9,8 +9,11 @@ document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
   console.log('[init] started');
-  markGoalResets();
-  const config = await loadRenderConfig();
+  markGoalResets(); // FIXME: use it to break animation
+  // Pass config path via URL query parameter, e.g., `?config=/path/to/config`
+  const configPath =
+    new URLSearchParams(window.location.search).get('config') ?? 'sepviz.yaml';
+  const config = await loadRenderConfig(configPath);
   renderEmbedded(config);
   setupAnimation();
 }

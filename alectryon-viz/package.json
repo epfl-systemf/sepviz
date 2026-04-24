@@ -5,7 +5,7 @@
   "scripts": {
     "gen:proofs": "./scripts/gen_proofs.sh cfml-examples iris-example software-foundations-slf",
     "inject": "./scripts/inject.sh",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run inject && tsc --noEmit && vite build",
     "preview": "run-s gen:proofs inject dev"
   },
   "dependencies": {
