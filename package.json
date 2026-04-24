@@ -3,6 +3,8 @@
   "private": true,
   "workspaces": ["sep-viz", "alectryon-viz"],
   "scripts": {
-    "build:all": "npm run build -w sep-viz && npm run build -w alectryon-viz"
+    "build:all": "npm run build -w sep-viz && npm run build -w alectryon-viz",
+    "clean": "rm -rf node_modules sep-viz/node_modules alectryon-viz/node_modules",
+    "reinstall": "npm run clean && npm install"
   }
 }

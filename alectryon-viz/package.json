@@ -9,10 +9,14 @@
     "preview": "run-s gen:proofs inject dev"
   },
   "dependencies": {
+    "d3-ease": "^3.0.1",
     "d3-graphviz": "^5.6.0",
+    "d3-transition": "^3.0.1",
     "sep-viz": "*"
   },
   "devDependencies": {
+    "@types/d3-ease": "^3.0.2",
+    "@types/d3-transition": "^3.0.9",
     "prettier": "^3.6.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",

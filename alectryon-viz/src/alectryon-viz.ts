@@ -2,7 +2,8 @@ import { loadRenderConfig, ResetKeywords, RenderConfig } from 'sep-viz';
 import { Render, ExtHTMLElement } from 'sep-viz';
 import 'sep-viz/sep-viz.css';
 
-import * as d3 from 'd3';
+import { Transition, transition } from 'd3-transition';
+import { easeCubicInOut } from 'd3-ease';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -45,9 +46,7 @@ function renderEmbedded(config: RenderConfig) {
 }
 
 interface GraphvizInstance {
-  transition(
-    factory: () => d3.Transition<any, any, any, any>
-  ): GraphvizInstance;
+  transition(factory: () => Transition<any, any, any, any>): GraphvizInstance;
   renderDot(dot: string): GraphvizInstance;
   on(event: 'end', cb: () => void): GraphvizInstance;
 }
@@ -85,7 +84,7 @@ function setupAnimation(defaultDuration = 2000): void {
     // render the previous diagram instantly
     await new Promise<void>((resolve) => {
       gviz
-        .transition(() => d3.transition().duration(0))
+        .transition(() => transition().duration(0))
         .renderDot(prevDot)
         .on('end', resolve);
     });
@@ -93,9 +92,7 @@ function setupAnimation(defaultDuration = 2000): void {
     // transition to the current diagram
     await new Promise<void>((resolve) => {
       gviz
-        .transition(() =>
-          d3.transition().duration(duration).ease(d3.easeCubicInOut)
-        )
+        .transition(() => transition().duration(duration).ease(easeCubicInOut))
         .renderDot(dot)
         .on('end', resolve);
     });
