@@ -311,7 +311,8 @@ export class Parser {
    * `Stars(Pure(P1), ..., Pure(Pn), ...)` into `Stars(Pures(Pure(P1), ..., Pure(Pn)), ...)`.
    */
   private aggregateInStars(hprop: HProp): HProp {
-    const toCoalesceOps = ['Pure', 'PointsTo'];
+    // Ordered list: generate `Stars(Pures(...), PointsTos(...), ...)`
+    const toCoalesceOps = ['Pure', 'PointsTo'].reverse();
 
     function aggregateCtx(args: HPropArg[]): HPropCtx | undefined {
       let ctx: HPropCtx | undefined = undefined;

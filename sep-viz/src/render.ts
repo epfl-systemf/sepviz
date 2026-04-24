@@ -120,16 +120,9 @@ export class Render {
       case 'Wand': {
         const host = createElement('div', ['sep-pred-container']);
         assert(
-          x.args.length === 2,
-          `Wand: expected 2 arguments, wand = ${JSON.stringify(x)}`
+          x.args.length >= 2,
+          `Wand: expected 2 arguments in ${JSON.stringify(x)}`
         );
-        // x.args.forEach((arg) =>
-        //   console.log('Wand arg = ', JSON.stringify(arg))
-        // );
-        // assert(
-        //   x.args.every((arg) => arg instanceof AST.HProp),
-        //   `Wand: expected HProp arguments`
-        // );
         const nodes = x.args.map((arg) => this.renderHPropArg(arg));
         const op = createElement('div', ['sep-op'], { text: '-∗' }); // FIXME: read from config
         host.append(nodes[0]!, op, nodes[1]!);
@@ -148,8 +141,21 @@ export class Render {
         return createElement('span', []);
       }
       case 'IfThenElse': {
-        // FIXME
-        return createElement('span', []);
+        assert(
+          x.args.length >= 3,
+          `IfThenElse: expected 3 arguments in ${JSON.stringify(x)}`
+        );
+        const host = createElement('div', ['sep-pred-container']);
+        const nodes = x.args.map((arg) => this.renderHPropArg(arg));
+        host.append(
+          createElement('span', ['sep-keyword'], { text: 'If' }),
+          nodes[0]!,
+          createElement('span', ['sep-keyword'], { text: 'Then' }),
+          nodes[1]!,
+          createElement('span', ['sep-keyword'], { text: 'Else' }),
+          nodes[2]!
+        );
+        return host;
       }
       case 'Opaque': {
         // FIXME: check anything?
