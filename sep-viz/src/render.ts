@@ -83,7 +83,7 @@ export class Render {
     srcView.addEventListener('click', () => this.toggle(dgmView, srcView));
 
     const srcButton = createElement('button', ['src-button'], {
-      text: 'formula',
+      text: '📝',
     });
     srcButton.addEventListener('click', () => this.toggle(srcView, dgmView));
 

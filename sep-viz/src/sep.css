@@ -45,6 +45,7 @@
 }
 
 .sep-diagram .src-button {
+  border: none;
   position: absolute;
   bottom: 4px;
   right: 4px;
