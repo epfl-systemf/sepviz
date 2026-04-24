@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" class="alectryon-standalone" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.21.2: https://docutils.sourceforge.io/" />
+<title>LiterateTest.v</title>
+<link rel="stylesheet" href="alectryon.css" type="text/css" />
+<link rel="stylesheet" href="docutils_basic.css" type="text/css" />
+<link rel="stylesheet" href="pygments.css" type="text/css" />
+<script type="text/javascript" src="alectryon.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/IBM-type/0.5.4/css/ibm-type.min.css" integrity="sha512-sky5cf9Ts6FY1kstGOBHSybfKqdHR41M0Ldb0BjNiv3ifltoQIsg0zIaQ+wwdwgQ0w9vKFW7Js50lxH9vqNSSw==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/firacode/5.2.0/fira_code.min.css" integrity="sha512-MbysAYimH1hH2xYzkkMHB6MqxBqfP0megxsCLknbYqHVwXTCg9IqHbk+ZP/vnhO8UEW6PaXAkKe2vQ+SWACxxA==" crossorigin="anonymous" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="sep.css" type="text/css" />
+<script type="module" src="alectryon-viz.js"></script>
+<link rel="stylesheet" href="sep-viz.css" type="text/css" />
+<script type="module" src="alectryon-viz.js"></script>
+<link rel="stylesheet" href="alectryon-viz.css" type="text/css" />
+<script type="module" src="alectryon-viz.js"></script>
+</head>
+<body>
+<div class="alectryon-root alectryon-windowed"><div class="alectryon-banner">Built with <a href="https://github.com/cpitclaudel/alectryon/">Alectryon</a>, running Coq+SerAPI v. Bubbles (<span class="alectryon-bubble"></span>) indicate interactive fragments: hover for details, tap to reveal contents. Use <kbd>Ctrl+↑</kbd> <kbd>Ctrl+↓</kbd> to navigate, <kbd>Ctrl+🖱️</kbd> to focus. On Mac, use <kbd>⌘</kbd> instead of <kbd>Ctrl</kbd>.</div><div class="document">
+
+
+<pre class="alectryon-io highlight"><!-- Generator: Alectryon --><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk0" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk0"><span class="kn">Lemma</span> <span class="nf">test_stars</span>: <span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span> <span class="nv">r</span> <span class="nv">w</span>: loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span>: nat),
+  p ~&gt; MCell a \* q ~&gt; MCell b \* (r ~&gt; MCell c \* w ~&gt; MCell d) ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span> <span class="nv">r</span> <span class="nv">w</span> : loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell ┆ nat ┆ Enc_loc
+               ┆ a ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell ┆ nat
+                    ┆ Enc_loc ┆ b ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ r ┆ MCell ┆ nat
+                         ┆ Enc_loc ┆ c ⟭ *⟭
+             ┆ ⟬* ⟬ PointsTo ┆ w ┆ MCell ┆ nat
+                  ┆ Enc_loc ┆ d ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk1" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk1"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span> <span class="nv">r</span> <span class="nv">w</span> : loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell ┆ nat ┆ Enc_loc
+               ┆ a ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell ┆ nat
+                    ┆ Enc_loc ┆ b ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ r ┆ MCell ┆ nat
+                         ┆ Enc_loc ┆ c ⟭ *⟭
+             ┆ ⟬* ⟬ PointsTo ┆ w ┆ MCell ┆ nat
+                  ┆ Enc_loc ┆ d ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk2" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk2"><span class="kn">Lemma</span> <span class="nf">test_wand0</span>: <span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span>: loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span>: nat),
+  q ~&gt; MCell a \* p ~&gt; MCell2 a b \-* p ~&gt; MCell2 c d ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Wand ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell
+                           ┆ nat ┆ Enc_loc ┆ a ⟭ *⟭
+               ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=nat)
+                    ┆ nat ┆ Enc_loc ┆ Enc_loc ┆ a ┆ b
+                    ⟭ *⟭ ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=nat) ┆ nat
+        ┆ Enc_loc ┆ Enc_loc ┆ c ┆ d ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk3" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk3"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Wand ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell
+                           ┆ nat ┆ Enc_loc ┆ a ⟭ *⟭
+               ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=nat)
+                    ┆ nat ┆ Enc_loc ┆ Enc_loc ┆ a ┆ b
+                    ⟭ *⟭ ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=nat) ┆ nat
+        ┆ Enc_loc ┆ Enc_loc ┆ c ┆ d ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk4" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk4"><span class="kn">Lemma</span> <span class="nf">test_wand1</span>: <span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span>: loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span>: nat),
+  (q ~&gt; MCell a \* p ~&gt; MCell2 a b \-* p ~&gt; MCell2 c d \* \[a + b = c]) \* q ~&gt; MCell b ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Star ┆ ⟬* ⟬ Wand ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q
+                                       ┆ MCell ┆ nat
+                                       ┆ Enc_loc ┆ a ⟭ *⟭
+                           ┆ ⟬* ⟬ PointsTo ┆ p
+                                ┆ MCell2 (A:=nat)
+                                ┆ nat ┆ Enc_loc
+                                ┆ Enc_loc ┆ a ┆ b ⟭ *⟭
+                           ⟭ *⟭
+               ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p
+                                ┆ MCell2 (A:=nat)
+                                ┆ nat ┆ Enc_loc
+                                ┆ Enc_loc ┆ c ┆ d ⟭ *⟭
+                    ┆ ⟬* ⟬ Pure ┆ a + b = c ⟭ *⟭ ⟭ *⟭
+               ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell ┆ nat ┆ Enc_loc ┆ b ⟭ *⟭
+   ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk5" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk5"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Star ┆ ⟬* ⟬ Wand ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q
+                                       ┆ MCell ┆ nat
+                                       ┆ Enc_loc ┆ a ⟭ *⟭
+                           ┆ ⟬* ⟬ PointsTo ┆ p
+                                ┆ MCell2 (A:=nat)
+                                ┆ nat ┆ Enc_loc
+                                ┆ Enc_loc ┆ a ┆ b ⟭ *⟭
+                           ⟭ *⟭
+               ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p
+                                ┆ MCell2 (A:=nat)
+                                ┆ nat ┆ Enc_loc
+                                ┆ Enc_loc ┆ c ┆ d ⟭ *⟭
+                    ┆ ⟬* ⟬ Pure ┆ a + b = c ⟭ *⟭ ⟭ *⟭
+               ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell ┆ nat ┆ Enc_loc ┆ b ⟭ *⟭
+   ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk6" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk6"><span class="kn">Lemma</span> <span class="nf">test_chained_wands</span>: <span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span> <span class="nv">r</span>: loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span>: nat),
+  r ~&gt; MCell c \* q ~&gt; MCell a \-* p ~&gt; MCell2 a b \-* p ~&gt; MCell2 c d \* \[a + b = c] ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span> <span class="nv">r</span> : loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Wand ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ r ┆ MCell
+                           ┆ nat ┆ Enc_loc ┆ c ⟭ *⟭
+               ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell ┆ nat
+                    ┆ Enc_loc ┆ a ⟭ *⟭ ⟭ *⟭
+   ┆ ⟬* ⟬ Wand ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=nat)
+                    ┆ nat ┆ Enc_loc ┆ Enc_loc ┆ a ┆ b
+                    ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p
+                         ┆ MCell2 (A:=nat) ┆ nat
+                         ┆ Enc_loc ┆ Enc_loc ┆ c ┆ d ⟭ *⟭
+             ┆ ⟬* ⟬ Pure ┆ a + b = c ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk7" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk7"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> (<span class="nv">p</span> <span class="nv">q</span> <span class="nv">r</span> : loc) (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> : nat),
+⟬* ⟬ Wand ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ r ┆ MCell
+                           ┆ nat ┆ Enc_loc ┆ c ⟭ *⟭
+               ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell ┆ nat
+                    ┆ Enc_loc ┆ a ⟭ *⟭ ⟭ *⟭
+   ┆ ⟬* ⟬ Wand ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=nat)
+                    ┆ nat ┆ Enc_loc ┆ Enc_loc ┆ a ┆ b
+                    ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p
+                         ┆ MCell2 (A:=nat) ┆ nat
+                         ┆ Enc_loc ┆ Enc_loc ┆ c ┆ d ⟭ *⟭
+             ┆ ⟬* ⟬ Pure ┆ a + b = c ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk8" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk8"><span class="kn">Lemma</span> <span class="nf">test_node_ordering0</span>: <span class="kr">forall</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> <span class="nv">e</span> <span class="nv">f</span> <span class="nv">g</span> <span class="nv">h</span> <span class="nv">i</span>: loc),
+  (a ~&gt; MCell2 f b \* f ~&gt; MCell c \* c ~&gt; MCell d \* d ~&gt; MCell2 f e
+  \* b ~&gt; MCell g \* g ~&gt; MCell2 i h \* h ~&gt; MCell b
+  \* i ~&gt; MCell i \* e ~&gt; MCell e) ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> <span class="nv">e</span> <span class="nv">f</span> <span class="nv">g</span> <span class="nv">h</span> <span class="nv">i</span> : loc,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ c ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c ┆ MCell ┆ loc
+                         ┆ Enc_loc ┆ d ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                              ┆ MCell2 (A:=loc) ┆ loc
+                              ┆ Enc_loc ┆ Enc_loc ┆ f
+                              ┆ e ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ g ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ i
+                                        ┆ h ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ b ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk9" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk9"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> <span class="nv">e</span> <span class="nv">f</span> <span class="nv">g</span> <span class="nv">h</span> <span class="nv">i</span> : loc,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ c ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c ┆ MCell ┆ loc
+                         ┆ Enc_loc ┆ d ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                              ┆ MCell2 (A:=loc) ┆ loc
+                              ┆ Enc_loc ┆ Enc_loc ┆ f
+                              ┆ e ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ g ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ i
+                                        ┆ h ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ b ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chka" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chka"><span class="nb">intros</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ c ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c ┆ MCell ┆ loc
+                         ┆ Enc_loc ┆ d ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                              ┆ MCell2 (A:=loc) ┆ loc
+                              ┆ Enc_loc ┆ Enc_loc ┆ f
+                              ┆ e ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ g ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ i
+                                        ┆ h ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ b ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chkb" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chkb"><span class="nb">replace</span>
+    (a ~&gt; MCell2 f b \* f ~&gt; MCell c \* c ~&gt; MCell d \* d ~&gt; MCell2 f e
+    \* b ~&gt; MCell g \* g ~&gt; MCell2 i h \* h ~&gt; MCell b
+    \* i ~&gt; MCell i \* e ~&gt; MCell e)
+  <span class="kr">with</span>
+    (a ~&gt; MCell2 f b \* b ~&gt; MCell g \* g ~&gt; MCell2 i h \* h ~&gt; MCell b
+    \* f ~&gt; MCell c \* c ~&gt; MCell d \* d ~&gt; MCell2 f e
+    \* i ~&gt; MCell i \* e ~&gt; MCell e) <span class="bp">by</span> <span class="nb">admit</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ g ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                         ┆ MCell2 (A:=loc) ┆ loc
+                         ┆ Enc_loc ┆ Enc_loc ┆ i ┆ h ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h ┆ MCell
+                              ┆ loc ┆ Enc_loc ┆ b ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ c ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                        ┆ MCell ┆ loc
+                                        ┆ Enc_loc ┆ d
+                                        ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                                             ┆ MCell2
+                                                 (A:=loc)
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ Enc_loc
+                                             ┆ f ┆ e ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chkc" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chkc"><span class="nb">rewrite</span> hstar_comm.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell
+                           ┆ loc ┆ Enc_loc ┆ g ⟭ *⟭
+               ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                ┆ MCell2 (A:=loc)
+                                ┆ loc ┆ Enc_loc
+                                ┆ Enc_loc ┆ i ┆ h ⟭ *⟭
+                    ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h
+                                     ┆ MCell ┆ loc
+                                     ┆ Enc_loc ┆ b ⟭ *⟭
+                         ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f
+                                          ┆ MCell
+                                          ┆ loc
+                                          ┆ Enc_loc
+                                          ┆ c ⟭ *⟭
+                              ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                               ┆ MCell
+                                               ┆ loc
+                                               ┆ Enc_loc
+                                               ┆ d ⟭ *⟭
+                                   ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                        ⟬ PointsTo ┆ d
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ f
+                                        ┆ e ⟭ *⟭
+                                        ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                             ⟬ PointsTo ┆ i
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ i ⟭ *⟭
+                                             ┆ ⟬* 
+                                             ⟬ PointsTo ┆ e
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ e ⟭ *⟭
+                                             ⟭ *⟭ ⟭ *⟭
+                                   ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+               ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chkd" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chkd"><span class="nb">rewrite</span> hstar_comm_assoc.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                           ┆ MCell2 (A:=loc) ┆ loc
+                           ┆ Enc_loc ┆ Enc_loc ┆ i ┆ h
+                           ⟭ *⟭
+               ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell
+                                ┆ loc ┆ Enc_loc ┆ g ⟭ *⟭
+                    ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h
+                                     ┆ MCell ┆ loc
+                                     ┆ Enc_loc ┆ b ⟭ *⟭
+                         ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f
+                                          ┆ MCell
+                                          ┆ loc
+                                          ┆ Enc_loc
+                                          ┆ c ⟭ *⟭
+                              ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                               ┆ MCell
+                                               ┆ loc
+                                               ┆ Enc_loc
+                                               ┆ d ⟭ *⟭
+                                   ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                        ⟬ PointsTo ┆ d
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ f
+                                        ┆ e ⟭ *⟭
+                                        ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                             ⟬ PointsTo ┆ i
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ i ⟭ *⟭
+                                             ┆ ⟬* 
+                                             ⟬ PointsTo ┆ e
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ e ⟭ *⟭
+                                             ⟭ *⟭ ⟭ *⟭
+                                   ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+               ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chke" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chke"><span class="kn">Lemma</span> <span class="nf">test_node_ordering1</span>: <span class="kr">forall</span> (<span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> <span class="nv">e</span> <span class="nv">f</span> <span class="nv">g</span> <span class="nv">h</span> <span class="nv">i</span>: loc),
+  (a ~&gt; MCell2 f b \* b ~&gt; MCell g \* h ~&gt; MCell b \* f ~&gt; MCell c
+  \* c ~&gt; MCell d \* d ~&gt; MCell2 f e \* g ~&gt; MCell2 i h
+  \* i ~&gt; MCell i \* e ~&gt; MCell e) ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> <span class="nv">e</span> <span class="nv">f</span> <span class="nv">g</span> <span class="nv">h</span> <span class="nv">i</span> : loc,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ g ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h ┆ MCell ┆ loc
+                         ┆ Enc_loc ┆ b ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f ┆ MCell
+                              ┆ loc ┆ Enc_loc ┆ c ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ d ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ f
+                                        ┆ e ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                             ┆ MCell2
+                                                 (A:=loc)
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ Enc_loc
+                                             ┆ i ┆ h ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chkf" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chkf"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">c</span> <span class="nv">d</span> <span class="nv">e</span> <span class="nv">f</span> <span class="nv">g</span> <span class="nv">h</span> <span class="nv">i</span> : loc,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ g ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h ┆ MCell ┆ loc
+                         ┆ Enc_loc ┆ b ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f ┆ MCell
+                              ┆ loc ┆ Enc_loc ┆ c ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ d ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ f
+                                        ┆ e ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                             ┆ MCell2
+                                                 (A:=loc)
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ Enc_loc
+                                             ┆ i ┆ h ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk10" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk10"><span class="nb">intros</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ g ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h ┆ MCell ┆ loc
+                         ┆ Enc_loc ┆ b ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f ┆ MCell
+                              ┆ loc ┆ Enc_loc ┆ c ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ d ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ f
+                                        ┆ e ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                             ┆ MCell2
+                                                 (A:=loc)
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ Enc_loc
+                                             ┆ i ┆ h ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk11" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk11"><span class="nb">replace</span>
+    (a ~&gt; MCell2 f b \* b ~&gt; MCell g \* h ~&gt; MCell b \* f ~&gt; MCell c
+    \* c ~&gt; MCell d \* d ~&gt; MCell2 f e \* g ~&gt; MCell2 i h
+    \* i ~&gt; MCell i \* e ~&gt; MCell e)
+  <span class="kr">with</span>
+    (a ~&gt; MCell2 f b \* b ~&gt; MCell g \* g ~&gt; MCell2 i h \* h ~&gt; MCell b
+    \* f ~&gt; MCell c \* c ~&gt; MCell d \* d ~&gt; MCell2 f e
+    \* i ~&gt; MCell i \* e ~&gt; MCell e) <span class="bp">by</span> <span class="nb">admit</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭
+   ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell ┆ loc
+                    ┆ Enc_loc ┆ g ⟭ *⟭
+        ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                         ┆ MCell2 (A:=loc) ┆ loc
+                         ┆ Enc_loc ┆ Enc_loc ┆ i ┆ h ⟭ *⟭
+             ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h ┆ MCell
+                              ┆ loc ┆ Enc_loc ┆ b ⟭ *⟭
+                  ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f
+                                   ┆ MCell ┆ loc
+                                   ┆ Enc_loc ┆ c ⟭ *⟭
+                       ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                        ┆ MCell ┆ loc
+                                        ┆ Enc_loc ┆ d
+                                        ⟭ *⟭
+                            ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ d
+                                             ┆ MCell2
+                                                 (A:=loc)
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ Enc_loc
+                                             ┆ f ┆ e ⟭ *⟭
+                                 ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                      ⟬ PointsTo ┆ i
+                                      ┆ MCell ┆ loc
+                                      ┆ Enc_loc ┆ i ⟭ *⟭
+                                      ┆ ⟬* ⟬ PointsTo ┆ e
+                                           ┆ MCell
+                                           ┆ loc
+                                           ┆ Enc_loc
+                                           ┆ e ⟭ *⟭ ⟭ *⟭
+                                 ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+        ⟭ *⟭ ⟭ *⟭ ==&gt; ⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk12" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk12"><span class="nb">rewrite</span> hstar_comm.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell
+                           ┆ loc ┆ Enc_loc ┆ g ⟭ *⟭
+               ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                                ┆ MCell2 (A:=loc)
+                                ┆ loc ┆ Enc_loc
+                                ┆ Enc_loc ┆ i ┆ h ⟭ *⟭
+                    ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h
+                                     ┆ MCell ┆ loc
+                                     ┆ Enc_loc ┆ b ⟭ *⟭
+                         ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f
+                                          ┆ MCell
+                                          ┆ loc
+                                          ┆ Enc_loc
+                                          ┆ c ⟭ *⟭
+                              ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                               ┆ MCell
+                                               ┆ loc
+                                               ┆ Enc_loc
+                                               ┆ d ⟭ *⟭
+                                   ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                        ⟬ PointsTo ┆ d
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ f
+                                        ┆ e ⟭ *⟭
+                                        ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                             ⟬ PointsTo ┆ i
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ i ⟭ *⟭
+                                             ┆ ⟬* 
+                                             ⟬ PointsTo ┆ e
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ e ⟭ *⟭
+                                             ⟭ *⟭ ⟭ *⟭
+                                   ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+               ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk13" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk13"><span class="nb">rewrite</span> hstar_comm_assoc.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>a, b, c, d, e, f, g, h, i</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* ⟬ Star ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ g
+                           ┆ MCell2 (A:=loc) ┆ loc
+                           ┆ Enc_loc ┆ Enc_loc ┆ i ┆ h
+                           ⟭ *⟭
+               ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ b ┆ MCell
+                                ┆ loc ┆ Enc_loc ┆ g ⟭ *⟭
+                    ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ h
+                                     ┆ MCell ┆ loc
+                                     ┆ Enc_loc ┆ b ⟭ *⟭
+                         ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ f
+                                          ┆ MCell
+                                          ┆ loc
+                                          ┆ Enc_loc
+                                          ┆ c ⟭ *⟭
+                              ┆ ⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ c
+                                               ┆ MCell
+                                               ┆ loc
+                                               ┆ Enc_loc
+                                               ┆ d ⟭ *⟭
+                                   ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                        ⟬ PointsTo ┆ d
+                                        ┆ MCell2
+                                            (A:=loc)
+                                        ┆ loc
+                                        ┆ Enc_loc
+                                        ┆ Enc_loc ┆ f
+                                        ┆ e ⟭ *⟭
+                                        ┆ ⟬* ⟬ Star ┆ ⟬* 
+                                             ⟬ PointsTo ┆ i
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ i ⟭ *⟭
+                                             ┆ ⟬* 
+                                             ⟬ PointsTo ┆ e
+                                             ┆ MCell
+                                             ┆ loc
+                                             ┆ Enc_loc
+                                             ┆ e ⟭ *⟭
+                                             ⟭ *⟭ ⟭ *⟭
+                                   ⟭ *⟭ ⟭ *⟭ ⟭ *⟭ ⟭ *⟭
+               ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ a ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ f ┆ b ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Admitted</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk14" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk14"><span class="kn">Lemma</span> <span class="nf">test_circle0</span>: <span class="kr">forall</span> <span class="nv">A</span> `{EA: Enc A} (p q: loc),
+  (p ~&gt; MCell2 q null \* q ~&gt; MCell2 p null) ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">A</span> : <span class="kt">Type</span>,
+Enc A -&gt;
+<span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span>,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ q ┆ null ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ p ┆ null ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk15" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk15"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">A</span> : <span class="kt">Type</span>,
+Enc A -&gt;
+<span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span>,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ q ┆ null ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ p ┆ null ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Abort</span>.</span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp">
+</span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk16" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk16"><span class="kn">Lemma</span> <span class="nf">test_circle1</span>: <span class="kr">forall</span> <span class="nv">A</span> `{EA: Enc A} (p q: loc),
+  (q ~&gt; MCell2 p null \* p ~&gt; MCell2 q null) ==&gt; \[].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">A</span> : <span class="kt">Type</span>,
+Enc A -&gt;
+<span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span>,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ p ┆ null ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ q ┆ null ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetest-v-chk17" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetest-v-chk17"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="kr">forall</span> <span class="nv">A</span> : <span class="kt">Type</span>,
+Enc A -&gt;
+<span class="kr">forall</span> <span class="nv">p</span> <span class="nv">q</span>,
+⟬* ⟬ Star ┆ ⟬* ⟬ PointsTo ┆ q ┆ MCell2 (A:=loc) ┆ loc
+               ┆ Enc_loc ┆ Enc_loc ┆ p ┆ null ⟭ *⟭
+   ┆ ⟬* ⟬ PointsTo ┆ p ┆ MCell2 (A:=loc) ┆ loc
+        ┆ Enc_loc ┆ Enc_loc ┆ q ┆ null ⟭ *⟭ ⟭ *⟭ ==&gt;
+⟬* ⟬ <span class="kn">Opaque</span> ┆ emp ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="kn">Abort</span>.</span></span></pre>
+</div>
+</div></body>
+</html>

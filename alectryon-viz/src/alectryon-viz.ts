@@ -1,7 +1,6 @@
-import './sep.css';
-
-import { loadRenderConfig, ResetKeywords, RenderConfig } from './config';
-import { Render, ExtHTMLElement } from './render';
+import { loadRenderConfig, ResetKeywords, RenderConfig } from 'sep-viz';
+import { Render, ExtHTMLElement } from 'sep-viz';
+import 'sep-viz/sep-viz.css';
 
 import * as d3 from 'd3';
 

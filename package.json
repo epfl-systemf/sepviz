@@ -1,0 +1,8 @@
+{
+  "name": "visualizer",
+  "private": true,
+  "workspaces": ["sep-viz", "alectryon-viz"],
+  "scripts": {
+    "build:all": "npm run build -w sep-viz && npm run build -w alectryon-viz"
+  }
+}

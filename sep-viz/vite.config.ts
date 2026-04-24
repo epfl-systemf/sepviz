@@ -20,10 +20,6 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ['d3', 'd3-graphviz', /^d3-/, /^@codemirror\//],
-      output: {
-        preserveModules: true,
-        preserveModulesRoot: 'src',
-      },
     },
   },
   server: {

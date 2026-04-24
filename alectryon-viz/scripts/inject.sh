@@ -5,7 +5,7 @@ PUBLIC_DIR="./public"
 
 INJECTION="$(
     cat <<'EOF'
-<link rel="stylesheet" href="sep.css" type="text/css" />
+<link rel="stylesheet" href="alectryon-viz.css" type="text/css" />
 <script type="module" src="alectryon-viz.js"></script>
 EOF
 )"
@@ -20,7 +20,7 @@ fi
 find "$PUBLIC_DIR" -type f \( -name '*.html' \) -print0 |
     while IFS= read -r -d '' FILE; do
         # skip if already injected
-        if grep -q 'alectryon-viz.js' "$FILE" || grep -q 'href="sep.css"' "$FILE"; then
+        if grep -q 'alectryon-viz.js' "$FILE" && grep -q 'href="alectryon-viz.css"' "$FILE"; then
             continue
         fi
 
