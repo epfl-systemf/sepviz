@@ -262,3 +262,11 @@ WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
     ' {{ v, Φ v }}',
   ]);
 });
+
+test('abstract hprop in pre or post', () => {
+  const text =
+    "⟬* PRE @ H' *⟭ CODE <[ Seq (App incr p) ; (App val_get p) ]> ⟬* POST @ Q' *⟭";
+  expect(parse(text)).toEqual([
+    "⟬* PRE @ H' *⟭ CODE <[ Seq (App incr p) ; (App val_get p) ]> ⟬* POST @ Q' *⟭",
+  ]);
+});
