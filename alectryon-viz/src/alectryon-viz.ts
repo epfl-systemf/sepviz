@@ -34,16 +34,26 @@ type Vid = string;
 function renderEmbedded(config: RenderConfig) {
   const render = new Render(config);
 
-  // TODO: handle classes "coq-message" and "goal-hyp" as well.
+  // TODO: handle classes "coq-message" too?
   document
     .querySelectorAll<ExtHTMLElement>(
-      '.alectryon-sentence:has(.goal-conclusion)'
+      '.alectryon-sentence:has(.hyp-type, .goal-conclusion)'
     )
     .forEach((sentenceNode) => {
       sentenceNode
         .querySelectorAll<HTMLElement>('.goal-conclusion')
         .forEach((goalNode, idx) => {
-          render.render(goalNode.innerText, goalNode, idx === 0); // Only animate the first hprop
+          render.render(
+            goalNode.innerText,
+            goalNode,
+            idx === 0 // only animate the first hprop of conclusion
+          );
+        });
+      sentenceNode
+        .querySelectorAll<HTMLElement>('.hyp-type')
+        .forEach((goalNode) => {
+          goalNode.style.display = 'block';
+          render.render(goalNode.innerText, goalNode, false);
         });
     });
 }
@@ -72,7 +82,9 @@ function setupAnimation(defaultDuration = 2000): void {
     prevVizNode: HTMLElement,
     duration = defaultDuration
   ) {
+    console.log('animate called!');
     const vid = vizNode.id;
+    console.log('vid = ', vid);
     if (!vid || renderingVids.has(vid)) return;
 
     const svgNode = vizNode.querySelector<SVGElement>('.sep-svg');
@@ -83,6 +95,7 @@ function setupAnimation(defaultDuration = 2000): void {
 
     if (!svgNode || !gviz || !dot || !prevDot || prevDot === dot) return;
 
+    console.log('animating ... ');
     renderingVids.add(vid);
     // render the previous diagram instantly
     await new Promise<void>((resolve) => {
