@@ -3,7 +3,7 @@ import { assert, createElement } from './utility';
 import * as AST from './parser';
 import { DotBuilder } from './dot-builder';
 import { graphviz, KeyMode, Graphviz } from 'd3-graphviz';
-import { BaseType } from 'd3';
+import { BaseType } from 'd3-selection';
 
 /**
  * https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
