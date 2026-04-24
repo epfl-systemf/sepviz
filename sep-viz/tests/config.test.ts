@@ -38,7 +38,7 @@ constr:
 `.trim();
     mockFetch(yaml);
     const config = await loadRenderConfig();
-    expect(fetch).toHaveBeenCalledWith('renderConfig.yaml');
+    expect(fetch).toHaveBeenCalledWith('sepviz.yaml');
     const constrConfig = {
       TestConstr: {
         label: 'TestConstr',
