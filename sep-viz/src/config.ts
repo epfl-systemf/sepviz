@@ -60,7 +60,7 @@ export interface ConstrEntryConfig {
   /** The printed label. Default: use the entry key if unset. */
   label: string;
   /** Default: the input port for the first in-table arg, null if no arg is in table. */
-  inPort: string | null;
+  inPort: string | undefined;
   /** Default: false */
   drawBorder: boolean;
   /** Default: the maximum key of args, 0 if args is null. */
@@ -165,28 +165,33 @@ function fillConstrEntryConfig(
   key: string,
   c: Partial<ConstrEntryConfig>
 ): ConstrEntryConfig {
+  const drawBorder = c?.drawBorder ?? false;
   const argNum =
     c?.argNum ??
-    (c?.args ? Math.max(...Object.keys(c?.args).map(Number)) + 1 : 0);
+    (c?.args ? Math.max(...Object.keys(c.args).map(Number)) + 1 : 0);
 
-  let drawBorder = c?.drawBorder ?? false;
-  let inPort = null;
+  const args: ArgConfig = Object.fromEntries(
+    Array.from({ length: argNum }, (_, i) => {
+      const arg = c?.args?.[i];
+      return [
+        i,
+        {
+          inTable: arg?.inTable ?? drawBorder,
+          forceEdge: arg?.forceEdge ?? false,
+          inPort: arg?.inPort ?? `in$${i}`,
+          outPort: arg?.outPort ?? `out$${i}`,
+        },
+      ];
+    })
+  );
 
-  const args: ArgConfig = {};
-  for (let i = 0; i < argNum; i++) {
-    args[i] = {
-      inTable: c?.args?.[i]?.inTable ?? (drawBorder ? true : false),
-      forceEdge: c?.args?.[i]?.forceEdge ?? false,
-      inPort: c?.args?.[i]?.inPort ?? `in$${i}`,
-      outPort: c?.args?.[i]?.outPort ?? `out$${i}`,
-    };
-    if (!inPort && args[i].inTable) inPort = args[i].inPort;
-  }
+  const inPort = Object.values(args).find((arg) => arg.inTable)?.inPort;
+
   return {
     label: c?.label ?? key,
-    drawBorder: drawBorder,
-    inPort: inPort,
-    argNum: argNum,
-    args: args,
+    drawBorder,
+    inPort,
+    argNum,
+    args,
   };
 }

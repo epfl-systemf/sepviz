@@ -1,3 +1,5 @@
+import { assert } from './utility';
+
 type Node = string;
 
 interface Edge {
@@ -30,17 +32,20 @@ function tarjanSCC(
   const SCCs: Record<Node, Node[]> = {};
   dfs(root);
   Object.keys(graph).forEach((n) => {
-    if (!state[n].visited) dfs(n);
+    if (!state[n]!.visited) dfs(n);
   });
 
   function dfs(n: Node) {
     const s = state[n];
+    assert(s !== undefined, ``);
     s.visited = true;
     s.onStack = true;
     s.index = index++;
     s.lowest = s.index;
     stack.push(n);
+    assert(graph[n] !== undefined, ``);
     graph[n].forEach((w) => {
+      assert(state[w] !== undefined, ``);
       if (!state[w].visited) {
         dfs(w);
         s.lowest = Math.min(s.lowest, state[w].lowest);
@@ -54,6 +59,7 @@ function tarjanSCC(
       while (stack.length > 0) {
         const w = stack.pop();
         if (!w) break; // for type inference
+        assert(state[w] !== undefined, ``);
         state[w].onStack = false;
         scc.push(w);
         if (w === n) break;
@@ -83,6 +89,7 @@ function topoSortDAG(
   function dfs(n: Node) {
     if (visited[n]) return;
     visited[n] = true;
+    assert(graph[n] !== undefined, ``);
     graph[n].sort((n1, n2) => -compareNode(previousOrder)(n1, n2));
     graph[n].forEach((w) => dfs(w));
     sorted.push(n);
@@ -101,7 +108,7 @@ function compareNode(previousOrder: Record<Node, number> | null) {
   return (n1: Node, n2: Node) => {
     if (!previousOrder) return n1.localeCompare(n2);
     if (n1 in previousOrder && n2 in previousOrder)
-      return previousOrder[n1] - previousOrder[n2];
+      return previousOrder[n1]! - previousOrder[n2]!;
     if (n1 in previousOrder) return -1;
     if (n2 in previousOrder) return 1;
     return n1.localeCompare(n2);
@@ -127,7 +134,7 @@ export function sort(
 
   // TODO: investigate why the toposort + (de)condensation leads to more edge crossing
 
-  edges.forEach((e) => graph[e.src].push(e.dst));
+  edges.forEach((e) => graph[e.src]!.push(e.dst));
   const SCCs: Record<Node, Node[]> = tarjanSCC(root, graph);
 
   // Convert the graph to a DAG by condensation.
@@ -144,9 +151,9 @@ export function sort(
   });
   const condensedGraph: Record<Node, Node[]> = {};
   Object.entries(graph).forEach(([n, successors]) => {
-    const v = nodeMap[n];
+    const v = nodeMap[n]!;
     if (!condensedGraph[v]) condensedGraph[v] = [];
-    condensedGraph[v].push(...successors.map((w) => nodeMap[w]));
+    condensedGraph[v].push(...successors.map((w) => nodeMap[w]!));
   });
   Object.entries(condensedGraph).forEach(([n, successors]) => {
     condensedGraph[n] = [...new Set(successors)];
@@ -156,7 +163,7 @@ export function sort(
   // In the case of branches, respect the previous order.
 
   const condensedTopoOrder = topoSortDAG(
-    nodeMap[root],
+    nodeMap[root]!,
     condensedGraph,
     previousOrder
   );

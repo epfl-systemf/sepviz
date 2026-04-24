@@ -81,9 +81,14 @@ export class Value {
       const argUids = this.args.map((a) => termUid(a));
       return `${this.op}-${argUids.join('-')}`;
     }
-    return opConfig.uid.replace(/\$(\d+)/g, (_, i) =>
-      termUid(this.args[parseInt(i) - 1])
-    );
+    return opConfig.uid.replace(/\$(\d+)/g, (_, i) => {
+      const idx = parseInt(i) - 1;
+      assert(
+        idx < this.args.length,
+        `invalide idx in the uid config of ${this.op}: ${opConfig.uid}`
+      );
+      return termUid(this.args[idx]!);
+    });
   }
 
   public genLabel(config: ValueConfig): string {
@@ -93,9 +98,14 @@ export class Value {
       const argLabels = this.args.map((a) => termLabel(a));
       return `${this.op}(${argLabels.join(', ')})`;
     }
-    return opConfig.label.replace(/\$(\d+)/g, (_, i) =>
-      termLabel(this.args[parseInt(i) - 1])
-    );
+    return opConfig.label.replace(/\$(\d+)/g, (_, i) => {
+      const idx = parseInt(i) - 1;
+      assert(
+        idx < this.args.length,
+        `invalide idx in the label config of ${this.op}: ${opConfig.label}`
+      );
+      return termLabel(this.args[idx]!);
+    });
   }
 }
 
@@ -352,12 +362,10 @@ export class Parser {
 
     function next(prefix: string): number {
       if (!(prefix in gensym)) gensym[prefix] = 0;
-      return gensym[prefix]++;
+      return gensym[prefix]!++;
     }
 
-    function resolve(s: string): Symbol | string {
-      return s in ctx ? ctx[s] : s;
-    }
+    const resolve = (s: string): Symbol | string => ctx[s] ?? s;
 
     function registerLocal(s: string): void {
       const num = next(s);
@@ -365,7 +373,7 @@ export class Parser {
     }
 
     function registerGlobal(uid: string, label: string): Symbol {
-      if (uid in ctx) return ctx[uid];
+      if (uid in ctx) return ctx[uid]!;
       ctx[uid] = new Symbol(true, uid, label);
       return ctx[uid];
     }
@@ -389,7 +397,7 @@ export class Parser {
           assert(x.args.length >= 2, 'PointsTo expects at least 2 arguments');
 
           assert(
-            HPropArg_isTerm(args[0]),
+            HPropArg_isTerm(args[0]!),
             `1st argument of PointsTo should be a Term`
           );
           const loc_term = args[0] as Term;

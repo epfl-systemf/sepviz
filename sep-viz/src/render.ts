@@ -132,7 +132,7 @@ export class Render {
         // );
         const nodes = x.args.map((arg) => this.renderHPropArg(arg));
         const op = createElement('div', ['sep-op'], { text: '-∗' }); // FIXME: read from config
-        host.append(nodes[0], op, nodes[1]);
+        host.append(nodes[0]!, op, nodes[1]!);
         return host;
       }
       case 'Conjs': {

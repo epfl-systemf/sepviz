@@ -45,7 +45,7 @@ constr:
         argNum: 0,
         args: {},
         drawBorder: false,
-        inPort: null,
+        inPort: undefined,
       },
       MCell: {
         label: 'MCell',

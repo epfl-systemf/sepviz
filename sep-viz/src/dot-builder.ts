@@ -62,7 +62,7 @@ interface DotTarget {
 export class DotBuilder {
   public readonly dot: string;
   private readonly nodeUids: Set<string>;
-  private readonly inPortOfUid: Record<string, string | null>;
+  private readonly inPortOfUid: Record<string, string | undefined>;
 
   /** @internal: Exposed for testing. */
   public readonly clusters: DotCluster[];
@@ -81,7 +81,7 @@ export class DotBuilder {
     });
     this.nodeUids = new Set(pts.map((pt) => pt.locUid()));
     this.inPortOfUid = Object.fromEntries(
-      pts.map((pt) => [pt.locUid(), config.constr[pt.repr].inPort])
+      pts.map((pt) => [pt.locUid(), config.constr[pt.repr]?.inPort])
     );
     const [clusters, targets] = this.buildComponents();
     this.clusters = clusters;
@@ -143,7 +143,7 @@ export class DotBuilder {
     nodes.forEach((n) => (parents[n.uid] = n.uid));
 
     function find(uid: string): string {
-      let parent = parents[uid];
+      let parent: string = parents[uid]!;
       return uid == parent ? parent : (parents[uid] = find(parent));
     }
 
@@ -168,8 +168,8 @@ export class DotBuilder {
       if (!(root in clusters))
         clusters[root] = { root: root, nodes: [], edges: [] };
     });
-    nodes.forEach((n) => clusters[find(n.uid)].nodes.push(n));
-    edges.forEach((e) => clusters[find(e.srcUid)].edges.push(e));
+    nodes.forEach((n) => clusters[find(n.uid)]!.nodes.push(n));
+    edges.forEach((e) => clusters[find(e.srcUid)]!.edges.push(e));
 
     return Object.values(clusters);
   }
