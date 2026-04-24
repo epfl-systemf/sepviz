@@ -34,16 +34,19 @@ test('flatten stars', () => {
   const text =
     'text ⟬ Star ┆ ⟬ Star ┆ A ┆ B ⟭ ┆ ⟬ Conj ┆ E ┆ F ⟭ ┆ ⟬ Star ┆ C ┆ D ⟭ ⟭ some more text';
   const goal: Goal = parser.parse(text);
-
   expect(goal).toEqual([
     'text ',
-    new HProp(5, 70, 'Stars', [
-      'A',
-      'B',
-      new HProp(33, 49, 'Conjs', ['E', 'F']),
-      'C',
-      'D',
-    ]),
+    {
+      raw: '⟬ Star ┆ ⟬ Star ┆ A ┆ B ⟭ ┆ ⟬ Conj ┆ E ┆ F ⟭ ┆ ⟬ Star ┆ C ┆ D ⟭ ⟭',
+      op: 'Stars',
+      args: [
+        'A',
+        'B',
+        { raw: '⟬ Conj ┆ E ┆ F ⟭', op: 'Conjs', args: ['E', 'F'] },
+        'C',
+        'D',
+      ],
+    },
     ' some more text',
   ]);
 });
@@ -55,16 +58,22 @@ test('resolve symbols', () => {
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     '(fun r => ',
-    new HProp_PointsTo(25, 83, 'r', 'isList', [
-      {
-        _start: 53,
-        _end: 79,
-        op: '@list_append',
-        args: [new Symbol(false, 'l1$0', 'l10'), 'l2'],
-        uid: '@list_append-l1$0-l2',
-        label: 'l10 ++ l2',
-      },
-    ]),
+    {
+      raw: '⟬ PointsTo ┆ r ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
+      op: 'PointsTo',
+      args: [],
+      loc: 'r',
+      repr: 'isList',
+      reprArgs: [
+        {
+          raw: '⟦ @list_append ┆ l1 ┆ l2 ⟧',
+          op: '@list_append',
+          args: [{ isGlobal: false, uid: 'l1$0', label: 'l10' }, 'l2'],
+          uid: '@list_append-l1$0-l2',
+          label: 'l10 ++ l2',
+        },
+      ],
+    },
     ')',
   ]);
 });
@@ -74,31 +83,45 @@ test('aggregate pures', () => {
     '⟬ Star ┆ ⟬ Star ┆ ⟬ Pure ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭ ┆ ⟬ Pure ┆ ⟦ @gt ┆ x ┆ y ⟧ ⟭ ⟭ ┆ A ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp(0, 83, 'Stars', [
-      new HProp(-1, -1, 'Pures', [
-        new HProp(18, 46, 'Pure', [
-          {
-            _start: 27,
-            _end: 44,
-            op: '@eq',
-            args: ['l1', 'l2'],
-            uid: '@eq-l1-l2',
-            label: 'l1 == l2',
-          },
-        ]),
-        new HProp(49, 75, 'Pure', [
-          {
-            _start: 58,
-            _end: 73,
-            op: '@gt',
-            args: ['x', 'y'],
-            uid: '@gt-x-y',
-            label: 'x > y',
-          },
-        ]),
-      ]),
-      'A',
-    ]),
+    {
+      raw: '⟬ Star ┆ ⟬ Star ┆ ⟬ Pure ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭ ┆ ⟬ Pure ┆ ⟦ @gt ┆ x ┆ y ⟧ ⟭ ⟭ ┆ A ⟭',
+      op: 'Stars',
+      args: [
+        {
+          raw: '',
+          op: 'Pures',
+          args: [
+            {
+              raw: '⟬ Pure ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭',
+              op: 'Pure',
+              args: [
+                {
+                  raw: '⟦ @eq ┆ l1 ┆ l2 ⟧',
+                  op: '@eq',
+                  args: ['l1', 'l2'],
+                  uid: '@eq-l1-l2',
+                  label: 'l1 == l2',
+                },
+              ],
+            },
+            {
+              raw: '⟬ Pure ┆ ⟦ @gt ┆ x ┆ y ⟧ ⟭',
+              op: 'Pure',
+              args: [
+                {
+                  raw: '⟦ @gt ┆ x ┆ y ⟧',
+                  op: '@gt',
+                  args: ['x', 'y'],
+                  uid: '@gt-x-y',
+                  label: 'x > y',
+                },
+              ],
+            },
+          ],
+        },
+        'A',
+      ],
+    },
   ]);
 });
 
@@ -111,17 +134,74 @@ test('pointsto example', () => {
 ┆ ⟬ Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ @MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ @MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭`;
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp(0, 374, 'Stars', [
-      new HProp(-1, -1, 'PointsTos', [
-        new HProp_PointsTo(9, 49, 'p1', '@MCell', ['f1', 'b1']),
-        new HProp_PointsTo(61, 100, 'f2', '@MCell', ['x', 'c2']),
-        new HProp_PointsTo(112, 156, 'c2', '@MListSeg', ['b2', "L2'"]),
-        new HProp_PointsTo(168, 208, 'p2', '@MCell', ['f2', 'b2']),
-        new HProp_PointsTo(220, 262, 'b2', '@MCell', ['d2', 'null']),
-        new HProp_PointsTo(274, 317, 'f1', '@MListSeg', ['b1', 'L1']),
-        new HProp_PointsTo(320, 362, 'b1', '@MCell', ['d1', 'null']),
-      ]),
-    ]),
+    {
+      raw: "⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ @MCell ┆ f1 ┆ b1 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ f2 ┆ ⟦ @MCell ┆ x ┆ c2 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ c2 ┆ ⟦ @MListSeg ┆ b2 ┆ L2' ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ @MCell ┆ f2 ┆ b2 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ @MCell ┆ d2 ┆ null ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ @MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ @MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭",
+      op: 'Stars',
+      args: [
+        {
+          raw: '',
+          op: 'PointsTos',
+          args: [
+            {
+              raw: '⟬ PointsTo ┆ p1 ┆ ⟦ @MCell ┆ f1 ┆ b1 ⟧ ⟭',
+              op: 'PointsTo',
+              args: [],
+              loc: 'p1',
+              repr: '@MCell',
+              reprArgs: ['f1', 'b1'],
+            },
+            {
+              raw: '⟬ PointsTo ┆ f2 ┆ ⟦ @MCell ┆ x ┆ c2 ⟧ ⟭',
+              op: 'PointsTo',
+              args: [],
+              loc: 'f2',
+              repr: '@MCell',
+              reprArgs: ['x', 'c2'],
+            },
+            {
+              raw: "⟬ PointsTo ┆ c2 ┆ ⟦ @MListSeg ┆ b2 ┆ L2' ⟧ ⟭",
+              op: 'PointsTo',
+              args: [],
+              loc: 'c2',
+              repr: '@MListSeg',
+              reprArgs: ['b2', "L2'"],
+            },
+            {
+              raw: '⟬ PointsTo ┆ p2 ┆ ⟦ @MCell ┆ f2 ┆ b2 ⟧ ⟭',
+              op: 'PointsTo',
+              args: [],
+              loc: 'p2',
+              repr: '@MCell',
+              reprArgs: ['f2', 'b2'],
+            },
+            {
+              raw: '⟬ PointsTo ┆ b2 ┆ ⟦ @MCell ┆ d2 ┆ null ⟧ ⟭',
+              op: 'PointsTo',
+              args: [],
+              loc: 'b2',
+              repr: '@MCell',
+              reprArgs: ['d2', 'null'],
+            },
+            {
+              raw: '⟬ PointsTo ┆ f1 ┆ ⟦ @MListSeg ┆ b1 ┆ L1 ⟧ ⟭',
+              op: 'PointsTo',
+              args: [],
+              loc: 'f1',
+              repr: '@MListSeg',
+              reprArgs: ['b1', 'L1'],
+            },
+            {
+              raw: '⟬ PointsTo ┆ b1 ┆ ⟦ @MCell ┆ d1 ┆ null ⟧ ⟭',
+              op: 'PointsTo',
+              args: [],
+              loc: 'b1',
+              repr: '@MCell',
+              reprArgs: ['d1', 'null'],
+            },
+          ],
+        },
+      ],
+    },
   ]);
 });
 
@@ -129,17 +209,20 @@ test('term array', () => {
   const text = '⟬ Pure ┆ l3 = ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp(0, 35, 'Pure', [
-      'l3 =',
-      {
-        _start: 16,
-        _end: 33,
-        op: '@eq',
-        args: ['l1', 'l2'],
-        uid: '@eq-l1-l2',
-        label: 'l1 == l2',
-      },
-    ]),
+    {
+      raw: '⟬ Pure ┆ l3 = ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭',
+      op: 'Pure',
+      args: [
+        'l3 =',
+        {
+          raw: '⟦ @eq ┆ l1 ┆ l2 ⟧',
+          op: '@eq',
+          args: ['l1', 'l2'],
+          uid: '@eq-l1-l2',
+          label: 'l1 == l2',
+        },
+      ],
+    },
   ]);
 });
 
@@ -149,22 +232,22 @@ test('pointsto with loc being value', () => {
     '⟬ PointsTo ┆ ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
-    new HProp_PointsTo(
-      0,
-      74,
-      new Symbol(true, '@plus-p-1', 'p + 1'),
-      'isList',
-      [
+    {
+      raw: '⟬ PointsTo ┆ ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
+      op: 'PointsTo',
+      args: [],
+      loc: { isGlobal: true, uid: '@plus-p-1', label: 'p + 1' },
+      repr: 'isList',
+      reprArgs: [
         {
-          _start: 44,
-          _end: 70,
+          raw: '⟦ @list_append ┆ l1 ┆ l2 ⟧',
           op: '@list_append',
           args: ['l1', 'l2'],
-          label: 'l1 ++ l2',
           uid: '@list_append-l1-l2',
+          label: 'l1 ++ l2',
         },
-      ]
-    ),
+      ],
+    },
   ]);
 });
 
@@ -173,7 +256,7 @@ test('cfml triple', () => {
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     '(fun x: A => and some more',
-    new HProp(37, 52, 'Opaque', ['GC'], 'POST'),
+    { raw: '⟬ Opaque ┆ GC ⟭', op: 'Opaque', args: ['GC'], ctx: 'POST' },
     ')',
   ]);
 });
@@ -187,93 +270,78 @@ test('iris', () => {
   --------------------------------------∗
   WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
 `.trim();
-
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     {
-      _start: 0,
-      _end: 331,
+      raw: '⟬* PRE @ "HQ1" : ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ L1 ⟧ ⟭ *⟭⟬* PRE @ "HQ2" : ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ L2 ⟧ ⟭ *⟭⟬* PRE @ "HΦ" : ⟬ Later ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭\n                                       ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭ ⟭ *⟭',
       op: 'Stars',
-      ctx: 'PRE',
       args: [
         {
-          _start: -1,
-          _end: -1,
+          raw: '',
           op: 'PointsTos',
-          ctx: 'PRE',
           args: [
             {
-              _start: 0,
-              _end: 57,
+              raw: '⟬* PRE @ "HQ1" : ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ L1 ⟧ ⟭ *⟭',
               op: 'PointsTo',
-              binder: 'HQ1',
+              args: [],
               ctx: 'PRE',
+              binder: 'HQ1',
               loc: 'p1',
               repr: '$isQueue',
               reprArgs: ['L1'],
-              args: [],
             },
             {
-              _start: 60,
-              _end: 117,
+              raw: '⟬* PRE @ "HQ2" : ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ L2 ⟧ ⟭ *⟭',
               op: 'PointsTo',
-              binder: 'HQ2',
+              args: [],
               ctx: 'PRE',
+              binder: 'HQ2',
               loc: 'p2',
               repr: '$isQueue',
               reprArgs: ['L2'],
-              args: [],
             },
           ],
+          ctx: 'PRE',
         },
         {
-          _start: 120,
-          _end: 331,
+          raw: '⟬* PRE @ "HΦ" : ⟬ Later ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭\n                                       ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭ ⟭ *⟭',
           op: 'Later',
-          binder: 'HΦ',
-          ctx: 'PRE',
           args: [
             {
-              _start: 146,
-              _end: 326,
+              raw: '⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭\n                                       ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭',
               op: 'Wand',
               args: [
                 {
-                  _start: 155,
-                  _end: 303,
+                  raw: '⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭\n                                       ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭',
                   op: 'Stars',
                   args: [
                     {
-                      _start: -1,
-                      _end: -1,
+                      raw: '',
                       op: 'PointsTos',
                       args: [
                         {
-                          _start: 164,
-                          _end: 222,
+                          raw: '⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭',
                           op: 'PointsTo',
+                          args: [],
                           loc: 'p1',
                           repr: '$isQueue',
                           reprArgs: [
                             {
-                              _start: 195,
-                              _end: 218,
+                              raw: '⟦ $list_app ┆ L1 ┆ L2 ⟧',
                               op: '$list_app',
                               args: ['L1', 'L2'],
-                              label: '$list_app(L1, L2)',
                               uid: '$list_app-L1-L2',
+                              label: '$list_app(L1, L2)',
                             },
                           ],
-                          args: [],
                         },
                         {
-                          _start: 264,
-                          _end: 301,
+                          raw: '⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭',
                           op: 'PointsTo',
+                          args: [],
                           loc: 'p2',
                           repr: '$isQueue',
                           reprArgs: ['[]'],
-                          args: [],
                         },
                       ],
                     },
@@ -282,19 +350,21 @@ test('iris', () => {
                 [
                   'Φ ',
                   {
-                    _start: 308,
-                    _end: 324,
+                    raw: '⟦ $LitV ┆ ()%V ⟧',
                     op: '$LitV',
                     args: ['()%V'],
-                    label: '#()%V',
                     uid: '()%V',
+                    label: '#()%V',
                   },
                 ],
               ],
             },
           ],
+          ctx: 'PRE',
+          binder: 'HΦ',
         },
       ],
+      ctx: 'PRE',
     },
     '\n  --------------------------------------∗\n  WP transfer #p1 #p2 {{ v, Φ v }}',
   ]);
@@ -314,14 +384,6 @@ WP if: ~ ⟦ $LitV ┆ bool_decide (⟦ $list_cons ┆ x ┆ L2' ⟧ = [])⟧
 `.trim();
   const goal = parser.parse(text);
   expect(goal).toEqual([
-    `WP if: ~ #bool_decide (x :: L2' = [])
-    then let: "b1" := Snd ! #p1 in
-         let: "f2" := Fst ! #p2 in
-         let: "d" := Fst ! "b1" in
-         "b1" <- (Fst ! "f2", Snd ! "f2");;
-         #p1 <- (Fst ! #p1, Snd ! #p2);;
-         "f2" <- ("d", InjLV #()%V);; #p2 <- (Fst ! #p2, "f2")
-    else #()%V
-{{ v, Φ v }}`,
+    'WP if: ~ #bool_decide (x :: L2\' = [])\n    then let: "b1" := Snd ! #p1 in\n         let: "f2" := Fst ! #p2 in\n         let: "d" := Fst ! "b1" in\n         "b1" <- (Fst ! "f2", Snd ! "f2");;\n         #p1 <- (Fst ! #p1, Snd ! #p2);;\n         "f2" <- ("d", InjLV #()%V);; #p2 <- (Fst ! #p2, "f2")\n    else #()%V\n{{ v, Φ v }}',
   ]);
 });

@@ -75,7 +75,7 @@ export class Render {
 
   public buildViews(hprop: AST.HProp, host: HTMLElement) {
     const srcView = createElement('div', ['sep-source'], {
-      text: '', // FIXME: text = hprop.raw
+      text: hprop.raw,
     }) as ExtHTMLElement;
     const dgmView = createElement('div', ['sep-diagram']);
     host.append(dgmView, srcView);

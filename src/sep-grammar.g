@@ -25,10 +25,8 @@
     if (toJoin.length) joineds.push(toJoin.join(""));
     return joineds;
   }
-  function withMeta(node, loc) {
-    // loc: { start: { offset, line, column }, end: { offset, column, line } }
-    node._start = loc.start.offset;
-    node._end = loc.end.offset;
+  function withMeta(node, raw) {
+    node.raw = raw;
     return node;
   }
 }}
@@ -51,7 +49,7 @@ RichHProp
       const node = (prefix || postfix)
         ? { kind: "rich-hprop", prefix, hprop: res, postfix }
         : res;
-      return withMeta(node, location());
+      return withMeta(node, text());
     }
 
 RichHPropTerm = cs: RichHPropTermChar* { return cs.join("").trim(); }
@@ -62,7 +60,7 @@ HPropRD = "⟭"
 HProp
   = HPropLD _ op:Ident _ args:(_ Sep _ @(HProp / HPropTerm))* _ HPropRD {
       const node = { kind: "hprop", op, args };
-      return withMeta(node, location());
+      return withMeta(node, text());
     }
 
 HPropTerm = segs:HPropTermSegment* {
@@ -81,7 +79,7 @@ ValueRD = "⟧"
 Value
   = ValueLD _ op:Ident args:(_ Sep _ @(Value / GallinaTerm))* _ ValueRD {
       const node = { kind: "value", op, args};
-      return withMeta(node, location());
+      return withMeta(node, text());
     }
 GallinaTerm = segs:GallinaTermSegment* {
     const res = mergeSegments(segs)

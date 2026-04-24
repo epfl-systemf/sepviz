@@ -23,8 +23,7 @@ test('parse one simple plain region', () => {
   expect(parse('text ⟬Opaque┆emp⟭ some more text')).toEqual([
     'text ',
     {
-      _start: 5,
-      _end: 17,
+      raw: '⟬Opaque┆emp⟭',
       kind: 'hprop',
       args: ['emp'],
       op: 'Opaque',
@@ -39,8 +38,7 @@ test('parse one simple named region', () => {
   ).toEqual([
     'text ',
     {
-      _start: 5,
-      _end: 39,
+      raw: '⟬* PRE @ "Hφ": ⟬ Opaque ┆ emp ⟭ *⟭',
       kind: 'hprop',
       op: 'Opaque',
       args: ['emp'],
@@ -58,8 +56,7 @@ test('parse two regions', () => {
     )
   ).toEqual([
     {
-      _start: 0,
-      _end: 32,
+      raw: '⟬* PRE @ "Hφ": ⟬ NULL ┆ emp ⟭ *⟭',
       kind: 'hprop',
       args: ['emp'],
       op: 'NULL',
@@ -68,8 +65,7 @@ test('parse two regions', () => {
     },
     ' code do something (fun r => ',
     {
-      _start: 61,
-      _end: 110,
+      raw: '⟬* POST @ ⟬ PointsTo ┆ r ┆ isList ┆ l1 ++ l2 ⟭ *⟭',
       kind: 'hprop',
       op: 'PointsTo',
       args: ['r', 'isList', 'l1 ++ l2'],
@@ -87,6 +83,7 @@ test('parse value', () => {
   ).toEqual([
     'text ',
     {
+      raw: '⟬ PointsTo ┆ p ┆ isValue ┆ z + ⟦ SpecialV ┆ x ┆ y ⟧ ⟭',
       kind: 'hprop',
       op: 'PointsTo',
       args: [
@@ -95,16 +92,13 @@ test('parse value', () => {
         [
           'z + ',
           {
-            _start: 36,
-            _end: 56,
+            raw: '⟦ SpecialV ┆ x ┆ y ⟧',
             kind: 'value',
             op: 'SpecialV',
             args: ['x', 'y'],
           },
         ],
       ],
-      _start: 5,
-      _end: 58,
     },
     ' some more text',
   ]);
@@ -117,22 +111,19 @@ test('parse nested hprops', () => {
     )
   ).toEqual([
     {
-      _start: 0,
-      _end: 75,
+      raw: '⟬ STAR ┆ A ┆ ⟬ STAR ┆ B ┆ C ⟭ ┆ ⟬ PointsTo ┆ p: Int ┆ isList ┆ l1 ++ l2 ⟭ ⟭',
       kind: 'hprop',
       op: 'STAR',
       args: [
         'A',
         {
+          raw: '⟬ STAR ┆ B ┆ C ⟭',
           kind: 'hprop',
           op: 'STAR',
           args: ['B', 'C'],
-          _start: 13,
-          _end: 29,
         },
         {
-          _start: 32,
-          _end: 73,
+          raw: '⟬ PointsTo ┆ p: Int ┆ isList ┆ l1 ++ l2 ⟭',
           kind: 'hprop',
           op: 'PointsTo',
           args: ['p: Int', 'isList', 'l1 ++ l2'],
@@ -147,13 +138,11 @@ test('cfml triple', () => {
     parse('⟬* POST @ (fun x: A => and some more ⟬ Opaque ┆ GC ⟭ ) *⟭')
   ).toEqual([
     {
-      _start: 0,
-      _end: 57,
+      raw: '⟬* POST @ (fun x: A => and some more ⟬ Opaque ┆ GC ⟭ ) *⟭',
       kind: 'rich-hprop',
       prefix: '(fun x: A => and some more',
       hprop: {
-        _start: 37,
-        _end: 52,
+        raw: '⟬ Opaque ┆ GC ⟭',
         kind: 'hprop',
         args: ['GC'],
         ctx: 'POST',
@@ -173,8 +162,7 @@ WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
 `.trim();
   expect(parse(text)).toEqual([
     {
-      _start: 0,
-      _end: 57,
+      raw: '⟬* PRE @ "HQ1" : ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ L1 ⟧ ⟭ *⟭',
       kind: 'hprop',
       op: 'PointsTo',
       ctx: 'PRE',
@@ -182,8 +170,7 @@ WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
       args: [
         'p1',
         {
-          _start: 35,
-          _end: 52,
+          raw: '⟦ $isQueue ┆ L1 ⟧',
           kind: 'value',
           op: '$isQueue',
           args: ['L1'],
@@ -192,41 +179,35 @@ WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
     },
     '\n',
     {
-      _start: 58,
-      _end: 230,
+      raw: '⟬* PRE @ "HΦ" : ⟬ Later ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭ ⟭ *⟭',
       binder: 'HΦ',
       ctx: 'PRE',
       kind: 'hprop',
       op: 'Later',
       args: [
         {
-          _start: 84,
-          _end: 225,
+          raw: '⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭ ┆ Φ ⟦ $LitV ┆ ()%V ⟧ ⟭',
           kind: 'hprop',
           op: 'Wand',
           args: [
             {
-              _start: 93,
-              _end: 202,
+              raw: '⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭ ⟭',
               kind: 'hprop',
               op: 'Star',
               args: [
                 {
-                  _start: 102,
-                  _end: 160,
+                  raw: '⟬ PointsTo ┆ p1 ┆ ⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧ ⟭',
                   kind: 'hprop',
                   op: 'PointsTo',
                   args: [
                     'p1',
                     {
-                      _start: 120,
-                      _end: 158,
+                      raw: '⟦ $isQueue ┆ ⟦ $list_app ┆ L1 ┆ L2 ⟧ ⟧',
                       kind: 'value',
                       op: '$isQueue',
                       args: [
                         {
-                          _start: 133,
-                          _end: 156,
+                          raw: '⟦ $list_app ┆ L1 ┆ L2 ⟧',
                           kind: 'value',
                           op: '$list_app',
                           args: ['L1', 'L2'],
@@ -236,15 +217,13 @@ WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
                   ],
                 },
                 {
-                  _start: 163,
-                  _end: 200,
+                  raw: '⟬ PointsTo ┆ p2 ┆ ⟦ $isQueue ┆ [] ⟧ ⟭',
                   kind: 'hprop',
                   op: 'PointsTo',
                   args: [
                     'p2',
                     {
-                      _start: 181,
-                      _end: 198,
+                      raw: '⟦ $isQueue ┆ [] ⟧',
                       kind: 'value',
                       op: '$isQueue',
                       args: ['[]'],
@@ -256,8 +235,7 @@ WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
             [
               'Φ ',
               {
-                _start: 207,
-                _end: 223,
+                raw: '⟦ $LitV ┆ ()%V ⟧',
                 kind: 'value',
                 op: '$LitV',
                 args: ['()%V'],
@@ -269,19 +247,17 @@ WP transfer ⟦ $LitV ┆ p1 ⟧ ⟦ $LitV ┆ p2 ⟧ {{ v, Φ v }}
     },
     `\n--------------------------------------∗\nWP transfer `,
     {
+      raw: '⟦ $LitV ┆ p1 ⟧',
       kind: 'value',
       op: '$LitV',
       args: ['p1'],
-      _start: 283,
-      _end: 297,
     },
     ' ',
     {
+      raw: '⟦ $LitV ┆ p2 ⟧',
       kind: 'value',
       op: '$LitV',
       args: ['p2'],
-      _start: 298,
-      _end: 312,
     },
     ' {{ v, Φ v }}',
   ]);
