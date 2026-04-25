@@ -8,7 +8,7 @@ import {
   InTablePointerEdgeAttrs,
 } from './config';
 import { sort } from './sort';
-import { assert } from './utility';
+import { assert, escapeHtml } from './utility';
 
 // -- XML ----------------------------------------------------------------------
 

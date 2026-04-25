@@ -113,18 +113,28 @@ export class Render {
         return this.renderPures(x.args as AST.HProp[]);
       }
       case 'Stars': {
-        const host = createElement('div', []);
-        host.append(...x.args.map((arg) => this.renderHPropArg(arg)));
+        const host = createElement('div', ['vertial-stack']);
+        host.append(
+          ...x.args.map((arg) => {
+            const node = this.renderHPropArg(arg);
+            if (node.tagName === 'SPAN')
+              return createElement('div', ['sep-pred-container'], {}, [node]);
+            return node;
+          })
+        );
         return host;
       }
       case 'Wand': {
-        const host = createElement('div', ['sep-pred-container']);
+        const host = createElement('div', [
+          'sep-pred-container',
+          'horizontal-stack',
+        ]);
         assert(
           x.args.length >= 2,
           `Wand: expected 2 arguments in ${JSON.stringify(x)}`
         );
         const nodes = x.args.slice(0, 2).map((arg) => this.renderHPropArg(arg));
-        nodes[0]!.classList.add('sep-wand-hyp');
+        nodes[0]!.classList.add('sep-wand-hyp', 'vertial-stack');
         const op = createElement('div', ['sep-op'], { text: '-∗' }); // FIXME: read from config
         host.append(nodes[0]!, op, nodes[1]!);
         return host;

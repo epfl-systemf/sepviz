@@ -13,7 +13,7 @@ function tryParse(desc, input) {
     if (e.location) {
       const pos = e.location.start.offset;
       console.log(
-        `At position ${pos}: "${input.substring(Math.max(0, pos - 5), pos)}>>>${input.substring(pos, pos + 10)}"`
+        `At position ${pos}: "${input.substring(Math.max(0, pos - 10), pos)}>>>${input.substring(pos, pos + 15)}"`
       );
     }
   }
