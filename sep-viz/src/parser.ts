@@ -132,6 +132,10 @@ export function termsLabel(x: Term[]): string {
   return x.map(termLabel).join('');
 }
 
+export function termOrTermsLabel(x: Term | Term[]): string {
+  return Array.isArray(x) ? termsLabel(x) : termLabel(x);
+}
+
 // -- Parsing ------------------------------------------------------------------
 
 export class Parser {
@@ -406,9 +410,7 @@ export class Parser {
             !(loc_arg instanceof HProp),
             `[parser:resolveHProp] PointsTo: 1st argument should not be a HProp, got ${JSON.stringify(args[0])}`
           );
-          const loc = Array.isArray(loc_arg)
-            ? termsLabel(loc_arg)
-            : termLabel(loc_arg);
+          const loc = termOrTermsLabel(loc_arg);
           assert(
             args[1] instanceof Value,
             `2nd argument of PointsTo should be a Value`

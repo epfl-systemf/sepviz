@@ -92,6 +92,23 @@
   font-weight: bold;
 }
 
+.sep-triple {
+  display: inline-grid;
+  grid-template-columns: max-content 1fr;
+  align-items: baseline;
+  column-gap: 0.4em;
+}
+
+.vertical-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.horizontal-stack {
+  display: flex;
+  flex-direction: row;
+}
+
 .tooltip-copied {
   position: absolute;
   background: black;

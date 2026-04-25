@@ -123,7 +123,8 @@ export class Render {
           x.args.length >= 2,
           `Wand: expected 2 arguments in ${JSON.stringify(x)}`
         );
-        const nodes = x.args.map((arg) => this.renderHPropArg(arg));
+        const nodes = x.args.slice(0, 2).map((arg) => this.renderHPropArg(arg));
+        nodes[0]!.classList.add('sep-wand-hyp');
         const op = createElement('div', ['sep-op'], { text: '-∗' }); // FIXME: read from config
         host.append(nodes[0]!, op, nodes[1]!);
         return host;
@@ -136,17 +137,42 @@ export class Render {
         // FIXME
         return createElement('span', []);
       }
-      case 'BigSep': {
-        // FIXME
-        return createElement('span', []);
+      case 'BigOp': {
+        const host = createElement('div', ['sep-pred-container']);
+        assert(
+          x.args.length >= 3,
+          `BigOp: expected 3 arguments in ${JSON.stringify(x)}`
+        );
+        assert(
+          typeof x.args[0] === 'string',
+          `BigOp: 1st argument: expected a string, got ${x.args[0]}`
+        );
+        assert(
+          !(x.args[1] instanceof AST.HProp),
+          `BigOp: 2st argument: do not expected a HProp`
+        );
+        host.append(
+          createElement('div', ['sep-bigop-box'], {}, [
+            createElement('div', ['sep-bigop-left'], {}, [
+              createElement('div', ['sep-bigop-op'], {
+                text: x.args[0] as string,
+              }),
+              createElement('div', ['sep-bigop-binder'], {
+                text: AST.termOrTermsLabel(x.args[1]!),
+              }),
+            ]),
+            this.renderHPropArg(x.args[2]!),
+          ])
+        );
+        return host;
       }
       case 'IfThenElse': {
         assert(
           x.args.length >= 3,
-          `IfThenElse: expected 3 arguments in ${JSON.stringify(x)}`
+          `IfThenElse: expected 3 arguments, got ${JSON.stringify(x)}`
         );
         const host = createElement('div', ['sep-pred-container']);
-        const nodes = x.args.map((arg) => this.renderHPropArg(arg));
+        const nodes = x.args.slice(0, 3).map((arg) => this.renderHPropArg(arg));
         host.append(
           createElement('span', ['sep-keyword'], { text: 'If' }),
           nodes[0]!,
@@ -176,6 +202,29 @@ export class Render {
         host.append(
           createElement('span', ['sep-op'], { text: x.args[0] as string }),
           ...x.args.slice(1).map((arg) => this.renderHPropArg(arg))
+        );
+        return host;
+      }
+      case 'Triple': {
+        assert(
+          x.args.length >= 3,
+          `Triple: expected 3 arguments, got ${JSON.stringify(x)}`
+        );
+        const host = createElement('div', ['sep-pred-container', 'sep-triple']);
+        const nodes = x.args.slice(0, 3).map((a) => {
+          let arg =
+            typeof a === 'string' ? a.trim().replaceAll(/\s+/g, ' ') : a; // fine tune
+          return this.renderHPropArg(arg);
+        });
+        nodes[1]!.classList.add('vertical-stack');
+        nodes[2]!.classList.add('vertical-stack');
+        host.append(
+          createElement('span', ['sep-keyword'], { text: 'Triple' }),
+          nodes[0]!,
+          createElement('span', ['sep-keyword'], { text: 'Pre:' }),
+          nodes[1]!,
+          createElement('span', ['sep-keyword'], { text: 'Post:' }),
+          nodes[2]!
         );
         return host;
       }
