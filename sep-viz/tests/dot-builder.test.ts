@@ -71,10 +71,10 @@ test('pointsto example', () => {
   expect(clusters.length).toEqual(2);
   expect(clusters[0].root).toEqual('p2$ptr');
   expect(clusters[0].nodes.map((node) => node.uid)).toEqual([
-    'f2',
-    'c2',
-    'p2',
     'b2',
+    'c2',
+    'f2',
+    'p2',
     'p2$ptr',
   ]);
   expect(
@@ -92,9 +92,9 @@ test('pointsto example', () => {
   ]);
   expect(clusters[1].root).toEqual('p1$ptr');
   expect(clusters[1].nodes.map((node) => node.uid)).toEqual([
-    'p1',
-    'f1',
     'b1',
+    'f1',
+    'p1',
     'p1$ptr',
   ]);
   expect(
