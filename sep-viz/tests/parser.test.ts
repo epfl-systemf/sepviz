@@ -226,17 +226,17 @@ test('term array', () => {
   ]);
 });
 
-test('pointsto with loc being value', () => {
-  // p + 1  ->  l1 ++ l2
+test('pointsto with loc containing value', () => {
+  // x + (p + 1)  ->  l1 ++ l2
   const text =
-    '⟬ PointsTo ┆ ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭';
+    '⟬ PointsTo ┆ x + ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     {
-      raw: '⟬ PointsTo ┆ ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
+      raw: '⟬ PointsTo ┆ x + ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
       op: 'PointsTo',
       args: [],
-      loc: { isGlobal: true, uid: '@plus-p-1', label: 'p + 1' },
+      loc: 'x + p + 1',
       repr: 'isList',
       reprArgs: [
         {

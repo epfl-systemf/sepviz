@@ -401,17 +401,14 @@ export class Parser {
           // Arguments after the first two will be discarded.
           const args = x.args.map(resolveHPropArg);
           assert(x.args.length >= 2, 'PointsTo expects at least 2 arguments');
-
+          const loc_arg = args[0]!;
           assert(
-            HPropArg_isTerm(args[0]!),
-            `1st argument of PointsTo should be a Term`
+            !(loc_arg instanceof HProp),
+            `[parser:resolveHProp] PointsTo: 1st argument should not be a HProp, got ${JSON.stringify(args[0])}`
           );
-          const loc_term = args[0] as Term;
-          const loc =
-            loc_term instanceof Value
-              ? registerGlobal(loc_term.uid, loc_term.label)
-              : loc_term;
-
+          const loc = Array.isArray(loc_arg)
+            ? termsLabel(loc_arg)
+            : termLabel(loc_arg);
           assert(
             args[1] instanceof Value,
             `2nd argument of PointsTo should be a Value`
