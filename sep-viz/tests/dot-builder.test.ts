@@ -130,3 +130,19 @@ edge [tailclip="false", arrowsize="0.5", minlen="3"]
 
   expect(dotBuilder.dot).toEqual(dot);
 });
+
+test('escape html in labels', () => {
+  const pts = [new HProp_PointsTo('', 'p', '@MCell', ['(λ x : Z, #x) <$> xs'])];
+  const dotBuilder = new DotBuilder(config, pts);
+  const dot = `
+digraph {
+graph [rankdir="LR", ranksep="0.05", nodesep="0.05", concentrate="false", splines="true", packmode="array_i", truecolor="true", bgcolor="#00000000", pad="0", fontname="Courier", fontsize="11"]
+node [shape="plaintext", margin="0.05", fontname="Courier", fontsize="11"]
+edge [tailclip="false", arrowsize="0.5", minlen="3"]
+"p" [id="p", label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2"><tr><td colspan="2" cellpadding="0" sides="b"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td>p</td><td>: </td><td>MCell</td></tr></table></td></tr><tr><td port="in$0" sides="tlb">(λ x : Z, #x) &lt;$&gt; xs</td><td sides="trb"></td></tr></table>>]
+"p$ptr" [id="p$ptr", label="p", fontsize="10", width="0"]
+"p$ptr":"e" -> "p":"in$0":"nw" [id="p$ptr-e", tailclip="true", minlen="1"]
+}`.trim();
+
+  expect(dotBuilder.dot).toEqual(dot);
+});

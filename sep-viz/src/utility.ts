@@ -2,6 +2,15 @@ export function assert(condition: boolean, msg: string): asserts condition {
   if (!condition) throw new Error(msg);
 }
 
+export function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /** HTML Utilities */
 
 // Create a DOM element with given classes and optional text/id.

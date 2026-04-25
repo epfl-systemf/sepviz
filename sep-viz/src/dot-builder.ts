@@ -318,7 +318,7 @@ export class DotBuilder {
 
     const label: (term: AST.Term) => XMLChild = (term) => {
       const isLocal = term instanceof AST.Symbol && !term.isGlobal;
-      const s = AST.termLabel(term);
+      const s = escapeHtml(AST.termLabel(term));
       return isLocal ? localLabel(s) : globalLabel(s);
     };
 
