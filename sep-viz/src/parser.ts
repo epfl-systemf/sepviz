@@ -422,7 +422,10 @@ export class Parser {
             x.raw,
             loc,
             repr,
-            repr_value.args.map((a) => (typeof a === 'string' ? a.trim() : a)),
+            repr_value.args.map((a) =>
+              // trim and collapse consecutive whitespaces
+              typeof a === 'string' ? a.trim().replaceAll(/\s+/g, ' ') : a
+            ),
             x.ctx,
             x.binder
           );
