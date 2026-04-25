@@ -128,6 +128,10 @@ export function termLabel(x: Term): string {
   return x instanceof Value ? x.label : x instanceof Symbol ? x.label : x;
 }
 
+export function termsLabel(x: Term[]): string {
+  return x.map(termLabel).join('');
+}
+
 // -- Parsing ------------------------------------------------------------------
 
 export class Parser {

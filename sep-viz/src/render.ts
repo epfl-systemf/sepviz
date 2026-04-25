@@ -186,10 +186,15 @@ export class Render {
     xs.forEach((x) => {
       let pureNode = createElement('div', ['sep-pure']);
       x.args.forEach((t, idx) => {
-        assert(AST.HPropArg_isTerm(t), `expected Term`);
+        assert(
+          !(t instanceof AST.HProp),
+          `[render:renderPures] do not expect a HProp`
+        );
         if (idx != 0) pureNode.appendChild(document.createTextNode(' '));
         const node = createElement('span', [], {
-          text: AST.termLabel(t as AST.Term),
+          text: Array.isArray(t)
+            ? AST.termsLabel(t)
+            : AST.termLabel(t as AST.Term),
         });
         if (t instanceof AST.Symbol && !t.isGlobal)
           node.classList.add('sep-exist-var');
