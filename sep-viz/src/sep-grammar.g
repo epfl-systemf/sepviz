@@ -73,7 +73,7 @@ HPropTerm = segs:HPropTermSegment* {
 
 HPropTermSegment
   = Value
-   / !(Sep / HPropLD / HPropRD / ValueLD / ValueRD) @.
+   / !Delimiter @.
 
 ValueLD = "⟦"
 ValueRD = "⟧"
@@ -90,13 +90,11 @@ GallinaTerm = segs:GallinaTermSegment* {
   }
 GallinaTermSegment
   = Value
-  / !(Sep / ValueLD / ValueRD / HPropLD / HPropRD) @.
+  / !Delimiter @.
 
 Delimiter = Sep / HPropLD / HPropRD / ValueLD / ValueRD
 
 Ident = $( !Delimiter [a-zA-Z_\u0080-\uFFFF$\@]
           (!Delimiter [a-zA-Z0-9_'\u0080-\uFFFF])* )
-
-// Ident = $([a-zA-Z_\u0080-\uFFFF$\@] [a-zA-Z0-9_'\u0080-\uFFFF]*)
 
 _ "whitespace" = $[\p{White_Space}]*

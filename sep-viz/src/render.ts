@@ -163,9 +163,21 @@ export class Render {
         host.append(...x.args.map((arg) => this.renderHPropArg(arg)));
         return host;
       }
-      case 'Later': {
-        // FIXME
-        return createElement('span', []);
+      case 'Modality': {
+        assert(
+          x.args.length >= 2,
+          `Modality: expected >= 2 arguments, got ${JSON.stringify(x)}`
+        );
+        const host = createElement('div', ['sep-pred-container']);
+        assert(
+          typeof x.args[0] === 'string',
+          `Modality: 1st argument: expected a string, got ${JSON.stringify(x.args[1])}`
+        );
+        host.append(
+          createElement('span', ['sep-op'], { text: x.args[0] as string }),
+          ...x.args.slice(1).map((arg) => this.renderHPropArg(arg))
+        );
+        return host;
       }
       default: {
         throw new Error(`unrecognized hprop ${x.op}: ${JSON.stringify(x)}`);
