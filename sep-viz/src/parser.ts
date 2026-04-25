@@ -155,7 +155,7 @@ export class Parser {
     goal = goal.map((seg: MaybeHProp) =>
       seg instanceof HProp ? this.aggregateInStars(seg) : seg
     );
-    // resolve symbols, handle `Exist` and `PointsTo`
+    // resolve symbols, handle `Exist`, `Forall` and `PointsTo`
     goal = this.resolveSymbols(goal);
     return goal;
   }
@@ -356,7 +356,7 @@ export class Parser {
   }
 
   /**
-   * Resolve symbols, handle `Exist` and `PointsTo`:
+   * Resolve symbols, handle `Exist`, `Forall` and `PointsTo`:
    * - lift local `Exist` quantifiers to the global scope.
    * - parse `PointsTo` to the `HProp` subtype `HProp_PointsTo`
    */
@@ -387,8 +387,9 @@ export class Parser {
 
     function resolveHProp(x: HProp): HProp {
       switch (x.op) {
-        case 'Exist': {
-          assert(x.args.length === 2, 'Exist expects 2 arguments');
+        case 'Exist':
+        case 'Forall': {
+          assert(x.args.length === 2, `${x.op} expects 2 arguments`);
           assert(typeof x.args[0] === 'string', ``);
           assert(x.args[1] instanceof HProp, ``);
 
