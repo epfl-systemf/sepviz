@@ -7,6 +7,7 @@ import {
   RenderConfig,
   InTablePointerEdgeAttrs,
 } from './config';
+import { sort } from './sort';
 import { assert } from './utility';
 
 // -- XML ----------------------------------------------------------------------
@@ -124,7 +125,9 @@ export class DotBuilder {
     });
 
     const clusters = this.partition(nodes, edges);
-    clusters.sort((c1, c2) => c2.root.localeCompare(c1.root)); // TODO: sort nodes?
+    clusters
+      .sort((c1, c2) => c2.root.localeCompare(c1.root))
+      .map((c) => this.sortNodes(c));
 
     const targets: DotTarget[] = [
       { name: 'graph', attrs: this.config.graph },
@@ -133,6 +136,19 @@ export class DotBuilder {
     ];
 
     return [clusters, targets];
+  }
+
+  protected sortNodes(cluster: DotCluster): DotCluster {
+    const order = sort(
+      cluster.root,
+      cluster.nodes.map((n) => n.uid),
+      cluster.edges.map((e) => {
+        return { src: e.srcUid, dst: e.dstUid };
+      }),
+      null // TODO: Use previousOrder instead?
+    );
+    cluster.nodes.sort((n1, n2) => order[n1.uid]! - order[n2.uid]!);
+    return cluster;
   }
 
   /**
