@@ -422,7 +422,7 @@ export class Parser {
             x.raw,
             loc,
             repr,
-            repr_value.args,
+            repr_value.args.map((a) => (typeof a === 'string' ? a.trim() : a)),
             x.ctx,
             x.binder
           );
