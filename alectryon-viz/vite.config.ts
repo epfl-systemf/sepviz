@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 
 export default defineConfig({
   publicDir: 'public',
@@ -10,6 +11,7 @@ export default defineConfig({
       formats: ['es'],
       fileName: () => 'alectryon-viz.js',
     },
+    sourcemap: true, // for debugging
   },
   optimizeDeps: {
     include: ['d3-graphviz', 'd3'],

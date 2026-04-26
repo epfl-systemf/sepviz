@@ -407,3 +407,18 @@ test('two abstract hprops in pre', () => {
     { raw: "Q'", op: 'Opaque', args: ["Q'"], ctx: 'POST' },
   ]);
 });
+
+test('the 2nd argument of `Exist` may not be a hprop in input', () => {
+  const text = '⟬* POST @ fun r : val => ⟬ Exist ┆ H ┆ H ⟭ ⟭ *⟭';
+  const goal = parser.parse(text);
+  expect(goal).toEqual([
+    'fun r : val =>',
+    {
+      raw: 'H',
+      op: 'Opaque',
+      args: [{ isGlobal: false, uid: 'H$0', label: 'H0' }],
+      ctx: 'POST',
+    },
+    '⟭',
+  ]);
+});

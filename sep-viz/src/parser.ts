@@ -394,12 +394,18 @@ export class Parser {
         case 'Exist':
         case 'Forall': {
           assert(x.args.length === 2, `${x.op} expects 2 arguments`);
-          assert(typeof x.args[0] === 'string', ``);
-          assert(x.args[1] instanceof HProp, ``);
-
+          assert(
+            typeof x.args[0] === 'string',
+            `[parser:resolveHProp] ${x.op} expect the 1st argument to be a string, got ${JSON.stringify(x.args[0])}`
+          );
           const binder = x.args[0] as string;
+          const y: HPropArg = x.args[1]!;
           registerLocal(binder);
-          return resolveHProp(x.args[1] as HProp);
+          return resolveHProp(
+            y instanceof HProp
+              ? y
+              : new HProp(termOrTermsLabel(y), 'Opaque', [y], x.ctx, x.binder)
+          );
         }
         case 'PointsTo': {
           // Arguments after the first two will be discarded.
