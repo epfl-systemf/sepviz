@@ -2,7 +2,7 @@ import { loadRenderConfig, ResetKeywords, RenderConfig } from 'sep-viz';
 import { Render, ExtHTMLElement } from 'sep-viz';
 import 'sep-viz/sep-viz.css';
 
-import { Transition, transition } from 'd3-transition';
+import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
 
 document.addEventListener('DOMContentLoaded', init);
@@ -57,14 +57,6 @@ function renderEmbedded(config: RenderConfig) {
     });
 }
 
-interface GraphvizInstance {
-  transition(factory: () => Transition<any, any, any, any>): GraphvizInstance;
-  renderDot(dot: string): GraphvizInstance;
-  on(event: 'end', cb: () => void): GraphvizInstance;
-}
-
-type SVGElement = HTMLElement & { __graphviz__?: GraphvizInstance };
-
 /**
  * Observe Alectryon targets; when a sentence becomes an `.alectryon-target`,
  * animate its `.sep-visualization` diagrams from the previous to the current.
@@ -84,7 +76,7 @@ function setupAnimation(defaultDuration = 2000): void {
     const vid = vizNode.id;
     if (!vid || renderingVids.has(vid)) return;
 
-    const svgNode = vizNode.querySelector<SVGElement>('.sep-svg');
+    const svgNode = vizNode.querySelector<ExtHTMLElement>('.sep-svg');
     const gviz = svgNode?.__graphviz__;
 
     const dot = getDot(vizNode);
@@ -96,7 +88,7 @@ function setupAnimation(defaultDuration = 2000): void {
     // render the previous diagram instantly
     await new Promise<void>((resolve) => {
       gviz
-        .transition(() => transition().duration(0))
+        .transition((() => transition().duration(0)) as any)
         .renderDot(prevDot)
         .on('end', resolve);
     });
@@ -104,7 +96,8 @@ function setupAnimation(defaultDuration = 2000): void {
     // transition to the current diagram
     await new Promise<void>((resolve) => {
       gviz
-        .transition(() => transition().duration(duration).ease(easeCubicInOut))
+        .transition((() =>
+          transition().duration(duration).ease(easeCubicInOut)) as any)
         .renderDot(dot)
         .on('end', resolve);
     });
