@@ -171,9 +171,9 @@ export class Parser {
         typeof seg === 'string' &&
         seg.trim().length === 0 &&
         idx - 1 >= 0 &&
-        Sep.isHProp(goal[idx - 1]) &&
+        (Sep.isRichHProp(goal[idx - 1]) || Sep.isHProp(goal[idx - 1])) &&
         idx + 1 < goal.length &&
-        Sep.isHProp(goal[idx + 1])
+        (Sep.isRichHProp(goal[idx + 1]) || Sep.isHProp(goal[idx + 1]))
       ) {
         return;
       }
@@ -191,9 +191,9 @@ export class Parser {
       ) {
         const x = seg as Sep.RichHProp;
         return [
-          ...(x.prefix !== '' ? [x.prefix] : []),
+          ...(x.prefix ? [x.prefix] : []),
           x.hprop,
-          ...(x.postfix !== '' ? [x.postfix] : []),
+          ...(x.postfix ? [x.postfix] : []),
         ];
       }
       return [seg];

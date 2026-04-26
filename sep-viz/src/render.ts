@@ -194,8 +194,7 @@ export class Render {
         return host;
       }
       case 'Opaque': {
-        // FIXME: check anything?
-        const host = createElement('div', []);
+        const host = createElement('div', ['sep-pred-container']);
         host.append(...x.args.map((arg) => this.renderHPropArg(arg)));
         return host;
       }

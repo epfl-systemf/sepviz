@@ -43,7 +43,12 @@ RichHPropLD = "⟬*"
 RichHPropRD = "*⟭"
 RichHProp
   = RichHPropLD _ ctx:(@CtxIdent _ "@" _)? binder:("\"" @Ident "\"" _ ":" _)? prefix:(@RichHPropTerm _)? hprop:(@HProp _)? postfix:(@RichHPropTerm _)? RichHPropRD {
-      if(!hprop) return text();
+      if(!hprop) {
+        const res = { kind: "hprop", op: "Opaque", args: [prefix + postfix], raw: prefix + postfix };
+        if (ctx) res.ctx = ctx;
+        if (binder) res.binder = binder;
+        return withMeta({ kind: "rich-hprop", hprop: res }, text());
+      }
       const res = hprop;
       if (ctx) res.ctx = ctx;
       if (binder) res.binder = binder;

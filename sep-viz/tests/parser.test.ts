@@ -387,3 +387,22 @@ WP if: ~ ⟦ $LitV ┆ bool_decide (⟦ $list_cons ┆ x ┆ L2' ⟧ = [])⟧
     'WP if: ~ #bool_decide (x :: L2\' = [])\n    then let: "b1" := Snd ! #p1 in\n         let: "f2" := Fst ! #p2 in\n         let: "d" := Fst ! "b1" in\n         "b1" <- (Fst ! "f2", Snd ! "f2");;\n         #p1 <- (Fst ! #p1, Snd ! #p2);;\n         "f2" <- ("d", InjLV #()%V);; #p2 <- (Fst ! #p2, "f2")\n    else #()%V\n{{ v, Φ v }}',
   ]);
 });
+
+test('two abstract hprops in pre', () => {
+  const text =
+    "⟬* PRE @ H1 *⟭ ⟬* PRE @ H2 *⟭  CODE <[ Seq (App incr p) ; (App val_get p) ]> ⟬* POST @ Q' *⟭";
+  const goal = parser.parse(text);
+  expect(goal).toEqual([
+    {
+      raw: 'H1H2',
+      op: 'Stars',
+      args: [
+        { raw: 'H1', op: 'Opaque', args: ['H1'], ctx: 'PRE' },
+        { raw: 'H2', op: 'Opaque', args: ['H2'], ctx: 'PRE' },
+      ],
+      ctx: 'PRE',
+    },
+    '  CODE <[ Seq (App incr p) ; (App val_get p) ]> ',
+    { raw: "Q'", op: 'Opaque', args: ["Q'"], ctx: 'POST' },
+  ]);
+});

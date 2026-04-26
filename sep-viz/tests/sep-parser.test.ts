@@ -267,6 +267,28 @@ test('abstract hprop in pre or post', () => {
   const text =
     "⟬* PRE @ H' *⟭ CODE <[ Seq (App incr p) ; (App val_get p) ]> ⟬* POST @ Q' *⟭";
   expect(parse(text)).toEqual([
-    "⟬* PRE @ H' *⟭ CODE <[ Seq (App incr p) ; (App val_get p) ]> ⟬* POST @ Q' *⟭",
+    {
+      raw: "⟬* PRE @ H' *⟭",
+      kind: 'rich-hprop',
+      hprop: {
+        args: ["H'"],
+        ctx: 'PRE',
+        kind: 'hprop',
+        op: 'Opaque',
+        raw: "H'",
+      },
+    },
+    ' CODE <[ Seq (App incr p) ; (App val_get p) ]> ',
+    {
+      raw: "⟬* POST @ Q' *⟭",
+      kind: 'rich-hprop',
+      hprop: {
+        args: ["Q'"],
+        ctx: 'POST',
+        kind: 'hprop',
+        op: 'Opaque',
+        raw: "Q'",
+      },
+    },
   ]);
 });

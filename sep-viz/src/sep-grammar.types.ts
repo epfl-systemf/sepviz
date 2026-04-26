@@ -17,6 +17,10 @@ export interface HProp {
   raw: string;
 }
 
+export function isRichHProp(x: any): x is RichHProp {
+  return typeof x === 'object' && 'kind' in x && x.kind === 'rich-hprop';
+}
+
 export function isHProp(x: any): x is HProp {
   return typeof x === 'object' && 'kind' in x && x.kind === 'hprop';
 }
