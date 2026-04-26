@@ -1,35 +1,12 @@
 {
+  "name": "visualizer",
+  "private": true,
+  "workspaces": ["sep-viz", "alectryon-viz"],
   "scripts": {
-    "gen:proofs": "./scripts/gen_proofs.sh cfml-examples iris-example software-foundations-slf",
-    "inject": "./scripts/inject.sh",
-    "gen:parser": "npx peggy --format es -o src/parser.js src/assets/sep.g",
-
-    "prepare": "run-s inject gen:parser",
-
-    "typecheck": "tsc --noEmit",
-    "dev": "run-s prepare vite",
-    "vite:build": "vite build",
-    "build": "run-s prepare vite:build",
-    "build:all": "run-s gen:proofs build",
-    "preview": "vite preview",
-    "test": "vitest"
-  },
-  "devDependencies": {
-    "@types/node": "^24.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
-    "@typescript-eslint/parser": "^8.46.3",
-    "eslint": "^9.39.1",
-    "lodash": "^4.17.21",
-    "npm-run-all": "^4.1.5",
-    "peggy": "^5.0.6",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.3",
-    "vite": "^7.2.1",
-    "vitest": "^4.0.15"
-  },
-  "dependencies": {
-    "d3": "^7.9.0",
-    "d3-graphviz": "^5.6.0",
-    "js-yaml": "^4.1.0"
+    "test:all": "npm run test -w sep-viz",
+    "build:all": "npm run build -w sep-viz && npm run build -w alectryon-viz",
+    "preview:all": "npm run build -w sep-viz && npm run preview -w alectryon-viz",
+    "clean": "rm -rf node_modules sep-viz/node_modules alectryon-viz/node_modules",
+    "reinstall": "npm run clean && npm install"
   }
 }
