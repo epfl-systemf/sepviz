@@ -1,0 +1,84 @@
+constr:
+  "$hsingle":
+    label: "hsingle"
+    drawBorder: true
+    argNum: 1
+  "$MList":
+    label: "MList"
+    argNum: 1
+    args:
+      0:
+        inTable: true
+  "$Stack":
+    label: "Stack"
+    argNum: 1
+    args:
+      0:
+        inTable: true
+  "$MTree":
+    label: "MTree"
+    argNum: 1
+    args:
+      0:
+        inTable: true
+  "$Record2_val":
+    label: "Record"
+    drawBorder: true
+    argNum: 4
+    args:
+      0:
+        inTable: false
+      1:
+        inTable: true
+      2:
+        inTable: false
+      3:
+        inTable: true
+  "$Record2":
+    label: "Record"
+    drawBorder: true
+    argNum: 4
+    args:
+      0:
+        inTable: false
+      1:
+        inTable: true
+      2:
+        inTable: false
+      3:
+        inTable: true
+  "$Record3_val":
+    label: "Record"
+    drawBorder: true
+    argNum: 6
+    args:
+      0:
+        inTable: false
+      1:
+        inTable: true
+      2:
+        inTable: false
+      3:
+        inTable: true
+      4:
+        inTable: false
+      5:
+        inTable: true
+  "$Record3":
+    label: "Record"
+    drawBorder: true
+    argNum: 6
+    args:
+      0:
+        inTable: false
+      1:
+        inTable: true
+      2:
+        inTable: false
+      3:
+        inTable: true
+      4:
+        inTable: false
+      5:
+        inTable: true
+value:

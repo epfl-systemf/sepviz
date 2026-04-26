@@ -1,0 +1,46 @@
+constr:
+  # iris
+  "$Basic":
+    label: "Basic"
+    drawBorder: 1
+    argNum: 1
+  "$Pair":
+    label: "Pair"
+    drawBorder: 1
+    argNum: 2
+  # queue.v
+  "isQueue":
+    args:
+      0:
+        inTable: true
+  "isListSeg":
+    inPort: list
+    args:
+      0:
+        inTable: true
+        inPort: list
+        outPort: list
+      1:
+        forceEdge: true
+        outPort: list
+  # linked_list.v
+  "isList":
+    argNum: 1
+    args:
+      0:
+        inTable: true
+value:
+  # iris
+  "$LitV":
+    argNum: 1
+    label: "#$1"
+    uid: "$1"
+  "$IterKX":
+    argNum: 3
+    label: "$1 ↦ $2 ∈ $3"
+  "$IterX":
+    argNum: 2
+    label: "$1 ∈ $2"
+  "$Iter":
+    argNum: 0
+    label: ""

@@ -2,4 +2,3 @@ _plain
 dist
 node_modules
 .direnv
-alectryon-viz/public

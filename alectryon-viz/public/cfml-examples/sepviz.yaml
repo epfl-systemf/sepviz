@@ -1,0 +1,30 @@
+constr:
+  "$MQueue":
+    label: "MQueue"
+    args:
+      0: # FIXME: count from 1
+        inTable: true
+  "$MCell":
+    label: "MCell"
+    drawBorder: true
+    argNum: 2
+  "$MListSeg":
+    label: "MListSeg"
+    inPort: list
+    args:
+      0:
+        forceEdge: true # forceEdge=true means there is always an edge to this argument
+        outPort: list
+      1:
+        inTable: true
+        inPort: list
+        outPort: list
+  "$MTree":
+    label: "MTree"
+    args:
+      0:
+        inTable: true
+  "$MNode":
+    label: "MNode"
+    drawBorder: true
+    argNum: 3
