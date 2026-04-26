@@ -122,7 +122,7 @@ function setupAnimation(defaultDuration = 2000): void {
       stream: string
     ): HTMLElement | null {
       return sentNode.querySelector<HTMLElement>(
-        `.sep-visualization.sep-stream-${stream}`
+        `.goal-conclusion .sep-visualization.sep-stream-${stream}`
       );
     }
 
