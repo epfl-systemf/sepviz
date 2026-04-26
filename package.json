@@ -5,6 +5,7 @@
   "scripts": {
     "test:all": "npm run test -w sep-viz",
     "build:all": "npm run build -w sep-viz && npm run build -w alectryon-viz",
+    "preview:all": "npm run build -w sep-viz && npm run preview -w alectryon-viz",
     "clean": "rm -rf node_modules sep-viz/node_modules alectryon-viz/node_modules",
     "reinstall": "npm run clean && npm install"
   }

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PUBLIC_DIR="./public"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PUBLIC_DIR="$SCRIPT_DIR/../public"
 
 INJECTION="$(
     cat <<'EOF'
@@ -13,8 +14,8 @@ EOF
 echo "[inject] injecting viz css and js into html files..."
 
 if [[ ! -d "$PUBLIC_DIR" ]]; then
-    echo "public/ not found at: $PUBLIC_DIR" >&2
-    exit 1
+    echo "[inject] creating the public folder..."
+    mkdir -p $PUBLIC_DIR
 fi
 
 find "$PUBLIC_DIR" -type f \( -name '*.html' \) -print0 |
