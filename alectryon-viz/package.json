@@ -9,9 +9,7 @@
     "preview": "npm run gen:proofs && npm run inject && npm run build"
   },
   "dependencies": {
-    "d3-ease": "^3.0.1",
     "d3-graphviz": "^5.6.0",
-    "d3-transition": "^3.0.1",
     "sep-viz": "*"
   },
   "devDependencies": {
