@@ -5,8 +5,8 @@ PUBLIC_DIR="./public"
 
 INJECTION="$(
     cat <<'EOF'
-<link rel="stylesheet" href="alectryon-viz.css" type="text/css" />
-<script type="module" src="alectryon-viz.js"></script>
+<link rel="stylesheet" href="../alectryon-viz.css" type="text/css" />
+<script type="module" src="../alectryon-viz.js"></script>
 EOF
 )"
 
