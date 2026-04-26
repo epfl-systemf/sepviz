@@ -8,7 +8,6 @@ import { easeCubicInOut } from 'd3-ease';
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
-  console.log('[init] started');
   markGoalResets(); // FIXME: use it to break animation
   // Pass config path via URL query parameter, e.g., `?config=/path/to/config`
   const configPath =
