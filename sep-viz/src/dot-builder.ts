@@ -6,6 +6,8 @@ import {
   ArgEntryConfig,
   RenderConfig,
   InTablePointerEdgeAttrs,
+  PointerNodeAttrs,
+  PointerEdgeAttrs,
 } from './config';
 import { sort } from './sort';
 import { assert, escapeHtml } from './utility';
@@ -198,7 +200,7 @@ export class DotBuilder {
     const node: DotNode = {
       uid: ptrUid,
       label: label,
-      attrs: { fontsize: '10', width: '0' }, // FIXME: read from config
+      attrs: PointerNodeAttrs,
     };
     const edge: DotEdge = {
       srcUid: ptrUid,
@@ -207,7 +209,7 @@ export class DotBuilder {
       dstInPorts: this.inPortOfUid[uid]
         ? [this.inPortOfUid[uid] as string, 'nw']
         : ['nw'],
-      attrs: { tailclip: 'true', minlen: '1' }, // FIXME: read from config
+      attrs: PointerEdgeAttrs,
     };
     return [node, edge];
   }
@@ -412,11 +414,7 @@ export class DotBuilder {
           srcOutPorts: ['e'],
           dstUid: dstUid,
           dstInPorts: ['w'],
-          attrs: {
-            // FIXME
-            style: 'invis',
-            constraint: false,
-          },
+          attrs: { style: 'invis', constraint: false },
         };
         return [edge, nodeLevelEdge];
       }

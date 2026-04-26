@@ -49,7 +49,7 @@ export class Render {
         const stream = seg.ctx !== undefined ? seg.ctx : 'DEFAULT';
         const host = createElement('div', [
           'sep-visualization',
-          `sep-stream-${stream}`, // FIXME
+          `sep-stream-${stream}`,
         ]);
         if (animate) host.id = this.nextVid(stream);
         this.buildViews(seg, host);
@@ -135,17 +135,29 @@ export class Render {
         );
         const nodes = x.args.slice(0, 2).map((arg) => this.renderHPropArg(arg));
         nodes[0]!.classList.add('sep-wand-hyp', 'vertial-stack');
-        const op = createElement('div', ['sep-op'], { text: '-∗' }); // FIXME: read from config
+        const op = createElement('div', ['sep-op'], { text: '-∗' });
         host.append(nodes[0]!, op, nodes[1]!);
         return host;
       }
-      case 'Conjs': {
-        // FIXME
-        return createElement('span', []);
-      }
+      case 'Conjs':
       case 'Disjs': {
-        // FIXME
-        return createElement('span', []);
+        const op = x.op === 'Conjs' ? '∧' : `∨`;
+        const host = createElement('div', [
+          'sep-pred-container',
+          'vertial-stack',
+        ]);
+        const nodes = x.args.map((arg) => this.renderHPropArg(arg));
+        host.append(
+          ...nodes.map((node, idx) =>
+            idx === 0
+              ? node
+              : createElement('div', ['horizontal-stack'], {}, [
+                  createElement('span', ['sep-op'], { text: op }),
+                  node,
+                ])
+          )
+        );
+        return host;
       }
       case 'BigOp': {
         const host = createElement('div', ['sep-pred-container']);

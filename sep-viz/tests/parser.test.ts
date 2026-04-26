@@ -1,3 +1,4 @@
+import { defaultRenderConfig } from '../src/config';
 import { Parser, Goal, HProp, HProp_PointsTo, Symbol } from '../src/parser';
 import { expect, test } from 'vitest';
 
@@ -28,7 +29,7 @@ const valueConfig = {
     label: '$1 :: $2',
   },
 };
-const parser = new Parser({ value: valueConfig }); // FIXME
+const parser = new Parser({ ...defaultRenderConfig(), value: valueConfig });
 
 test('flatten stars', () => {
   const text =

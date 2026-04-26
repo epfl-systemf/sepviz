@@ -15,10 +15,19 @@ export const ResetKeywords = [
   '}',
 ];
 
+// TODO: make the following attrs adjustable by users
 export const InTablePointerEdgeAttrs = {
   dir: 'both',
   arrowtail: 'dot',
   arrowhead: 'normal',
+};
+export const PointerNodeAttrs = {
+  fontsize: '10',
+  width: '0',
+};
+export const PointerEdgeAttrs = {
+  tailclip: 'true',
+  minlen: '1',
 };
 
 export type AttrKey = string | number;
@@ -30,7 +39,7 @@ export interface RenderConfig {
   graph: Attrs;
   edge: Attrs;
   node: Attrs;
-  hprop: HPropConfig; // FIXME add config
+  hprop: HPropConfig; // TODO: add config to support new hprops
   constr: ConstrConfig;
   value: ValueConfig;
 }

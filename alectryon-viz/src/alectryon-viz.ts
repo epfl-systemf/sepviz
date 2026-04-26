@@ -82,9 +82,7 @@ function setupAnimation(defaultDuration = 2000): void {
     prevVizNode: HTMLElement,
     duration = defaultDuration
   ) {
-    console.log('animate called!');
     const vid = vizNode.id;
-    console.log('vid = ', vid);
     if (!vid || renderingVids.has(vid)) return;
 
     const svgNode = vizNode.querySelector<SVGElement>('.sep-svg');
@@ -95,7 +93,6 @@ function setupAnimation(defaultDuration = 2000): void {
 
     if (!svgNode || !gviz || !dot || !prevDot || prevDot === dot) return;
 
-    console.log('animating ... ');
     renderingVids.add(vid);
     // render the previous diagram instantly
     await new Promise<void>((resolve) => {
