@@ -31,7 +31,7 @@ export class HProp {
 export class HProp_PointsTo extends HProp {
   constructor(
     public raw: string,
-    public loc: Symbol | string,
+    public loc: Symbol,
     public repr: string,
     public reprArgs: Term[],
     public ctx?: HPropCtx,
@@ -128,8 +128,16 @@ export function termLabel(x: Term): string {
   return x instanceof Value ? x.label : x instanceof Symbol ? x.label : x;
 }
 
+export function termsUid(x: Term[]): string {
+  return x.map(termUid).join('');
+}
+
 export function termsLabel(x: Term[]): string {
   return x.map(termLabel).join('');
+}
+
+export function termOrTermsUid(x: Term | Term[]): string {
+  return Array.isArray(x) ? termsUid(x) : termUid(x);
 }
 
 export function termOrTermsLabel(x: Term | Term[]): string {
@@ -409,26 +417,34 @@ export class Parser {
         }
         case 'PointsTo': {
           // Arguments after the first two will be discarded.
-          const args = x.args.map(resolveHPropArg);
           assert(x.args.length >= 2, 'PointsTo expects at least 2 arguments');
-          const loc_arg = args[0]!;
+          const loc_arg = resolveHPropArg(x.args[0]!);
           assert(
             !(loc_arg instanceof HProp),
-            `[parser:resolveHProp] PointsTo: 1st argument should not be a HProp, got ${JSON.stringify(args[0])}`
+            `[parser:resolveHProp] PointsTo: 1st argument should not be a HProp, got ${JSON.stringify(x.args[0]!)}`
           );
-          const loc = termOrTermsLabel(loc_arg);
+          const loc = registerGlobal(
+            termOrTermsUid(loc_arg),
+            termOrTermsLabel(loc_arg)
+          );
+          /**
+           * Note: in the case of
+           * `[PointsTo(p1, ...), PointsTo(p2, Value('MPair', [p1, p3])), PointsTo(p3, ...)]`,
+           * `p1` is registered as a global symbol before resolving the second PointsTo,
+           * so argument `p1` is resolved to a symbol while `p3` is not.
+           */
+          const repr_arg = resolveHPropArg(x.args[1]!);
           assert(
-            args[1] instanceof Value,
+            repr_arg instanceof Value,
             `2nd argument of PointsTo should be a Value`
           );
-          const repr_value = args[1] as Value;
-          const repr = repr_value.op;
+          const repr = repr_arg.op;
 
           return new HProp_PointsTo(
             x.raw,
             loc,
             repr,
-            repr_value.args.map((a) =>
+            repr_arg.args.map((a) =>
               // trim and collapse consecutive whitespaces
               typeof a === 'string' ? a.trim().replaceAll(/\s+/g, ' ') : a
             ),
