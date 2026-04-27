@@ -7,3 +7,6 @@
 [submodule "examples/software-foundations-slf"]
 	path = examples/software-foundations-slf
 	url = git@gitlab.epfl.ch:systemf/sep-viz/slf.git
+[submodule "examples/software-foundations-vc"]
+	path = examples/software-foundations-vc
+	url = git@gitlab.epfl.ch:systemf/sep-viz/vc.git
