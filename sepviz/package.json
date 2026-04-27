@@ -18,7 +18,7 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsc --noEmit && vite build",
-    "preview": "npm run build",
+    "preview": "vite build",
     "test": "vitest"
   },
   "devDependencies": {
