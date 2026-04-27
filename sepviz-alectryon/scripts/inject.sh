@@ -21,7 +21,8 @@ fi
 find "$PUBLIC_DIR" -type f \( -name '*.html' \) -print0 |
     while IFS= read -r -d '' FILE; do
         # skip if already injected
-        if grep -q 'sepviz-alectryon.js' "$FILE" && grep -q 'href="sepviz-alectryon.css"' "$FILE"; then
+        if grep -q 'sepviz-alectryon.js' "$FILE" && grep -q 'sepviz-alectryon.css' "$FILE"; then
+            echo "[inject] skipping $(realpath "$FILE")"
             continue
         fi
 
