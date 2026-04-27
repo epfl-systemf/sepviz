@@ -1,47 +1,56 @@
 # Separation-Logic Visualizer
 
+This repo contains:
 
-## Repo structure
+- [sepviz](./sepviz): a library for visualizing separation-logic formulas as diagrams. It parses separation-logic formulas from goal strings and renders them using [Graphviz](https://graphviz.org/). Used by both the [sepviz-alectryon](./sepviz-alectryon) app and the [sepviz-vsrocq](https://github.com/epfl-systemf/sepviz-vsrocq) extension.
 
-- `sepviz`: a library for visualizing separation-logic formulas as diagrams. It parses separation-logic formulas from goal strings and renders them using Graphviz. Used by both the `sepviz-alectryon` app and the `sepviz-vsrocq` extension.
+- [sepviz-alectryon](./sepviz-alectryon): an extension to [Alectryon](https://github.com/cpitclaudel/alectryon) that renders separation-logic formulas as diagrams and animates transitions between them as proof goals evolve.
 
-- `sepviz-alectryon`: an extension to Alectryon that renders separation-logic formulas as diagrams and animates transitions between them as proof goals evolve.
-
-- `examples`: example rocq projects, containing `cfml-examples`, `iris-tutorial`, `software-foundations-slf`. Their selected proof recordings (Alectryon-generated HTML files, fully text-based, no diagrams and no animations) are pre-generated and pre-stored in `sepviz-alectryon/public`.
+- [examples](./examples): example rocq projects, containing [cfml-examples](./examples/cfml-examples), [iris-tutorial](./examples/iris-tutorial), [software-foundations-slf](./examples/software-foundations-slf). Their selected proof recordings (Alectryon-generated HTML files, fully text-based, no diagrams and no animations) are pre-generated and pre-stored in `sepviz-alectryon/public`.
 
 
-## Build
+## Setup
 
-This project requires `node.js` (tested on v22.20.0). If you have [nix](https://nixos.org/) installed, you can run `nix develop -c "export USE_NIX=1"` to enter a developer shell.
+This project requires [node.js](https://nodejs.org/) (tested on v22.20.0). If you have [nix](https://nixos.org/) installed, you can run `nix develop` to enter a developer shell.
 
 At the project root:
 1. run `npm run install:all` to install dependencies;
-2. run `npm run preview:all` to build both the `sepviz` library and `sepviz-alectryon` app, and process the example proofs from `sepviz-alectryon/public`. The visualized proofs (HTML pages with separation-logic diagrams and animations) are written to the `alectyon-viz/dist` directory.
+2. run `npm run preview:all` to build both the [sepviz](./sepviz) library and [sepviz-alectryon](./sepviz-alectryon) app, and post-process the pre-compiled Rocq proofs (HTML pages with fully text-based proofs) into visualized proofs (HTML pages with separation-logic diagrams and animations), output to `alectryon-viz/dist`.
 
-To view the result, you can launch a webserver by running:
+To view the visualized proofs, launch a local web server:
 ```
 cd alectryon/dist
 python3 -m http.server 8080
 ```
-and then open `https://localhost:8080` in the browser.
+then open `https://localhost:8080` in your browser.
 
+### Re-compiling the Rocq proofs
 
-### Building the proofs from scratch
+To re-compile the example Rocq projects and re-generate the example proofs in `sepviz-alectryon/public`:
 
-If you want to re-generate the example proofs in `sepviz-alectryon/public`:
-1. Install [Alectryon](https://github.com/cpitclaudel/alectryon) (tested on v2.0.0);
-2. Install the dependencies of every rocq projects in `examples`;
-3. Run `npm run build:all` at this repo's project root, which will re-compile each rocq project, record the proofs, and visualize them using `sepviz-alectryon`.
+1. Install [Alectryon](https://github.com/cpitclaudel/alectryon) (tested on v2.0.0).
+2. Install the dependencies of each Rocq project under `examples/`.
+3. Run `npm run build:all` at the project root, which re-compiles each Rocq project, records the proofs, and visualizes them using [sepviz-alectryon](./sepviz-alectryon).
 
-
-## Examples
-
-- [CFML](https://www.chargueraud.org/softs/cfml/) examples, including queues (queue transfer) and binary trees (tree rotations).
-- The queue transfer example in [Iris](https://iris-project.org/).
-- Textbook [Software Foundations: Separation Logic Foundations](https://softwarefoundations.cis.upenn.edu/slf-current/index.html) examples (including lists, list segments, trees, stacks). The textbook which uses a variant of CFML.
-
-
-## `sepviz-alectryon` demos
+## Demos
 
 - Queue transfer: ![Queue](./gifs/queue-transfer.gif)
 - Tree rotation: ![Tree](./gifs/tree-right-rotate.gif)
+
+## List of examples
+
+This repo contains example separation-logic proofs for different frameworks and data structures:
+
+- Using [CFML](https://www.chargueraud.org/softs/cfml/):
+  - queues (queue transfer)
+  - binary trees (tree rotations)
+
+- Using [Iris](https://iris-project.org/):
+  - queues (queue transfer, same proof as before)
+  - linked lists (taken from the [Iris tutorial](https://github.com/logsem/iris-tutorial); uses iterated separating conjunction)
+
+- Using the variant of CFML in [Separation Logic Foundations](https://softwarefoundations.cis.upenn.edu/slf-current/index.html), part of the Software Foundations textbook series:
+  - [the “Representation predicates” chapter](https://softwarefoundations.cis.upenn.edu/slf-current/Repr.html) (including lists, list segments, trees, stacks)
+
+- Using VST (experimental support):
+  - [the "List segments" chapter](https://softwarefoundations.cis.upenn.edu/vc-current/Verif_append1.html) in Verifiable C, part of the Software Foundations textbook series

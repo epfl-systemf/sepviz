@@ -26,6 +26,9 @@
         {
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [ nodejs ];
+            shellHook = ''
+              export USE_NIX=1
+            '';
           };
         }
       );
