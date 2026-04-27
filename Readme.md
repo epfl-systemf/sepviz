@@ -41,7 +41,7 @@ If you want to re-generate the example proofs in `sepviz-alectryon/public`:
 - Textbook [Software Foundations: Separation Logic Foundations](https://softwarefoundations.cis.upenn.edu/slf-current/index.html) examples (including lists, list segments, trees, stacks). The textbook which uses a variant of CFML.
 
 
-## Animation demos
+## `sepviz-alectryon` demos
 
 - Queue transfer: ![Queue](./gifs/queue-transfer.gif)
 - Tree rotation: ![Tree](./gifs/tree-right-rotate.gif)
