@@ -133,15 +133,6 @@
   justify-content: flex-start;
 }
 
-/* Disable mouseover rendering of goal */
-@media (any-hover: hover) {
-  .alectryon-io
-    .alectryon-sentence:not(.alectryon-target):hover
-    .alectryon-output:not(:hover) {
-    display: none;
-  }
-}
-
 /* Iterated separating conjunction: BigSepL */
 .sep-bigop-box {
   display: inline-flex;
