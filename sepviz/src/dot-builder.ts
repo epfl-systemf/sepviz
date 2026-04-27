@@ -4,6 +4,7 @@ import {
   AttrKey,
   AttrValue,
   ArgEntryConfig,
+  defaultArgEntryConfig,
   RenderConfig,
   InTablePointerEdgeAttrs,
   PointerNodeAttrs,
@@ -60,6 +61,15 @@ interface DotCluster {
 interface DotTarget {
   name: 'graph' | 'node' | 'edge';
   attrs: Attrs;
+}
+
+function getArgEntryConfig(
+  pt: AST.HProp_PointsTo,
+  idx: number
+): ArgEntryConfig {
+  assert(pt.config !== undefined, `got undefined pt.config`);
+  const c = pt.config.args[idx];
+  return c ? c : defaultArgEntryConfig(idx, pt.config.drawBorder);
 }
 
 export class DotBuilder {
@@ -357,20 +367,14 @@ export class DotBuilder {
       // Or: use '⏺' here and disable InTablePointerEdgeAttr
       constrField(inPort, label(x), outPort, '');
 
-    function getConfig(
-      arg: AST.Term,
-      idx: number
-    ): [arg: AST.Term, config: ArgEntryConfig] {
-      assert(pt.config !== undefined, '');
-      assert(pt.config.args[idx] !== undefined, '');
-      return [arg, pt.config.args[idx]];
-    }
-
     return table(
       { cellborder: pt.config?.drawBorder ? 1 : 0 },
       header,
       ...pt.reprArgs
-        .map(getConfig)
+        .map((arg, idx): [AST.Term, ArgEntryConfig] => [
+          arg,
+          getArgEntryConfig(pt, idx),
+        ])
         .filter(([, config]) => config.inTable)
         .map(([arg, config]) =>
           this.nodeUids.has(AST.termUid(arg)) || config.forceEdge
@@ -385,9 +389,11 @@ export class DotBuilder {
     const seen = new Set<string>();
 
     const edges = pt.reprArgs.flatMap((arg, idx) => {
-      assert(pt.config !== undefined, '');
-      assert(pt.config.args[idx] !== undefined, '');
-      const c: ArgEntryConfig = pt.config.args[idx];
+      assert(
+        pt.config !== undefined,
+        `[dotBuilder: buildEdges] got undefined pt.config`
+      );
+      const c: ArgEntryConfig = getArgEntryConfig(pt, idx);
 
       const uid = AST.termUid(arg);
       if (!(this.nodeUids.has(uid) || c.forceEdge)) return [];

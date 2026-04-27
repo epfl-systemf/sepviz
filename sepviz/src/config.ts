@@ -54,7 +54,6 @@ export interface HPropEntryConfig {
 }
 
 export interface ValueEntryConfig {
-  argNum: number;
   label?: string;
   uid?: string;
 }
@@ -72,8 +71,6 @@ export interface ConstrEntryConfig {
   inPort: string | undefined;
   /** Default: false */
   drawBorder: boolean;
-  /** Default: the maximum key of args, 0 if args is null. */
-  argNum: number;
   args: ArgConfig;
 }
 
@@ -167,6 +164,18 @@ export function readRenderConfig(text: string): RenderConfig {
   return renderConfig;
 }
 
+export function defaultArgEntryConfig(
+  idx: number,
+  drawBorder: boolean = false
+): ArgEntryConfig {
+  return {
+    inTable: drawBorder,
+    forceEdge: false,
+    inPort: `in$${idx}`,
+    outPort: `out$${idx}`,
+  };
+}
+
 /**
  * Fill a partial `ConstrEntryConfig` with default values.
  */
@@ -175,9 +184,7 @@ function fillConstrEntryConfig(
   c: Partial<ConstrEntryConfig>
 ): ConstrEntryConfig {
   const drawBorder = c?.drawBorder ?? false;
-  const argNum =
-    c?.argNum ??
-    (c?.args ? Math.max(...Object.keys(c.args).map(Number)) + 1 : 0);
+  const argNum = c?.args ? Math.max(...Object.keys(c.args).map(Number)) + 1 : 0;
 
   const args: ArgConfig = Object.fromEntries(
     Array.from({ length: argNum }, (_, i) => {
@@ -194,13 +201,13 @@ function fillConstrEntryConfig(
     })
   );
 
-  const inPort = Object.values(args).find((arg) => arg.inTable)?.inPort;
+  const inPort =
+    Object.values(args).find((arg) => arg.inTable)?.inPort ?? `in$${0}`;
 
   return {
     label: c?.label ?? key,
     drawBorder,
     inPort,
-    argNum,
     args,
   };
 }

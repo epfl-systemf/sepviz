@@ -1,13 +1,12 @@
 constr:
   # Verif_append1
-  "$t_list":
-    label: "t_list"
+  '$t_list':
+    label: 't_list'
     drawBorder: true
-    argNum: 3
     args:
       2:
         inTable: false
-  "lseg":
+  'lseg':
     inPort: list
     args:
       0:
@@ -17,10 +16,8 @@ constr:
       1:
         forceEdge: true
         outPort: list
-  "listrep":
-    argNum: 1
+  'listrep':
     args:
       0:
         inTable: true
-
 value:

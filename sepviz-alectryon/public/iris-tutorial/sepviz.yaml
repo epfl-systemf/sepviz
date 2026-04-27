@@ -1,19 +1,17 @@
 constr:
   # iris
-  "$Basic":
-    label: "Basic"
+  '$Basic':
+    label: 'Basic'
     drawBorder: 1
-    argNum: 1
-  "$Pair":
-    label: "Pair"
+  '$Pair':
+    label: 'Pair'
     drawBorder: 1
-    argNum: 2
   # queue.v
-  "isQueue":
+  'isQueue':
     args:
       0:
         inTable: true
-  "isListSeg":
+  'isListSeg':
     inPort: list
     args:
       0:
@@ -24,14 +22,12 @@ constr:
         forceEdge: true
         outPort: list
   # linked_list.v
-  "isList":
-    argNum: 1
+  'isList':
     args:
       0:
         inTable: true
 value:
   # iris
-  "$LitV":
-    argNum: 1
-    label: "#$1"
-    uid: "$1"
+  '$LitV':
+    label: '#$1'
+    uid: '$1'

@@ -1,15 +1,14 @@
 constr:
-  "$MQueue":
-    label: "MQueue"
+  '$MQueue':
+    label: 'MQueue'
     args:
       0: # FIXME: count from 1
         inTable: true
-  "$MCell":
-    label: "MCell"
+  '$MCell':
+    label: 'MCell'
     drawBorder: true
-    argNum: 2
-  "$MListSeg":
-    label: "MListSeg"
+  '$MListSeg':
+    label: 'MListSeg'
     inPort: list
     args:
       0:
@@ -19,12 +18,11 @@ constr:
         inTable: true
         inPort: list
         outPort: list
-  "$MTree":
-    label: "MTree"
+  '$MTree':
+    label: 'MTree'
     args:
       0:
         inTable: true
-  "$MNode":
-    label: "MNode"
+  '$MNode':
+    label: 'MNode'
     drawBorder: true
-    argNum: 3

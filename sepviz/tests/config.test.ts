@@ -24,7 +24,6 @@ constr:
   TestConstr:
   MCell:
     drawBorder: true
-    argNum: 2
   MListSeg:
     inPort: list
     args:
@@ -42,34 +41,18 @@ constr:
     const constrConfig = {
       TestConstr: {
         label: 'TestConstr',
-        argNum: 0,
         args: {},
         drawBorder: false,
-        inPort: undefined,
+        inPort: 'in$0',
       },
       MCell: {
         label: 'MCell',
-        argNum: 2,
-        args: {
-          '0': {
-            forceEdge: false,
-            inPort: 'in$0',
-            inTable: true,
-            outPort: 'out$0',
-          },
-          '1': {
-            forceEdge: false,
-            inPort: 'in$1',
-            inTable: true,
-            outPort: 'out$1',
-          },
-        },
+        args: {},
         drawBorder: true,
         inPort: 'in$0',
       },
       MListSeg: {
         label: 'MListSeg',
-        argNum: 2,
         args: {
           '0': {
             forceEdge: true,
