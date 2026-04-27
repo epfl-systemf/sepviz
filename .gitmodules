@@ -1,12 +1,12 @@
 [submodule "examples/cfml-examples"]
 	path = examples/cfml-examples
-	url = git@gitlab.epfl.ch:systemf/sep-viz/cfml-examples.git
+	url = https://github.com/epfl-systemf/sepviz-cfml-examples.git
 [submodule "examples/iris-tutorial"]
 	path = examples/iris-tutorial
-	url = git@gitlab.epfl.ch:systemf/sep-viz/iris-tutorial.git
+	url = https://github.com/epfl-systemf/sepviz-iris-tutorial.git
 [submodule "examples/software-foundations-slf"]
 	path = examples/software-foundations-slf
-	url = git@gitlab.epfl.ch:systemf/sep-viz/slf.git
+	url = https://github.com/epfl-systemf/sepviz-software-foundations-slf.git
 [submodule "examples/software-foundations-vc"]
 	path = examples/software-foundations-vc
-	url = git@gitlab.epfl.ch:systemf/sep-viz/vc.git
+	url = https://github.com/epfl-systemf/sepviz-software-foundations-vc.git
