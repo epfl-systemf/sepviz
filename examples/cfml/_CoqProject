@@ -1,0 +1,4 @@
+-Q . Sepviz.Examples.CFML
+-Q ../../interop/sepviz-cfml/theories Sepviz
+-Q ../../interop/sepviz-cfml/vendor/cfml/lib/coq CFML
+-Q ../../interop/sepviz-cfml/vendor/tlc/src TLC

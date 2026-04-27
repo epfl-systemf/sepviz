@@ -1,0 +1,13 @@
+SUBDIRS := interop/sepviz-iris interop/sepviz-cfml interop/sepviz-slf \
+           sepviz sepviz-alectryon sepviz-vsrocq \
+           examples
+
+.PHONY: init all clean $(SUBDIRS:%=init-%) $(SUBDIRS:%=all-%) $(SUBDIRS:%=clean-%)
+
+init: $(SUBDIRS:%=init-%)
+all:  $(SUBDIRS:%=all-%)
+clean: $(SUBDIRS:%=clean-%)
+
+$(SUBDIRS:%=init-%):  init-%:  ; +$(MAKE) -C $* init
+$(SUBDIRS:%=all-%):   all-%:   ; +$(MAKE) -C $* all
+$(SUBDIRS:%=clean-%): clean-%: ; +$(MAKE) -C $* clean

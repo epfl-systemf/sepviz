@@ -1,0 +1,11 @@
+opam-version: "2.0"
+name: "sepviz-slf"
+synopsis: "Sepviz notations for Separation Logic Foundations"
+authors: ["Yawen Guan" "Shardul Chiplunkar" "Clément Pit-Claudel"]
+maintainer: "clement.pit-claudel@epfl.ch"
+license: "MIT"
+build:   [ [ make "-j%{jobs}%" ] ]
+install: [ [ make "install" "DESTDIR=%{prefix}%" ] ]
+depends: [
+  "coq" { = "8.20.1" }
+]

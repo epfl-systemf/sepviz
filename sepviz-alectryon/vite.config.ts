@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  publicDir: 'public',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -10,14 +9,14 @@ export default defineConfig({
       formats: ['es'],
       fileName: () => 'sepviz-alectryon.js',
     },
-    sourcemap: true, // for debugging
+    sourcemap: true,
   },
   optimizeDeps: {
     include: ['d3-graphviz', 'd3'],
   },
   server: {
     watch: {
-      ignored: ['**/node_modules/**', '**/dist/**', '**/script/**'],
+      ignored: ['**/node_modules/**', '**/dist/**'],
     },
   },
 });
