@@ -28,7 +28,7 @@
     fold_right f a l
   {{{ r, RET r; isList l xs ∗ I xs r}}}.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, a, l</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @
 ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-  ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+  ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
       ┆ ⟬ Star ┆ I [] a
           ┆ ⟬ Forall ┆ x
               ┆ ⟬ Forall ┆ a&#39;
@@ -39,7 +39,7 @@ fold_right f a l ⟬* POST @ r, RET r;
 ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭ ┆ I xs r ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk1" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk1"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, a, l</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @
 ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-  ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+  ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
       ┆ ⟬ Star ┆ I [] a
           ┆ ⟬ Forall ┆ x
               ┆ ⟬ Forall ┆ a&#39;
@@ -50,7 +50,7 @@ fold_right f a l ⟬* POST @ r, RET r;
 ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭ ┆ I xs r ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk2" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk2"><span class="nb">revert</span> a l.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -67,7 +67,7 @@ fold_right f a l ⟬* POST @ r, RET r;
         ┆ WP fold_right f a l {{ v, Φ v }} ⟭ ⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk3" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk3"><span class="nb">induction</span> xs <span class="k">as</span> [|x xs IHxs].</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ [] ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ [] ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ [] ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -83,7 +83,7 @@ fold_right f a l ⟬* POST @ r, RET r;
                                       Φ r ⟭ ⟭ ⟭
         ┆ WP fold_right f a l {{ v, Φ v }} ⟭ ⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="linked-lists-v-chk4" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -99,7 +99,7 @@ fold_right f a l ⟬* POST @ r, RET r;
                                       Φ r ⟭ ⟭ ⟭
         ┆ WP fold_right f a l {{ v, Φ v }} ⟭ ⟭</span></span></span><br></div><label class="goal-separator" for="linked-lists-v-chk4"><hr></label><div class="goal-conclusion"><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ x :: xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ x :: xs ⟧ ┆ P x0 ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x0 ∈ x :: xs ┆ P x0 ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x0
                          ┆ ⟬ Forall ┆ a&#39;
@@ -134,7 +134,7 @@ fold_right f a l ⟬* POST @ r, RET r;
                                       Φ r ⟭ ⟭ ⟭
         ┆ WP fold_right f a l {{ v, Φ v }} ⟭ ⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="linked-lists-v-chk6" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -156,8 +156,7 @@ fold_right f a l ⟬* POST @ r, RET r;
                                            ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭
                                   ┆ ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ ⟭ ⟭ ⟭
                     ⟭
-             ┆ ⟬ Star ┆ ⟬ Star ┆ P x
-                          ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ ⟭
+             ┆ ⟬ Star ┆ ⟬ Star ┆ P x ┆ ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x0
                          ┆ ⟬ Forall ┆ a&#39;
@@ -286,7 +285,7 @@ WP (<span class="k">let</span>: <span class="s2">&quot;v&quot;</span> := a <span
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><span class="alectryon-input"><span class="bp">by</span> iFrame.</span><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chkd" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chkd">-</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -308,8 +307,7 @@ WP (<span class="k">let</span>: <span class="s2">&quot;v&quot;</span> := a <span
                                            ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭
                                   ┆ ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ ⟭ ⟭ ⟭
                     ⟭
-             ┆ ⟬ Star ┆ ⟬ Star ┆ P x
-                          ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ ⟭
+             ┆ ⟬ Star ┆ ⟬ Star ┆ P x ┆ ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x0
                          ┆ ⟬ Forall ┆ a&#39;
@@ -344,7 +342,7 @@ WP (<span class="k">let</span>: <span class="s2">&quot;v&quot;</span> := a <span
                                       Φ r ⟭ ⟭ ⟭
         ┆ WP fold_right f a l {{ v, Φ v }} ⟭ ⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chke" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chke">iIntros (a l) <span class="s2">&quot;%Φ ((%hd &amp; %l&#39; &amp; -&gt; &amp; Hhd &amp; Hl) &amp; [P0 Ps] &amp; I &amp; #Hf) HΦ&quot;</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -367,7 +365,7 @@ WP (<span class="k">let</span>: <span class="s2">&quot;v&quot;</span> := a <span
 ⟬* PRE @ <span class="s2">&quot;Hhd&quot;</span> : ⟬ PointsTo ┆ hd ┆ ⟦ $Pair ┆ x ┆ l&#39; ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;Hl&quot;</span> : ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;P0&quot;</span> : P x *⟭
-⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ *⟭
+⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;I&quot;</span> : I [] a *⟭
 ⟬* PRE @ <span class="s2">&quot;HΦ&quot;</span> : ⟬ Modality ┆ ▷ ┆ ⟬ Forall ┆ r
                                    ┆ ⟬ Wand ┆ ⟬ Star ┆ 
@@ -400,7 +398,7 @@ WP (<span class="k">let</span>: <span class="s2">&quot;v&quot;</span> := a <span
 WP fold_right f a (InjRV ⟦ $LitV ┆ hd ⟧) {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chkf" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chkf">wp_rec.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -423,7 +421,7 @@ WP fold_right f a (InjRV ⟦ $LitV ┆ hd ⟧) {{ v, Φ v }}</div></blockquote><
 ⟬* PRE @ <span class="s2">&quot;Hhd&quot;</span> : ⟬ PointsTo ┆ hd ┆ ⟦ $Pair ┆ x ┆ l&#39; ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;Hl&quot;</span> : ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;P0&quot;</span> : P x *⟭
-⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ *⟭
+⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;I&quot;</span> : I [] a *⟭
 ⟬* PRE @ <span class="s2">&quot;HΦ&quot;</span> : ⟬ Forall ┆ r
                   ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ Exist ┆ hd0
@@ -457,7 +455,7 @@ WP (<span class="k">let</span>: <span class="s2">&quot;v&quot;</span> := a <span
 {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk10" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk10">wp_pures.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -480,7 +478,7 @@ WP (<span class="k">let</span>: <span class="s2">&quot;v&quot;</span> := a <span
 ⟬* PRE @ <span class="s2">&quot;Hhd&quot;</span> : ⟬ PointsTo ┆ hd ┆ ⟦ $Pair ┆ x ┆ l&#39; ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;Hl&quot;</span> : ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;P0&quot;</span> : P x *⟭
-⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ *⟭
+⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;I&quot;</span> : I [] a *⟭
 ⟬* PRE @ <span class="s2">&quot;HΦ&quot;</span> : ⟬ Forall ┆ r
                   ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ Exist ┆ hd0
@@ -508,7 +506,7 @@ WP <span class="k">let</span>: <span class="s2">&quot;x&quot;</span> := Fst ! �
 {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk11" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk11">wp_load.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -531,7 +529,7 @@ WP <span class="k">let</span>: <span class="s2">&quot;x&quot;</span> := Fst ! �
 ⟬* PRE @ <span class="s2">&quot;Hhd&quot;</span> : ⟬ PointsTo ┆ hd ┆ ⟦ $Pair ┆ x ┆ l&#39; ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;Hl&quot;</span> : ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;P0&quot;</span> : P x *⟭
-⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ *⟭
+⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;I&quot;</span> : I [] a *⟭
 ⟬* PRE @ <span class="s2">&quot;HΦ&quot;</span> : ⟬ Forall ┆ r
                   ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ Exist ┆ hd0
@@ -559,7 +557,7 @@ WP <span class="k">let</span>: <span class="s2">&quot;x&quot;</span> := Fst (x, 
 {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk12" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk12">wp_load.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -582,7 +580,7 @@ WP <span class="k">let</span>: <span class="s2">&quot;x&quot;</span> := Fst (x, 
 ⟬* PRE @ <span class="s2">&quot;Hhd&quot;</span> : ⟬ PointsTo ┆ hd ┆ ⟦ $Pair ┆ x ┆ l&#39; ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;Hl&quot;</span> : ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;P0&quot;</span> : P x *⟭
-⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ *⟭
+⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;I&quot;</span> : I [] a *⟭
 ⟬* PRE @ <span class="s2">&quot;HΦ&quot;</span> : ⟬ Forall ┆ r
                   ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ Exist ┆ hd0
@@ -608,7 +606,7 @@ WP <span class="k">let</span>: <span class="s2">&quot;x&quot;</span> := Fst (x, 
 WP <span class="k">let</span>: <span class="s2">&quot;l&#39;&quot;</span> := Snd (x, l&#39;)%V <span class="k">in</span> f x (fold_right f a <span class="s2">&quot;l&#39;&quot;</span>) {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk13" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk13">wp_pures.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -631,7 +629,7 @@ WP <span class="k">let</span>: <span class="s2">&quot;l&#39;&quot;</span> := Snd
 ⟬* PRE @ <span class="s2">&quot;Hhd&quot;</span> : ⟬ PointsTo ┆ hd ┆ ⟦ $Pair ┆ x ┆ l&#39; ⟧ ┆ DfracOwn <span class="mi">1</span> ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;Hl&quot;</span> : ⟬ PointsTo ┆ l&#39; ┆ ⟦ isList ┆ xs ⟧ ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;P0&quot;</span> : P x *⟭
-⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x0 ┆ xs ⟧ ┆ P x0 ⟭ *⟭
+⟬* PRE @ <span class="s2">&quot;Ps&quot;</span> : ⟬ BigOp ┆ ∗ ┆ x0 ∈ xs ┆ P x0 ⟭ *⟭
 ⟬* PRE @ <span class="s2">&quot;I&quot;</span> : I [] a *⟭
 ⟬* PRE @ <span class="s2">&quot;HΦ&quot;</span> : ⟬ Forall ┆ r
                   ┆ ⟬ Wand ┆ ⟬ Star ┆ ⟬ Exist ┆ hd0
@@ -657,7 +655,7 @@ WP <span class="k">let</span>: <span class="s2">&quot;l&#39;&quot;</span> := Snd
 WP f x (fold_right f a l&#39;) {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk14" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk14">wp_apply (IHxs <span class="k">with</span> <span class="s2">&quot;[$Hl $Ps $I $Hf]&quot;</span>).</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -705,7 +703,7 @@ WP f x (fold_right f a l&#39;) {{ v, Φ v }}</div></blockquote></div></div></sma
       ┆ WP f x r {{ v, Φ v }} ⟭ ⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk15" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk15">iIntros <span class="s2">&quot;%r [Hl I]&quot;</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -753,7 +751,7 @@ WP f x (fold_right f a l&#39;) {{ v, Φ v }}</div></blockquote></div></div></sma
 WP f x r {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk16" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk16">wp_apply (<span class="s2">&quot;Hf&quot;</span> <span class="k">with</span> <span class="s2">&quot;[$P0 $I]&quot;</span>).</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -799,7 +797,7 @@ WP f x r {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectr
 ⟬ Forall ┆ r0 ┆ ⟬ Wand ┆ I (x :: xs) r0 ┆ Φ r0 ⟭ ⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk17" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk17">iIntros <span class="s2">&quot;%r&#39; I&quot;</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -846,7 +844,7 @@ WP f x r {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectr
 Φ r&#39;</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk18" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk18">iApply <span class="s2">&quot;HΦ&quot;</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -880,7 +878,7 @@ WP f x r {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectr
   ┆ I (x :: xs) r&#39; ⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk19" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk19">iFrame <span class="s2">&quot;I&quot;</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
@@ -910,7 +908,7 @@ WP f x r {{ v, Φ v }}</div></blockquote></div></div></small><span class="alectr
               ┆ ⟬ PointsTo ┆ l&#39;0 ┆ ⟦ isList ┆ xs ⟧ ⟭ ⟭ ⟭ ⟭ ⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="linked-lists-v-chk1a" style="display: none" type="checkbox"><label class="alectryon-input" for="linked-lists-v-chk1a">iExists hd, l&#39;.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>Σ</var><span class="hyp-type"><b>: </b><span>gFunctors</span></span></span><br><span><var>heapGS0</var><span class="hyp-type"><b>: </b><span>heapGS Σ</span></span></span><br><span><var>P</var><span class="hyp-type"><b>: </b><span>val → iPropI Σ</span></span></span><br><span><var>I</var><span class="hyp-type"><b>: </b><span>list val → val → iPropI Σ</span></span></span><br><span><var>f, x</var><span class="hyp-type"><b>: </b><span>val</span></span></span><br><span><var>xs</var><span class="hyp-type"><b>: </b><span>list val</span></span></span><br><span><var>IHxs</var><span class="hyp-type"><b>: </b><span><span class="k">∀</span> (<span class="nv">a</span> <span class="nv">l</span> : val) (<span class="nv">Φ</span> : val → iPropI Σ),
   ⟬ Wand ┆ ⟬ Star ┆ ⟬ PointsTo ┆ l ┆ ⟦ isList ┆ xs ⟧ ⟭
-             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ ⟦ $IterX ┆ x ┆ xs ⟧ ┆ P x ⟭
+             ┆ ⟬ Star ┆ ⟬ BigOp ┆ ∗ ┆ x ∈ xs ┆ P x ⟭
                  ┆ ⟬ Star ┆ I [] a
                      ┆ ⟬ Forall ┆ x
                          ┆ ⟬ Forall ┆ a&#39;
