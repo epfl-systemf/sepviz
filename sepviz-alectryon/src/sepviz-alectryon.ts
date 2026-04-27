@@ -33,10 +33,9 @@ type Vid = string;
 function renderEmbedded(config: RenderConfig) {
   const render = new Render(config);
 
-  // TODO: handle classes "coq-message" too?
   document
     .querySelectorAll<ExtHTMLElement>(
-      '.alectryon-sentence:has(.hyp-type, .goal-conclusion)'
+      '.alectryon-sentence:has(.hyp-type, .goal-conclusion, .alectryon-message)'
     )
     .forEach((sentenceNode) => {
       sentenceNode
@@ -49,7 +48,7 @@ function renderEmbedded(config: RenderConfig) {
           );
         });
       sentenceNode
-        .querySelectorAll<HTMLElement>('.hyp-type')
+        .querySelectorAll<HTMLElement>('.hyp-type, .alectryon-message')
         .forEach((goalNode) => {
           goalNode.style.display = 'block';
           render.render(goalNode.innerText, goalNode, false);
