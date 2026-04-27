@@ -1,12 +1,12 @@
 {
   "name": "visualizer",
   "private": true,
-  "workspaces": ["sep-viz", "alectryon-viz"],
+  "workspaces": ["sepviz", "sepviz-alectryon"],
   "scripts": {
-    "test:all": "npm run test -w sep-viz",
-    "build:all": "npm run build -w sep-viz && npm run build -w alectryon-viz",
-    "preview:all": "npm run build -w sep-viz && npm run preview -w alectryon-viz",
-    "clean": "rm -rf node_modules sep-viz/node_modules alectryon-viz/node_modules",
+    "test:all": "npm run test -w sepviz",
+    "build:all": "npm run build -w sepviz && npm run build -w sepviz-alectryon",
+    "preview:all": "npm run build -w sepviz && npm run preview -w sepviz-alectryon",
+    "clean": "rm -rf node_modules sepviz/node_modules sepviz-alectryon/node_modules",
     "reinstall": "npm run clean && npm install"
   }
 }
