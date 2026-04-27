@@ -1,5 +1,5 @@
 {
-  "name": "visualizer",
+  "name": "sepviz",
   "private": true,
   "workspaces": ["sepviz", "sepviz-alectryon"],
   "scripts": {
