@@ -7,8 +7,8 @@ npm install
 ```
 
 ### Example proofs generation
-
-After `npm run preview`, the `dist` folder is structured as follows:
+-
+After `npm run build`, the `dist` folder is structured as follows:
 
 ```
 dist

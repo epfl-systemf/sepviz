@@ -3,10 +3,11 @@
   "private": true,
   "workspaces": ["sepviz", "sepviz-alectryon"],
   "scripts": {
-    "test:all": "npm run test -w sepviz",
-    "build:all": "npm run build -w sepviz && npm run build -w sepviz-alectryon",
-    "preview:all": "npm run build -w sepviz && npm run preview -w sepviz-alectryon",
-    "clean": "rm -rf node_modules sepviz/node_modules sepviz-alectryon/node_modules",
-    "reinstall": "npm run clean && npm install"
+    "test:all": "npm run test -ws --if-present",
+    "preview:all": "npm run preview -ws --if-present",
+    "build:all": "npm run build -ws --if-present",
+    "clean:all": "rm -rf node_modules */node_modules",
+    "install:all": "npm install -ws",
+    "reinstall:all": "npm run clean:all && npm run install:all"
   }
 }

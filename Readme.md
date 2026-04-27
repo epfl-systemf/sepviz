@@ -16,7 +16,7 @@ This project requires `node.js` (tested on v22.20.0). If you have [nix](https://
 
 At the project root:
 1. run `npm run install:all` to install dependencies;
-2. run `npm run build:all` to build both the `sepviz` library and `sepviz-alectryon` app, and process the example proofs from `sepviz-alectryon/public`. The visualized proofs (HTML pages with separation-logic diagrams and animations) are written to the `alectyon-viz/dist` directory.
+2. run `npm run preview:all` to build both the `sepviz` library and `sepviz-alectryon` app, and process the example proofs from `sepviz-alectryon/public`. The visualized proofs (HTML pages with separation-logic diagrams and animations) are written to the `alectyon-viz/dist` directory.
 
 To view the result, you can launch a webserver by running:
 ```
@@ -31,7 +31,7 @@ and then open `https://localhost:8080` in the browser.
 If you want to re-generate the example proofs in `sepviz-alectryon/public`:
 1. Install [Alectryon](https://github.com/cpitclaudel/alectryon) (tested on v2.0.0);
 2. Install the dependencies of every rocq projects in `examples`;
-3. Run `npm run preview:all` at this repo's project root, which will re-compile each rocq project, record the proofs, and visualize them using `sepviz-alectryon`.
+3. Run `npm run build:all` at this repo's project root, which will re-compile each rocq project, record the proofs, and visualize them using `sepviz-alectryon`.
 
 
 ## Examples
