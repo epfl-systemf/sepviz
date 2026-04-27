@@ -37,346 +37,107 @@ SPEC (transfer p1 p2)
           Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭
           ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk2" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk2">xwp.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_let_trm
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-       (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-        Wptag
-          (Wpgen_if b0
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-                    Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field head) ``[ X0])))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X, V1])))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_let
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_get_field tail) ``[ X0])))
-                                                 (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                  Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X, V1])))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_let
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_get_field tail) 
-                                                                (p2 :: nil))))
-                                                       (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                        Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field tail)
-                                                                (p1 :: ``[ V1]))))))
-                                                 (Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field head) 
-                                                                ``[ X0, X1])))
-                                                       (Wptag
-                                                          (Wpgen_seq
-                                                             (Wptag
-                                                                (Wpgen_app_untyped
-                                                                   (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      ``[ X0, null])))
-                                                             (Wptag
-                                                                (Wpgen_app_untyped
-                                                                   (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      (p2 :: ``[ X0]))))))))))))))))))))
-             (Wptag (Wpgen_val_unlifted ``tt))))
+CODE (<span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty p2 <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+        <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+         App (val_set_field head) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+         App (val_set_field tail) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+         App (val_set_field tail) p1 (``V1)) ;
+        App (val_set_field head) (``X0) (``X1) ;
+        App (val_set_field tail) (``X0) (``null) ;
+        App (val_set_field tail) p2 (``X0)
+      Else
+        $(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk3" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk3">mxapp Triple_is_empty.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps val_neg ``[ isTrue (L2 = nil)])
-⟬* POST @ <span class="k">fun</span> <span class="nv">X</span> : bool =&gt;
-          Wptag
-            (Wpgen_if X
-               (Wptag
-                  (Wpgen_let
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-                     (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X0</span> : A0) =&gt;
-                      Wptag
-                        (Wpgen_let
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X1</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_let
-                                 (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                                 (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X2</span> : A2) =&gt;
-                                  Wptag
-                                    (Wpgen_seq
-                                       (Wptag
-                                          (Wpgen_let
-                                             (Wptag
-                                                (Wpgen_app_untyped
-                                                   (trm_apps (val_get_field head) ``[ X1])))
-                                             (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                              Wptag
-                                                (Wpgen_app_untyped
-                                                   (trm_apps (val_set_field head) ``[ X0, V1])))))
-                                       (Wptag
-                                          (Wpgen_seq
-                                             (Wptag
-                                                (Wpgen_let
-                                                   (Wptag
-                                                      (Wpgen_app_untyped
-                                                         (trm_apps (val_get_field tail) ``[ X1])))
-                                                   (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                    Wptag
-                                                      (Wpgen_app_untyped
-                                                         (trm_apps (val_set_field tail) ``[ X0, V1])))))
-                                             (Wptag
-                                                (Wpgen_seq
-                                                   (Wptag
-                                                      (Wpgen_let
-                                                         (Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_get_field tail) 
-                                                                  (p2 :: nil))))
-                                                         (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3)
-                                                          =&gt;
-                                                          Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_set_field tail)
-                                                                  (p1 :: ``[ V1]))))))
-                                                   (Wptag
-                                                      (Wpgen_seq
-                                                         (Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_set_field head) 
-                                                                  ``[ X1, X2])))
-                                                         (Wptag
-                                                            (Wpgen_seq
-                                                               (Wptag
-                                                                  (Wpgen_app_untyped
-                                                                     (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      ``[ X1, null])))
-                                                               (Wptag
-                                                                  (Wpgen_app_untyped
-                                                                     (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      (p2 :: ``[ X1]))))))))))))))))))))
-               (Wptag (Wpgen_val_unlifted ``tt))) Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
-                    ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk4" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk4">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_if (! isTrue (L2 = nil))
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-                    Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                          Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field head) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) ``[ X0])))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) ``[ X, V1])))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_let
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_get_field tail) (p2 :: nil))))
-                                                 (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                  Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p1 :: ``[ V1]))))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field head) ``[ X0, X1])))
-                                                 (Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field tail) 
-                                                                ``[ X0, null])))
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field tail)
-                                                                (p2 :: ``[ X0]))))))))))))))))))))
-       (Wptag (Wpgen_val_unlifted ``tt))
+CODE (App val_neg (``(isTrue (L2 = nil))))
+⟬* POST @ Bind X : bool In
+          (If_ X Then 
+             <span class="kn">Let</span> {A0 EA0} X0 := App (val_get_field tail) p1 <span class="k">in</span>
+             <span class="kn">Let</span> {A1 EA1} X1 := App (val_get_field head) p2 <span class="k">in</span>
+             <span class="kn">Let</span> {A2 EA2} X2 := App (val_get_field head) (``X0) <span class="k">in</span>
+             (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X1) <span class="k">in</span>
+              App (val_set_field head) (``X0) (``V1)) ;
+             (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X1) <span class="k">in</span>
+              App (val_set_field tail) (``X0) (``V1)) ;
+             (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+              App (val_set_field tail) p1 (``V1)) ;
+             App (val_set_field head) (``X1) (``X2) ;
+             App (val_set_field tail) (``X1) (``null) ;
+             App (val_set_field tail) p2 (``X1)
+           Else
+             $(``tt))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
+                 ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk4" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk4">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
+CODE (If_ ! isTrue (L2 = nil) Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+        <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+         App (val_set_field head) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+         App (val_set_field tail) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+         App (val_set_field tail) p1 (``V1)) ;
+        App (val_set_field head) (``X0) (``X1) ;
+        App (val_set_field tail) (``X0) (``null) ;
+        App (val_set_field tail) p2 (``X0)
+      Else
+        $(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk5" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk5">xif ;=&gt; C.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 &lt;&gt; nil</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="literatequeue-v-chk6" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 = nil</span></span></span><br></div><label class="goal-separator" for="literatequeue-v-chk6"><hr></label><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk7" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk7">-</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 &lt;&gt; nil</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -404,57 +165,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -491,57 +213,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -579,57 +262,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -669,57 +313,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -759,49 +364,17 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ b1])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, V1])))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_get_field tail) (p2 :: nil))))
-                                     (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field head) ``[ X, X0])))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) ``[ X, null])))
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p2 :: ``[ X]))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) (``b1) <span class="k">in</span>
+      (<span class="kn">Let</span> {A2 EA2} V1 := App (val_get_field head) (``X) <span class="k">in</span>
+       App (val_set_field head) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A2 EA2} V1 := App (val_get_field tail) (``X) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A2 EA2} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X) (``X0) ;
+      App (val_set_field tail) (``X) (``null) ;
+      App (val_set_field tail) p2 (``X))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -840,43 +413,16 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ b1])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ f2])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, V1])))))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                               (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, X])))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ f2, null])))
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field head) (``b1) <span class="k">in</span>
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field head) (``f2) <span class="k">in</span>
+       App (val_set_field head) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``X) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -916,34 +462,15 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ b1])
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ f2])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, V1])))))
-       (Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                               (Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))))))
+CODE ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field head) (``f2) <span class="k">in</span>
+       App (val_set_field head) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -982,60 +509,42 @@ CODE Wpgen_seq
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, x])
-⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-          Wptag
-            (Wpgen_seq
-               (Wptag
-                  (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-                     (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                      Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-               (Wptag
-                  (Wpgen_seq
-                     (Wptag
-                        (Wpgen_let
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                     (Wptag
-                        (Wpgen_seq
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                           (Wptag
-                              (Wpgen_seq
-                                 (Wptag
-                                    (Wpgen_app_untyped
-                                       (trm_apps (val_set_field tail) ``[ f2, null])))
-                                 (Wptag
-                                    (Wpgen_app_untyped
-                                       (trm_apps (val_set_field tail) (p2 :: ``[ f2])))))))))))
-            Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬
-                           Exist ┆ f
-                           ┆ ⟬
-                             Exist ┆ b
-                             ┆ ⟬
-                               Exist ┆ d
-                               ┆ ⟬
-                                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
-                                 ┆ ⟬
-                                   Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
-                                   ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-                    ┆ ⟬
-                      Exist ┆ f
-                      ┆ ⟬
-                        Exist ┆ b
+CODE (App (val_set_field head) (``b1) (``x))
+⟬* POST @ Bind _ : unit In
+          ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+            App (val_set_field tail) (``b1) (``V1)) ;
+           (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+            App (val_set_field tail) p1 (``V1)) ;
+           App (val_set_field head) (``f2) (``d1) ;
+           App (val_set_field tail) (``f2) (``null) ;
+           App (val_set_field tail) p2 (``f2))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬
+                        Exist ┆ f
                         ┆ ⟬
-                          Exist ┆ d
+                          Exist ┆ b
                           ┆ ⟬
-                            Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                            Exist ┆ d
                             ┆ ⟬
-                              Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
-                              ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-             ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+                              Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                              ┆ ⟬
+                                Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
+                                ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
+                 ┆ ⟬
+                   Exist ┆ f
+                   ┆ ⟬
+                     Exist ┆ b
+                     ┆ ⟬
+                       Exist ┆ d
+                       ┆ ⟬
+                         Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                         ┆ ⟬
+                           Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
+                           ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ 
+          ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk10" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk10">mxapp Triple_set_head.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>L2'</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>x :: L2&#39; &lt;&gt; nil</span></span></span><br><span><var>f2, b2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d2</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>f1, b1</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d1</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>c2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ x ┆ null ⟧ ⟭
          ┆ ⟬
@@ -1049,23 +558,13 @@ CODE Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, x])
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-       (Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-             (Wptag
-                (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))))
+CODE ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1104,50 +603,40 @@ CODE Wpgen_seq
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, c2])
-⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-          Wptag
-            (Wpgen_seq
-               (Wptag
-                  (Wpgen_let
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                     (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                      Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-               (Wptag
-                  (Wpgen_seq
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                     (Wptag
-                        (Wpgen_seq
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                           (Wptag
-                              (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2])))))))))
-            Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬
-                           Exist ┆ f
-                           ┆ ⟬
-                             Exist ┆ b
-                             ┆ ⟬
-                               Exist ┆ d
-                               ┆ ⟬
-                                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
-                                 ┆ ⟬
-                                   Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
-                                   ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-                    ┆ ⟬
-                      Exist ┆ f
-                      ┆ ⟬
-                        Exist ┆ b
+CODE (App (val_set_field tail) (``b1) (``c2))
+⟬* POST @ Bind _ : unit In
+          ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+            App (val_set_field tail) p1 (``V1)) ;
+           App (val_set_field head) (``f2) (``d1) ;
+           App (val_set_field tail) (``f2) (``null) ;
+           App (val_set_field tail) p2 (``f2))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬
+                        Exist ┆ f
                         ┆ ⟬
-                          Exist ┆ d
+                          Exist ┆ b
                           ┆ ⟬
-                            Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                            Exist ┆ d
                             ┆ ⟬
-                              Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
-                              ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-             ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+                              Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                              ┆ ⟬
+                                Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
+                                ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
+                 ┆ ⟬
+                   Exist ┆ f
+                   ┆ ⟬
+                     Exist ┆ b
+                     ┆ ⟬
+                       Exist ┆ d
+                       ┆ ⟬
+                         Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                         ┆ ⟬
+                           Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
+                           ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ 
+          ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk12" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk12">mxapp Triple_set_tail.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>L2'</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>x :: L2&#39; &lt;&gt; nil</span></span></span><br><span><var>f2, b2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d2</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>f1, b1</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d1</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>c2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ x ┆ c2 ⟧ ⟭
          ┆ ⟬
@@ -1161,17 +650,11 @@ CODE Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, c2])
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-       (Wptag
-          (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                   (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))
+CODE ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1210,41 +693,38 @@ CODE Wpgen_seq
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ b2]))
-⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-          Wptag
-            (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-               (Wptag
-                  (Wpgen_seq
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2])))))))
-            Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬
-                           Exist ┆ f
-                           ┆ ⟬
-                             Exist ┆ b
-                             ┆ ⟬
-                               Exist ┆ d
-                               ┆ ⟬
-                                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
-                                 ┆ ⟬
-                                   Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
-                                   ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-                    ┆ ⟬
-                      Exist ┆ f
-                      ┆ ⟬
-                        Exist ┆ b
+CODE (App (val_set_field tail) p1 (``b2))
+⟬* POST @ Bind _ : unit In
+          (App (val_set_field head) (``f2) (``d1) ;
+           App (val_set_field tail) (``f2) (``null) ;
+           App (val_set_field tail) p2 (``f2))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬
+                        Exist ┆ f
                         ┆ ⟬
-                          Exist ┆ d
+                          Exist ┆ b
                           ┆ ⟬
-                            Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                            Exist ┆ d
                             ┆ ⟬
-                              Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
-                              ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-             ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+                              Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                              ┆ ⟬
+                                Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
+                                ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
+                 ┆ ⟬
+                   Exist ┆ f
+                   ┆ ⟬
+                     Exist ┆ b
+                     ┆ ⟬
+                       Exist ┆ d
+                       ┆ ⟬
+                         Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                         ┆ ⟬
+                           Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
+                           ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ 
+          ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk14" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk14">mxapp Triple_set_tail.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>L2'</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>x :: L2&#39; &lt;&gt; nil</span></span></span><br><span><var>f2, b2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d2</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>f1, b1</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d1</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>c2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f1 ┆ b2 ⟧ ⟭
          ┆ ⟬
@@ -1258,10 +738,9 @@ CODE Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ b2]))
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-       (Wptag
-          (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-             (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))
+CODE (App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1300,8 +779,8 @@ CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, 
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-       (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))
+CODE (App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1341,7 +820,7 @@ CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, 
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))
+CODE (App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1476,19 +955,19 @@ Star ┆ ⟬
 ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><span class="alectryon-input">xchanges (@MListSeg_nil_intro A EA f2).</span><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk1a" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk1a">-</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 = nil</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk1b" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk1b"><span class="nb">subst</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ nil ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk1c" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk1c">rew_list.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1514,346 +993,107 @@ SPEC (transfer p1 p2)
           Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭
           ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk1f" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk1f">xwp.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_let_trm
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-       (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-        Wptag
-          (Wpgen_if b0
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-                    Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field head) ``[ X0])))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X, V1])))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_let
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_get_field tail) ``[ X0])))
-                                                 (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                  Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X, V1])))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_let
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_get_field tail) 
-                                                                (p2 :: nil))))
-                                                       (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                        Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field tail)
-                                                                (p1 :: ``[ V1]))))))
-                                                 (Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field head) 
-                                                                ``[ X0, X1])))
-                                                       (Wptag
-                                                          (Wpgen_seq
-                                                             (Wptag
-                                                                (Wpgen_app_untyped
-                                                                   (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      ``[ X0, null])))
-                                                             (Wptag
-                                                                (Wpgen_app_untyped
-                                                                   (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      (p2 :: ``[ X0]))))))))))))))))))))
-             (Wptag (Wpgen_val_unlifted ``tt))))
+CODE (<span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty p2 <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+        <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+         App (val_set_field head) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+         App (val_set_field tail) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+         App (val_set_field tail) p1 (``V1)) ;
+        App (val_set_field head) (``X0) (``X1) ;
+        App (val_set_field tail) (``X0) (``null) ;
+        App (val_set_field tail) p2 (``X0)
+      Else
+        $(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk20" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk20">mxapp Triple_is_empty.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps val_neg ``[ isTrue (L2 = nil)])
-⟬* POST @ <span class="k">fun</span> <span class="nv">X</span> : bool =&gt;
-          Wptag
-            (Wpgen_if X
-               (Wptag
-                  (Wpgen_let
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-                     (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X0</span> : A0) =&gt;
-                      Wptag
-                        (Wpgen_let
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X1</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_let
-                                 (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                                 (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X2</span> : A2) =&gt;
-                                  Wptag
-                                    (Wpgen_seq
-                                       (Wptag
-                                          (Wpgen_let
-                                             (Wptag
-                                                (Wpgen_app_untyped
-                                                   (trm_apps (val_get_field head) ``[ X1])))
-                                             (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                              Wptag
-                                                (Wpgen_app_untyped
-                                                   (trm_apps (val_set_field head) ``[ X0, V1])))))
-                                       (Wptag
-                                          (Wpgen_seq
-                                             (Wptag
-                                                (Wpgen_let
-                                                   (Wptag
-                                                      (Wpgen_app_untyped
-                                                         (trm_apps (val_get_field tail) ``[ X1])))
-                                                   (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                    Wptag
-                                                      (Wpgen_app_untyped
-                                                         (trm_apps (val_set_field tail) ``[ X0, V1])))))
-                                             (Wptag
-                                                (Wpgen_seq
-                                                   (Wptag
-                                                      (Wpgen_let
-                                                         (Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_get_field tail) 
-                                                                  (p2 :: nil))))
-                                                         (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3)
-                                                          =&gt;
-                                                          Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_set_field tail)
-                                                                  (p1 :: ``[ V1]))))))
-                                                   (Wptag
-                                                      (Wpgen_seq
-                                                         (Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_set_field head) 
-                                                                  ``[ X1, X2])))
-                                                         (Wptag
-                                                            (Wpgen_seq
-                                                               (Wptag
-                                                                  (Wpgen_app_untyped
-                                                                     (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      ``[ X1, null])))
-                                                               (Wptag
-                                                                  (Wpgen_app_untyped
-                                                                     (trm_apps 
-                                                                      (val_set_field tail)
-                                                                      (p2 :: ``[ X1]))))))))))))))))))))
-               (Wptag (Wpgen_val_unlifted ``tt))) Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
-                    ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk21" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk21">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_if (! isTrue (L2 = nil))
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-                    Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                          Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field head) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) ``[ X0])))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) ``[ X, V1])))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_let
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_get_field tail) (p2 :: nil))))
-                                                 (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                                  Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p1 :: ``[ V1]))))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field head) ``[ X0, X1])))
-                                                 (Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field tail) 
-                                                                ``[ X0, null])))
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field tail)
-                                                                (p2 :: ``[ X0]))))))))))))))))))))
-       (Wptag (Wpgen_val_unlifted ``tt))
+CODE (App val_neg (``(isTrue (L2 = nil))))
+⟬* POST @ Bind X : bool In
+          (If_ X Then 
+             <span class="kn">Let</span> {A0 EA0} X0 := App (val_get_field tail) p1 <span class="k">in</span>
+             <span class="kn">Let</span> {A1 EA1} X1 := App (val_get_field head) p2 <span class="k">in</span>
+             <span class="kn">Let</span> {A2 EA2} X2 := App (val_get_field head) (``X0) <span class="k">in</span>
+             (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X1) <span class="k">in</span>
+              App (val_set_field head) (``X0) (``V1)) ;
+             (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X1) <span class="k">in</span>
+              App (val_set_field tail) (``X0) (``V1)) ;
+             (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+              App (val_set_field tail) p1 (``V1)) ;
+             App (val_set_field head) (``X1) (``X2) ;
+             App (val_set_field tail) (``X1) (``null) ;
+             App (val_set_field tail) p2 (``X1)
+           Else
+             $(``tt))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
+                 ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk21" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk21">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
+CODE (If_ ! isTrue (L2 = nil) Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+        <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+         App (val_set_field head) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+         App (val_set_field tail) (``X) (``V1)) ;
+        (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+         App (val_set_field tail) p1 (``V1)) ;
+        App (val_set_field head) (``X0) (``X1) ;
+        App (val_set_field tail) (``X0) (``null) ;
+        App (val_set_field tail) p2 (``X0)
+      Else
+        $(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk22" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk22">xif ;=&gt; C.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 &lt;&gt; nil</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="literatequeue-v-chk23" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 = nil</span></span></span><br></div><label class="goal-separator" for="literatequeue-v-chk23"><hr></label><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk24" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk24">{</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 &lt;&gt; nil</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1881,57 +1121,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -1968,57 +1169,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2056,57 +1218,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2146,57 +1269,18 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X0])))
-                               (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ X, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X0])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ X, V1])))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field tail) (p2 :: nil))))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA3</span> : Enc A3) (<span class="nv">V1</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field head) ``[ X0, X1])))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail) ``[ X0, null])))
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field tail)
-                                                          (p2 :: ``[ X0]))))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field tail) p1 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A2 EA2} X1 := App (val_get_field head) (``X) <span class="k">in</span>
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field head) (``X0) <span class="k">in</span>
+       App (val_set_field head) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) (``X0) <span class="k">in</span>
+       App (val_set_field tail) (``X) (``V1)) ;
+      (<span class="kn">Let</span> {A3 EA3} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X0) (``X1) ;
+      App (val_set_field tail) (``X0) (``null) ;
+      App (val_set_field tail) p2 (``X0))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2236,49 +1320,17 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p1 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ b1])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, V1])))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_get_field tail) (p2 :: nil))))
-                                     (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA2</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                      Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field head) ``[ X, X0])))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) ``[ X, null])))
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field tail) (p2 :: ``[ X]))))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field head) p2 <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field head) (``b1) <span class="k">in</span>
+      (<span class="kn">Let</span> {A2 EA2} V1 := App (val_get_field head) (``X) <span class="k">in</span>
+       App (val_set_field head) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A2 EA2} V1 := App (val_get_field tail) (``X) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A2 EA2} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``X) (``X0) ;
+      App (val_set_field tail) (``X) (``null) ;
+      App (val_set_field tail) p2 (``X))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2317,43 +1369,16 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) (p2 :: n
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ b1])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ f2])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, V1])))))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                               (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                                Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, X])))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) ``[ f2, null])))
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field head) (``b1) <span class="k">in</span>
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field head) (``f2) <span class="k">in</span>
+       App (val_set_field head) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``X) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2393,34 +1418,15 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ b1])
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field head) ``[ f2])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, V1])))))
-       (Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                               (Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))))))
+CODE ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field head) (``f2) <span class="k">in</span>
+       App (val_set_field head) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2459,60 +1465,42 @@ CODE Wpgen_seq
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, x])
-⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-          Wptag
-            (Wpgen_seq
-               (Wptag
-                  (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-                     (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                      Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-               (Wptag
-                  (Wpgen_seq
-                     (Wptag
-                        (Wpgen_let
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-                     (Wptag
-                        (Wpgen_seq
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                           (Wptag
-                              (Wpgen_seq
-                                 (Wptag
-                                    (Wpgen_app_untyped
-                                       (trm_apps (val_set_field tail) ``[ f2, null])))
-                                 (Wptag
-                                    (Wpgen_app_untyped
-                                       (trm_apps (val_set_field tail) (p2 :: ``[ f2])))))))))))
-            Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬
-                           Exist ┆ f
-                           ┆ ⟬
-                             Exist ┆ b
-                             ┆ ⟬
-                               Exist ┆ d
-                               ┆ ⟬
-                                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
-                                 ┆ ⟬
-                                   Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
-                                   ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-                    ┆ ⟬
-                      Exist ┆ f
-                      ┆ ⟬
-                        Exist ┆ b
+CODE (App (val_set_field head) (``b1) (``x))
+⟬* POST @ Bind _ : unit In
+          ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+            App (val_set_field tail) (``b1) (``V1)) ;
+           (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+            App (val_set_field tail) p1 (``V1)) ;
+           App (val_set_field head) (``f2) (``d1) ;
+           App (val_set_field tail) (``f2) (``null) ;
+           App (val_set_field tail) p2 (``f2))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬
+                        Exist ┆ f
                         ┆ ⟬
-                          Exist ┆ d
+                          Exist ┆ b
                           ┆ ⟬
-                            Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                            Exist ┆ d
                             ┆ ⟬
-                              Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
-                              ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-             ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+                              Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                              ┆ ⟬
+                                Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
+                                ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
+                 ┆ ⟬
+                   Exist ┆ f
+                   ┆ ⟬
+                     Exist ┆ b
+                     ┆ ⟬
+                       Exist ┆ d
+                       ┆ ⟬
+                         Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                         ┆ ⟬
+                           Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
+                           ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ 
+          ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk2d" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk2d">mxapp Triple_set_head.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>L2'</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>x :: L2&#39; &lt;&gt; nil</span></span></span><br><span><var>f2, b2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d2</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>f1, b1</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d1</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>c2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ x ┆ null ⟧ ⟭
          ┆ ⟬
@@ -2526,23 +1514,13 @@ CODE Wpgen_app_untyped (trm_apps (val_set_field head) ``[ b1, x])
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) ``[ f2])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, V1])))))
-       (Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-             (Wptag
-                (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))))
+CODE ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) (``f2) <span class="k">in</span>
+       App (val_set_field tail) (``b1) (``V1)) ;
+      (<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2581,50 +1559,40 @@ CODE Wpgen_seq
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, c2])
-⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-          Wptag
-            (Wpgen_seq
-               (Wptag
-                  (Wpgen_let
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-                     (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                      Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-               (Wptag
-                  (Wpgen_seq
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-                     (Wptag
-                        (Wpgen_seq
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                           (Wptag
-                              (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2])))))))))
-            Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬
-                           Exist ┆ f
-                           ┆ ⟬
-                             Exist ┆ b
-                             ┆ ⟬
-                               Exist ┆ d
-                               ┆ ⟬
-                                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
-                                 ┆ ⟬
-                                   Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
-                                   ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-                    ┆ ⟬
-                      Exist ┆ f
-                      ┆ ⟬
-                        Exist ┆ b
+CODE (App (val_set_field tail) (``b1) (``c2))
+⟬* POST @ Bind _ : unit In
+          ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+            App (val_set_field tail) p1 (``V1)) ;
+           App (val_set_field head) (``f2) (``d1) ;
+           App (val_set_field tail) (``f2) (``null) ;
+           App (val_set_field tail) p2 (``f2))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬
+                        Exist ┆ f
                         ┆ ⟬
-                          Exist ┆ d
+                          Exist ┆ b
                           ┆ ⟬
-                            Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                            Exist ┆ d
                             ┆ ⟬
-                              Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
-                              ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-             ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+                              Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                              ┆ ⟬
+                                Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
+                                ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
+                 ┆ ⟬
+                   Exist ┆ f
+                   ┆ ⟬
+                     Exist ┆ b
+                     ┆ ⟬
+                       Exist ┆ d
+                       ┆ ⟬
+                         Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                         ┆ ⟬
+                           Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
+                           ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ 
+          ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk2f" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk2f">mxapp Triple_set_tail.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>L2'</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>x :: L2&#39; &lt;&gt; nil</span></span></span><br><span><var>f2, b2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d2</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>f1, b1</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d1</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>c2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ x ┆ c2 ⟧ ⟭
          ┆ ⟬
@@ -2638,17 +1606,11 @@ CODE Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ b1, c2])
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field tail) (p2 :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ V1]))))))
-       (Wptag
-          (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                   (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))))
+CODE ((<span class="kn">Let</span> {A1 EA1} V1 := App (val_get_field tail) p2 <span class="k">in</span>
+       App (val_set_field tail) p1 (``V1)) ;
+      App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2687,41 +1649,38 @@ CODE Wpgen_seq
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ b2]))
-⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-          Wptag
-            (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-               (Wptag
-                  (Wpgen_seq
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-                     (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2])))))))
-            Enc_unit
-            (<span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
-             ⟬
-             Star ┆ ⟬
-                    Star ┆ ⟬
-                           Exist ┆ f
-                           ┆ ⟬
-                             Exist ┆ b
-                             ┆ ⟬
-                               Exist ┆ d
-                               ┆ ⟬
-                                 Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
-                                 ┆ ⟬
-                                   Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
-                                   ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-                    ┆ ⟬
-                      Exist ┆ f
-                      ┆ ⟬
-                        Exist ┆ b
+CODE (App (val_set_field tail) p1 (``b2))
+⟬* POST @ Bind _ : unit In
+          (App (val_set_field head) (``f2) (``d1) ;
+           App (val_set_field tail) (``f2) (``null) ;
+           App (val_set_field tail) p2 (``f2))
+          ;
+          <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
+          ⟬
+          Star ┆ ⟬
+                 Star ┆ ⟬
+                        Exist ┆ f
                         ┆ ⟬
-                          Exist ┆ d
+                          Exist ┆ b
                           ┆ ⟬
-                            Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                            Exist ┆ d
                             ┆ ⟬
-                              Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
-                              ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
-             ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+                              Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                              ┆ ⟬
+                                Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2&#39; ⟧ ⟭
+                                ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭
+                 ┆ ⟬
+                   Exist ┆ f
+                   ┆ ⟬
+                     Exist ┆ b
+                     ┆ ⟬
+                       Exist ┆ d
+                       ┆ ⟬
+                         Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭
+                         ┆ ⟬
+                           Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭
+                           ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ 
+          ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk31" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk31">mxapp Triple_set_tail.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>L2'</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>x :: L2&#39; &lt;&gt; nil</span></span></span><br><span><var>f2, b2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d2</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>f1, b1</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>d1</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>c2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f1 ┆ b2 ⟧ ⟭
          ┆ ⟬
@@ -2735,10 +1694,9 @@ CODE Wpgen_app_untyped (trm_apps (val_set_field tail) (p1 :: ``[ b2]))
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, d1])))
-       (Wptag
-          (Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-             (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))))
+CODE (App (val_set_field head) (``f2) (``d1) ;
+      App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2777,8 +1735,8 @@ CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field head) ``[ f2, 
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, null])))
-       (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))))
+CODE (App (val_set_field tail) (``f2) (``null) ;
+      App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2818,7 +1776,7 @@ CODE Wpgen_seq (Wptag (Wpgen_app_untyped (trm_apps (val_set_field tail) ``[ f2, 
                  ┆ ⟬
                    Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
                    ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps (val_set_field tail) (p2 :: ``[ f2]))
+CODE (App (val_set_field tail) p2 (``f2))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
@@ -2952,20 +1910,20 @@ Star ┆ ⟬
                  ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ 
 ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><span class="alectryon-input">xchanges (@MListSeg_nil_intro A EA f2).</span><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk37" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk37">}</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1, L2</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br><span><var>C</var><span class="hyp-type"><b>: </b><span>L2 = nil</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ L2 ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ L2 ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk38" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk38"><span class="nb">subst</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬
                  Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ++ nil ⟧ ⟭
                  ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatequeue-v-chk39" style="display: none" type="checkbox"><label class="alectryon-input" for="literatequeue-v-chk39">rew_list.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>L1</var><span class="hyp-type"><b>: </b><span>list A</span></span></span><br><span><var>p1, p2</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MQueue ┆ nil ⟧ ⟭ ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MQueue ┆ L1 ⟧ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``tt
+CODE ($(``tt))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">_</span> : unit =&gt;
           ⟬
           Star ┆ ⟬

@@ -25,389 +25,154 @@
     POST (<span class="k">fun</span> (<span class="nv">r</span>: loc) =&gt; r ~&gt; MTree (leftRotate t)).</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="k">forall</span> <span class="nv">t</span> <span class="nv">p</span>,
 SPEC (Trm_apps left_rotate ((Dyn p) :: nil))
 ⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-⟬* POST @ <span class="k">fun</span> <span class="nv">r</span> : loc =&gt; ⟬ PointsTo ┆ r ┆ ⟦ $MTree ┆ leftRotate t ⟧ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+⟬* POST @ Bind r : loc In
+          repr
+          ;
+          r *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk1" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk1"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="k">forall</span> <span class="nv">t</span> <span class="nv">p</span>,
 SPEC (Trm_apps left_rotate ((Dyn p) :: nil))
 ⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-⟬* POST @ <span class="k">fun</span> <span class="nv">r</span> : loc =&gt; ⟬ PointsTo ┆ r ┆ ⟦ $MTree ┆ leftRotate t ⟧ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+⟬* POST @ Bind r : loc In
+          repr
+          ;
+          r *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk2" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk2">xwp.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-CODE Wpgen_let_trm
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-       (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-        Wptag
-          (Wpgen_if b0
-             (Wptag
-                (Wpgen_let
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-                    Wptag
-                      (Wpgen_let
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_let_trm
-                               (Wptag
-                                  (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                      Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                               (<span class="k">fun</span> <span class="nv">b1</span> : bool =&gt;
-                                Wptag
-                                  (Wpgen_if b1
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field ltree) ``[ X])))
-                                           (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">X0</span> : A2) =&gt;
-                                            Wptag
-                                              (Wpgen_let
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_get_field rtree) ``[ X])))
-                                                 (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A3) (<span class="nv">_</span> : A3) =&gt;
-                                                  Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field rtree)
-                                                                (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                                       (Wptag
-                                                          (Wpgen_seq
-                                                             (Wptag
-                                                                (Wpgen_app_untyped
-                                                                   (trm_apps 
-                                                                      (val_set_field ltree)
-                                                                      (``X
-                                                                      :: 
-                                                                      dyn_to_val (Dyn p) :: nil))))
-                                                             (Wptag (Wpgen_val_unlifted ``X))))))))))
-                                     (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))))
-             (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))
+CODE (<span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty (dyn_to_val (Dyn p)) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> <span class="nf">b1</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                  App val_neg (``V1) <span class="k">in</span>
+        If_ b1 Then 
+          <span class="kn">Let</span> {A2 EA1} X0 := App (val_get_field ltree) (``X) <span class="k">in</span>
+          <span class="kn">Let</span> {A3 _} _ := App (val_get_field rtree) (``X) <span class="k">in</span>
+          App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X0) ;
+          App (val_set_field ltree) (``X) (dyn_to_val (Dyn p)) ;
+          $(``X)
+        Else
+          $(dyn_to_val (Dyn p))
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt; ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ leftRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk3" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk3">mxapp Triple_is_empty.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps val_neg ``[ isTrue (t = leaf)])
-⟬* POST @ <span class="k">fun</span> <span class="nv">X</span> : bool =&gt;
-          Wptag
-            (Wpgen_if X
-               (Wptag
-                  (Wpgen_let
-                     (Wptag
-                        (Wpgen_app_untyped
-                           (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-                     (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-                      Wptag
-                        (Wpgen_let
-                           (Wptag
-                              (Wpgen_app_untyped
-                                 (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_let_trm
-                                 (Wptag
-                                    (Wpgen_let
-                                       (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X0])))
-                                       (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                        Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                                 (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                                  Wptag
-                                    (Wpgen_if b0
-                                       (Wptag
-                                          (Wpgen_let
-                                             (Wptag
-                                                (Wpgen_app_untyped
-                                                   (trm_apps (val_get_field ltree) ``[ X0])))
-                                             (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">X1</span> : A2) =&gt;
-                                              Wptag
-                                                (Wpgen_let
-                                                   (Wptag
-                                                      (Wpgen_app_untyped
-                                                         (trm_apps (val_get_field rtree) ``[ X0])))
-                                                   (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A3) (<span class="nv">_</span> : A3) =&gt;
-                                                    Wptag
-                                                      (Wpgen_seq
-                                                         (Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_set_field rtree)
-                                                                  (dyn_to_val (Dyn p) :: ``[ X1]))))
-                                                         (Wptag
-                                                            (Wpgen_seq
-                                                               (Wptag
-                                                                  (Wpgen_app_untyped
-                                                                     (trm_apps
-                                                                      (val_set_field ltree)
-                                                                      (``X0
-                                                                      :: 
-                                                                      dyn_to_val (Dyn p) :: nil))))
-                                                               (Wptag (Wpgen_val_unlifted ``X0))))))))))
-                                       (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))))
-               (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))) Enc_loc
-            (<span class="k">fun</span> <span class="nv">x</span> : loc =&gt;
-             ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ leftRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk4" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk4">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-CODE Wpgen_if (! isTrue (t = leaf))
-       (Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-              Wptag
-                (Wpgen_let
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-                    Wptag
-                      (Wpgen_let_trm
-                         (Wptag
-                            (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                         (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                          Wptag
-                            (Wpgen_if b0
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">X0</span> : A2) =&gt;
-                                      Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field rtree) ``[ X])))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A3) (<span class="nv">_</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field rtree)
-                                                          (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                                 (Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field ltree)
-                                                                (``X :: dyn_to_val (Dyn p) :: nil))))
-                                                       (Wptag (Wpgen_val_unlifted ``X))))))))))
-                               (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))))
-       (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))
+CODE (App val_neg (``(isTrue (t = leaf))))
+⟬* POST @ Bind X : bool In
+          (If_ X Then 
+             <span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+             <span class="kn">Let</span> {A1 EA0} X0 := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+             <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X0) <span class="k">in</span>
+                       App val_neg (``V1) <span class="k">in</span>
+             If_ b0 Then 
+               <span class="kn">Let</span> {A2 EA1} X1 := App (val_get_field ltree) (``X0) <span class="k">in</span>
+               <span class="kn">Let</span> {A3 _} _ := App (val_get_field rtree) (``X0) <span class="k">in</span>
+               App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X1) ;
+               App (val_set_field ltree) (``X0) (dyn_to_val (Dyn p)) ;
+               $(``X0)
+             Else
+               $(dyn_to_val (Dyn p))
+           Else
+             $(dyn_to_val (Dyn p)))
+          ;
+          <span class="k">fun</span> <span class="nv">x</span> : loc =&gt; ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ leftRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk4" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk4">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
+CODE (If_ ! isTrue (t = leaf) Then 
+        <span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                  App val_neg (``V1) <span class="k">in</span>
+        If_ b0 Then 
+          <span class="kn">Let</span> {A2 EA1} X0 := App (val_get_field ltree) (``X) <span class="k">in</span>
+          <span class="kn">Let</span> {A3 _} _ := App (val_get_field rtree) (``X) <span class="k">in</span>
+          App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X0) ;
+          App (val_set_field ltree) (``X) (dyn_to_val (Dyn p)) ;
+          $(``X)
+        Else
+          $(dyn_to_val (Dyn p))
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt; ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ leftRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk5" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk5"><span class="nb">destruct</span> t <span class="k">as</span> [| x tl tr];
       xif; <span class="kp">try</span> <span class="bp">easy</span>; <span class="nb">intros</span> _.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ leaf ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ leftRotate leaf ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="literatetree-v-chk6" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><label class="goal-separator" for="literatetree-v-chk6"><hr></label><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ node x tl tr ⟧ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let_trm
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                   (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                    Wptag
-                      (Wpgen_if b0
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">X0</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A3) (<span class="nv">_</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field rtree)
-                                                    (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field ltree)
-                                                          (``X :: dyn_to_val (Dyn p) :: nil))))
-                                                 (Wptag (Wpgen_val_unlifted ``X))))))))))
-                         (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A2 EA1} X0 := App (val_get_field ltree) (``X) <span class="k">in</span>
+        <span class="kn">Let</span> {A3 _} _ := App (val_get_field rtree) (``X) <span class="k">in</span>
+        App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X0) ;
+        App (val_set_field ltree) (``X) (dyn_to_val (Dyn p)) ;
+        $(``X)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk7" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk7">- <span class="c">(* t = leaf *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ leaf ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ leftRotate leaf ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input">mxvals*.</span><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk8" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk8">- <span class="c">(* t = node *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ node x tl tr ⟧ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let_trm
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                   (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                    Wptag
-                      (Wpgen_if b0
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">X0</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A3) (<span class="nv">_</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field rtree)
-                                                    (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field ltree)
-                                                          (``X :: dyn_to_val (Dyn p) :: nil))))
-                                                 (Wptag (Wpgen_val_unlifted ``X))))))))))
-                         (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A2 EA1} X0 := App (val_get_field ltree) (``X) <span class="k">in</span>
+        <span class="kn">Let</span> {A3 _} _ := App (val_get_field rtree) (``X) <span class="k">in</span>
+        App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X0) ;
+        App (val_set_field ltree) (``X) (dyn_to_val (Dyn p)) ;
+        $(``X)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk9" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk9">xchange MTree_node; <span class="nb">intros</span> pl pr.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
          ┆ ⟬ Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let_trm
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                   (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                    Wptag
-                      (Wpgen_if b0
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">X0</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A3) (<span class="nv">_</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field rtree)
-                                                    (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field ltree)
-                                                          (``X :: dyn_to_val (Dyn p) :: nil))))
-                                                 (Wptag (Wpgen_val_unlifted ``X))))))))))
-                         (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A2 EA1} X0 := App (val_get_field ltree) (``X) <span class="k">in</span>
+        <span class="kn">Let</span> {A3 _} _ := App (val_get_field rtree) (``X) <span class="k">in</span>
+        App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X0) ;
+        App (val_set_field ltree) (``X) (dyn_to_val (Dyn p)) ;
+        $(``X)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chka" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chka">mxapp NodeSpecs.Triple_get_field_ltree.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
          ┆ ⟬ Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let_trm
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-             (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-              Wptag
-                (Wpgen_if b0
-                   (Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A2) (<span class="nv">_</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field rtree)
-                                              (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field ltree)
-                                                    (``X :: dyn_to_val (Dyn p) :: nil))))
-                                           (Wptag (Wpgen_val_unlifted ``X))))))))))
-                   (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A1 EA1} X0 := App (val_get_field ltree) (``X) <span class="k">in</span>
+        <span class="kn">Let</span> {A2 _} _ := App (val_get_field rtree) (``X) <span class="k">in</span>
+        App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X0) ;
+        App (val_set_field ltree) (``X) (dyn_to_val (Dyn p)) ;
+        $(``X)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chkb" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chkb">mxapp NodeSpecs.Triple_get_field_rtree.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
          ┆ ⟬ Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let_trm
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ pr])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-       (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-        Wptag
-          (Wpgen_if b0
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr])))
-                   (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-                    Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr])))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field rtree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field ltree)
-                                              (``pr :: dyn_to_val (Dyn p) :: nil))))
-                                     (Wptag (Wpgen_val_unlifted ``pr))))))))))
-             (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))
+CODE (<span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty (``pr) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (``pr) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (``pr) <span class="k">in</span>
+        App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X) ;
+        App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+        $(``pr)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chkc" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chkc">mxapp Triple_is_empty.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
@@ -415,58 +180,31 @@ CODE Wpgen_let_trm
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps val_neg ``[ isTrue (tr = leaf)])
-⟬* POST @ <span class="k">fun</span> <span class="nv">X</span> : bool =&gt;
-          Wptag
-            (Wpgen_if X
-               (Wptag
-                  (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr])))
-                     (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X0</span> : A0) =&gt;
-                      Wptag
-                        (Wpgen_let
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr])))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_seq
-                                 (Wptag
-                                    (Wpgen_app_untyped
-                                       (trm_apps (val_set_field rtree)
-                                          (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                 (Wptag
-                                    (Wpgen_seq
-                                       (Wptag
-                                          (Wpgen_app_untyped
-                                             (trm_apps (val_set_field ltree)
-                                                (``pr :: dyn_to_val (Dyn p) :: nil))))
-                                       (Wptag (Wpgen_val_unlifted ``pr))))))))))
-               (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))) Enc_loc
-            (<span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
-             ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭
-             ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chkd" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chkd">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
+CODE (App val_neg (``(isTrue (tr = leaf))))
+⟬* POST @ Bind X : bool In
+          (If_ X Then 
+             <span class="kn">Let</span> {A0 EA0} X0 := App (val_get_field ltree) (``pr) <span class="k">in</span>
+             <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (``pr) <span class="k">in</span>
+             App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X0) ;
+             App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+             $(``pr)
+           Else
+             $(dyn_to_val (Dyn p)))
+          ;
+          <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
+          ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chkd" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chkd">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_if (! isTrue (tr = leaf))
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr])))
-             (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field rtree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field ltree)
-                                        (``pr :: dyn_to_val (Dyn p) :: nil))))
-                               (Wptag (Wpgen_val_unlifted ``pr))))))))))
-       (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))
+CODE (If_ ! isTrue (tr = leaf) Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (``pr) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (``pr) <span class="k">in</span>
+        App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X) ;
+        App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+        $(``pr)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chke" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chke"><span class="nb">destruct</span> tr <span class="k">as</span> [| xr trl trr];
@@ -475,29 +213,18 @@ CODE Wpgen_if (! isTrue (tr = leaf))
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl leaf) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="literatetree-v-chkf" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>xr</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>trl, trr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><label class="goal-separator" for="literatetree-v-chkf"><hr></label><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ node xr trl trr ⟧ ⟭
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field rtree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field ltree) (``pr :: dyn_to_val (Dyn p) :: nil))))
-                         (Wptag (Wpgen_val_unlifted ``pr))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (``pr) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (``pr) <span class="k">in</span>
+      App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X) ;
+      App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+      $(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -507,10 +234,10 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr]
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl leaf) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk11" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk11">xchange &lt;- MTree_node.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ node x tl leaf ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl leaf) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input">mxvals*.</span><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk12" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk12">+ <span class="c">(* tr = node *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>xr</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>trl, trr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
@@ -518,22 +245,11 @@ CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field rtree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field ltree) (``pr :: dyn_to_val (Dyn p) :: nil))))
-                         (Wptag (Wpgen_val_unlifted ``pr))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (``pr) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (``pr) <span class="k">in</span>
+      App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X) ;
+      App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+      $(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -546,22 +262,11 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr]
              ┆ ⟬
                Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
                ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field rtree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field ltree) (``pr :: dyn_to_val (Dyn p) :: nil))))
-                         (Wptag (Wpgen_val_unlifted ``pr))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (``pr) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (``pr) <span class="k">in</span>
+      App (val_set_field rtree) (dyn_to_val (Dyn p)) (``X) ;
+      App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+      $(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -575,19 +280,10 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pr]
              ┆ ⟬
                Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
                ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_app_untyped
-                   (trm_apps (val_set_field rtree) (dyn_to_val (Dyn p) :: ``[ prl]))))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field ltree) (``pr :: dyn_to_val (Dyn p) :: nil))))
-                   (Wptag (Wpgen_val_unlifted ``pr))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field rtree) (``pr) <span class="k">in</span>
+      App (val_set_field rtree) (dyn_to_val (Dyn p)) (``prl) ;
+      App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+      $(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -601,14 +297,9 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pr]
              ┆ ⟬
                Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
                ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag (Wpgen_app_untyped (trm_apps (val_set_field rtree) (dyn_to_val (Dyn p) :: ``[ prl]))))
-       (Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_app_untyped
-                   (trm_apps (val_set_field ltree) (``pr :: dyn_to_val (Dyn p) :: nil))))
-             (Wptag (Wpgen_val_unlifted ``pr))))
+CODE (App (val_set_field rtree) (dyn_to_val (Dyn p)) (``prl) ;
+      App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+      $(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -621,10 +312,8 @@ CODE Wpgen_seq
              Star ┆ ⟬ PointsTo ┆ prl ┆ ⟦ $MTree ┆ trl ⟧ ⟭
              ┆ ⟬ Star ┆ ⟬ PointsTo ┆ prr ┆ ⟦ $MTree ┆ trr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
                ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_app_untyped (trm_apps (val_set_field ltree) (``pr :: dyn_to_val (Dyn p) :: nil))))
-       (Wptag (Wpgen_val_unlifted ``pr))
+CODE (App (val_set_field ltree) (``pr) (dyn_to_val (Dyn p)) ;
+      $(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -637,7 +326,7 @@ CODE Wpgen_seq
              Star ┆ ⟬ PointsTo ┆ prl ┆ ⟦ $MTree ┆ trl ⟧ ⟭
              ┆ ⟬ Star ┆ ⟬ PointsTo ┆ prr ┆ ⟦ $MTree ┆ trr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
                ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``pr
+CODE ($(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -647,12 +336,12 @@ CODE Wpgen_val_unlifted ``pr
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MNode ┆ xr ┆ p ┆ prr ⟧ ⟭
            ┆ ⟬ PointsTo ┆ prr ┆ ⟦ $MTree ┆ trr ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``pr
+CODE ($(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
           ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk19" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk19">xchange &lt;- MTree_node.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>xr</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>trl, trr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr, prl, prr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ node xr (node x tl trl) trr ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted ``pr
+CODE ($(``pr))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ leftRotate (node x tl (node xr trl trr)) ⟧ ⟭
@@ -666,389 +355,154 @@ CODE Wpgen_val_unlifted ``pr
     POST (<span class="k">fun</span> (<span class="nv">r</span>: loc) =&gt; r ~&gt; MTree (rightRotate t)).</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="k">forall</span> <span class="nv">t</span> <span class="nv">p</span>,
 SPEC (Trm_apps right_rotate ((Dyn p) :: nil))
 ⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-⟬* POST @ <span class="k">fun</span> <span class="nv">r</span> : loc =&gt; ⟬ PointsTo ┆ r ┆ ⟦ $MTree ┆ rightRotate t ⟧ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+⟬* POST @ Bind r : loc In
+          repr
+          ;
+          r *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">  </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk1b" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk1b"><span class="kn">Proof</span>.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion"><span class="k">forall</span> <span class="nv">t</span> <span class="nv">p</span>,
 SPEC (Trm_apps right_rotate ((Dyn p) :: nil))
 ⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-⟬* POST @ <span class="k">fun</span> <span class="nv">r</span> : loc =&gt; ⟬ PointsTo ┆ r ┆ ⟦ $MTree ┆ rightRotate t ⟧ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
+⟬* POST @ Bind r : loc In
+          repr
+          ;
+          r *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk1c" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk1c">xwp.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-CODE Wpgen_let_trm
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-       (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-        Wptag
-          (Wpgen_if b0
-             (Wptag
-                (Wpgen_let
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-                    Wptag
-                      (Wpgen_let
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_let_trm
-                               (Wptag
-                                  (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                      Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                               (<span class="k">fun</span> <span class="nv">b1</span> : bool =&gt;
-                                Wptag
-                                  (Wpgen_if b1
-                                     (Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field ltree) ``[ X])))
-                                           (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A2) (<span class="nv">_</span> : A2) =&gt;
-                                            Wptag
-                                              (Wpgen_let
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_get_field rtree) ``[ X])))
-                                                 (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A3) (<span class="nv">X0</span> : A3) =&gt;
-                                                  Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field rtree)
-                                                                (``X :: dyn_to_val (Dyn p) :: nil))))
-                                                       (Wptag
-                                                          (Wpgen_seq
-                                                             (Wptag
-                                                                (Wpgen_app_untyped
-                                                                   (trm_apps 
-                                                                      (val_set_field ltree)
-                                                                      (dyn_to_val (Dyn p)
-                                                                      :: ``[ X0]))))
-                                                             (Wptag (Wpgen_val_unlifted ``X))))))))))
-                                     (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))))
-             (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))
+CODE (<span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty (dyn_to_val (Dyn p)) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> <span class="nf">b1</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                  App val_neg (``V1) <span class="k">in</span>
+        If_ b1 Then 
+          <span class="kn">Let</span> {A2 _} _ := App (val_get_field ltree) (``X) <span class="k">in</span>
+          <span class="kn">Let</span> {A3 EA1} X0 := App (val_get_field rtree) (``X) <span class="k">in</span>
+          App (val_set_field rtree) (``X) (dyn_to_val (Dyn p)) ;
+          App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X0) ;
+          $(``X)
+        Else
+          $(dyn_to_val (Dyn p))
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt; ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ rightRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk1d" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk1d">mxapp Triple_is_empty.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps val_neg ``[ isTrue (t = leaf)])
-⟬* POST @ <span class="k">fun</span> <span class="nv">X</span> : bool =&gt;
-          Wptag
-            (Wpgen_if X
-               (Wptag
-                  (Wpgen_let
-                     (Wptag
-                        (Wpgen_app_untyped
-                           (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-                     (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X0</span> : A0) =&gt;
-                      Wptag
-                        (Wpgen_let
-                           (Wptag
-                              (Wpgen_app_untyped
-                                 (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_let_trm
-                                 (Wptag
-                                    (Wpgen_let
-                                       (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X0])))
-                                       (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                        Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                                 (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                                  Wptag
-                                    (Wpgen_if b0
-                                       (Wptag
-                                          (Wpgen_let
-                                             (Wptag
-                                                (Wpgen_app_untyped
-                                                   (trm_apps (val_get_field ltree) ``[ X0])))
-                                             (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A2) (<span class="nv">_</span> : A2) =&gt;
-                                              Wptag
-                                                (Wpgen_let
-                                                   (Wptag
-                                                      (Wpgen_app_untyped
-                                                         (trm_apps (val_get_field rtree) ``[ X0])))
-                                                   (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A3) (<span class="nv">X1</span> : A3) =&gt;
-                                                    Wptag
-                                                      (Wpgen_seq
-                                                         (Wptag
-                                                            (Wpgen_app_untyped
-                                                               (trm_apps 
-                                                                  (val_set_field rtree)
-                                                                  (``X0
-                                                                   :: dyn_to_val (Dyn p) :: nil))))
-                                                         (Wptag
-                                                            (Wpgen_seq
-                                                               (Wptag
-                                                                  (Wpgen_app_untyped
-                                                                     (trm_apps
-                                                                      (val_set_field ltree)
-                                                                      (dyn_to_val (Dyn p)
-                                                                      :: ``[ X1]))))
-                                                               (Wptag (Wpgen_val_unlifted ``X0))))))))))
-                                       (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))))
-               (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))) Enc_loc
-            (<span class="k">fun</span> <span class="nv">x</span> : loc =&gt;
-             ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ rightRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk1e" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk1e">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
-CODE Wpgen_if (! isTrue (t = leaf))
-       (Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-              Wptag
-                (Wpgen_let
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-                    Wptag
-                      (Wpgen_let_trm
-                         (Wptag
-                            (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                                Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                         (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                          Wptag
-                            (Wpgen_if b0
-                               (Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A2) (<span class="nv">_</span> : A2) =&gt;
-                                      Wptag
-                                        (Wpgen_let
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_get_field rtree) ``[ X])))
-                                           (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A3) (<span class="nv">X0</span> : A3) =&gt;
-                                            Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field rtree)
-                                                          (``X :: dyn_to_val (Dyn p) :: nil))))
-                                                 (Wptag
-                                                    (Wpgen_seq
-                                                       (Wptag
-                                                          (Wpgen_app_untyped
-                                                             (trm_apps 
-                                                                (val_set_field ltree)
-                                                                (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                                       (Wptag (Wpgen_val_unlifted ``X))))))))))
-                               (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))))
-       (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))
+CODE (App val_neg (``(isTrue (t = leaf))))
+⟬* POST @ Bind X : bool In
+          (If_ X Then 
+             <span class="kn">Let</span> {A0 EA0} X0 := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+             <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+             <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X0) <span class="k">in</span>
+                       App val_neg (``V1) <span class="k">in</span>
+             If_ b0 Then 
+               <span class="kn">Let</span> {A2 _} _ := App (val_get_field ltree) (``X0) <span class="k">in</span>
+               <span class="kn">Let</span> {A3 EA1} X1 := App (val_get_field rtree) (``X0) <span class="k">in</span>
+               App (val_set_field rtree) (``X0) (dyn_to_val (Dyn p)) ;
+               App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X1) ;
+               $(``X0)
+             Else
+               $(dyn_to_val (Dyn p))
+           Else
+             $(dyn_to_val (Dyn p)))
+          ;
+          <span class="k">fun</span> <span class="nv">x</span> : loc =&gt; ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ rightRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk1e" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk1e">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>t</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ t ⟧ ⟭ *⟭
+CODE (If_ ! isTrue (t = leaf) Then 
+        <span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+        <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                  App val_neg (``V1) <span class="k">in</span>
+        If_ b0 Then 
+          <span class="kn">Let</span> {A2 _} _ := App (val_get_field ltree) (``X) <span class="k">in</span>
+          <span class="kn">Let</span> {A3 EA1} X0 := App (val_get_field rtree) (``X) <span class="k">in</span>
+          App (val_set_field rtree) (``X) (dyn_to_val (Dyn p)) ;
+          App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X0) ;
+          $(``X)
+        Else
+          $(dyn_to_val (Dyn p))
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt; ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ rightRotate t ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk1f" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk1f"><span class="nb">destruct</span> t <span class="k">as</span> [| x tl tr];
       xif; <span class="kp">try</span> <span class="bp">easy</span>; <span class="nb">intros</span> _.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ leaf ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ rightRotate leaf ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="literatetree-v-chk20" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><label class="goal-separator" for="literatetree-v-chk20"><hr></label><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ node x tl tr ⟧ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let_trm
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                   (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                    Wptag
-                      (Wpgen_if b0
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A2) (<span class="nv">_</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A3) (<span class="nv">X0</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field rtree)
-                                                    (``X :: dyn_to_val (Dyn p) :: nil))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field ltree)
-                                                          (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                                 (Wptag (Wpgen_val_unlifted ``X))))))))))
-                         (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A2 _} _ := App (val_get_field ltree) (``X) <span class="k">in</span>
+        <span class="kn">Let</span> {A3 EA1} X0 := App (val_get_field rtree) (``X) <span class="k">in</span>
+        App (val_set_field rtree) (``X) (dyn_to_val (Dyn p)) ;
+        App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X0) ;
+        $(``X)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk21" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk21">- <span class="c">(* t = leaf *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ leaf ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x ┆ ⟦ $MTree ┆ rightRotate leaf ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input">mxvals*.</span><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">    </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk22" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk22">- <span class="c">(* t = node *)</span></label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ node x tl tr ⟧ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let_trm
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                   (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                    Wptag
-                      (Wpgen_if b0
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A2) (<span class="nv">_</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A3) (<span class="nv">X0</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field rtree)
-                                                    (``X :: dyn_to_val (Dyn p) :: nil))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field ltree)
-                                                          (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                                 (Wptag (Wpgen_val_unlifted ``X))))))))))
-                         (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A2 _} _ := App (val_get_field ltree) (``X) <span class="k">in</span>
+        <span class="kn">Let</span> {A3 EA1} X0 := App (val_get_field rtree) (``X) <span class="k">in</span>
+        App (val_set_field rtree) (``X) (dyn_to_val (Dyn p)) ;
+        App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X0) ;
+        $(``X)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk23" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk23">xchange MTree_node; <span class="nb">intros</span> pl pr.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
          ┆ ⟬ Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let
-             (Wptag
-                (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-              Wptag
-                (Wpgen_let_trm
-                   (Wptag
-                      (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ X])))
-                         (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A2) (<span class="nv">V1</span> : A2) =&gt;
-                          Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-                   (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-                    Wptag
-                      (Wpgen_if b0
-                         (Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ X])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A2) (<span class="nv">_</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_let
-                                     (Wptag
-                                        (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ X])))
-                                     (<span class="k">fun</span> (<span class="nv">A3</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A3) (<span class="nv">X0</span> : A3) =&gt;
-                                      Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field rtree)
-                                                    (``X :: dyn_to_val (Dyn p) :: nil))))
-                                           (Wptag
-                                              (Wpgen_seq
-                                                 (Wptag
-                                                    (Wpgen_app_untyped
-                                                       (trm_apps (val_set_field ltree)
-                                                          (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                                 (Wptag (Wpgen_val_unlifted ``X))))))))))
-                         (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field ltree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 _} _ := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A2 EA1} V1 := App is_empty (``X) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A2 _} _ := App (val_get_field ltree) (``X) <span class="k">in</span>
+        <span class="kn">Let</span> {A3 EA1} X0 := App (val_get_field rtree) (``X) <span class="k">in</span>
+        App (val_set_field rtree) (``X) (dyn_to_val (Dyn p)) ;
+        App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X0) ;
+        $(``X)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk24" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk24">mxapp NodeSpecs.Triple_get_field_ltree.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
          ┆ ⟬ Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let
-       (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) (dyn_to_val (Dyn p) :: nil))))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let_trm
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ pl])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-                    Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-             (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-              Wptag
-                (Wpgen_if b0
-                   (Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl])))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A1) (<span class="nv">_</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_let
-                               (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-                               (<span class="k">fun</span> (<span class="nv">A2</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A2) (<span class="nv">X</span> : A2) =&gt;
-                                Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field rtree)
-                                              (``pl :: dyn_to_val (Dyn p) :: nil))))
-                                     (Wptag
-                                        (Wpgen_seq
-                                           (Wptag
-                                              (Wpgen_app_untyped
-                                                 (trm_apps (val_set_field ltree)
-                                                    (dyn_to_val (Dyn p) :: ``[ X]))))
-                                           (Wptag (Wpgen_val_unlifted ``pl))))))))))
-                   (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field rtree) (dyn_to_val (Dyn p)) <span class="k">in</span>
+      <span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty (``pl) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A1 _} _ := App (val_get_field ltree) (``pl) <span class="k">in</span>
+        <span class="kn">Let</span> {A2 EA0} X := App (val_get_field rtree) (``pl) <span class="k">in</span>
+        App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+        App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X) ;
+        $(``pl)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk25" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk25">mxapp NodeSpecs.Triple_get_field_rtree.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
          ┆ ⟬ Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let_trm
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps is_empty ``[ pl])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA1</span> : Enc A1) (<span class="nv">V1</span> : A1) =&gt;
-              Wptag (Wpgen_app_untyped (trm_apps val_neg ``[ V1])))))
-       (<span class="k">fun</span> <span class="nv">b0</span> : bool =&gt;
-        Wptag
-          (Wpgen_if b0
-             (Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl])))
-                   (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-                    Wptag
-                      (Wpgen_let
-                         (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-                         (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-                          Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field rtree)
-                                        (``pl :: dyn_to_val (Dyn p) :: nil))))
-                               (Wptag
-                                  (Wpgen_seq
-                                     (Wptag
-                                        (Wpgen_app_untyped
-                                           (trm_apps (val_set_field ltree)
-                                              (dyn_to_val (Dyn p) :: ``[ X]))))
-                                     (Wptag (Wpgen_val_unlifted ``pl))))))))))
-             (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))))
+CODE (<span class="kn">Let</span> <span class="nf">b0</span> := <span class="kn">Let</span> {A1 EA1} V1 := App is_empty (``pl) <span class="k">in</span>
+                App val_neg (``V1) <span class="k">in</span>
+      If_ b0 Then 
+        <span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (``pl) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (``pl) <span class="k">in</span>
+        App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+        App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X) ;
+        $(``pl)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk26" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk26">mxapp Triple_is_empty.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
@@ -1056,57 +510,31 @@ CODE Wpgen_let_trm
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_app_untyped (trm_apps val_neg ``[ isTrue (tl = leaf)])
-⟬* POST @ <span class="k">fun</span> <span class="nv">X</span> : bool =&gt;
-          Wptag
-            (Wpgen_if X
-               (Wptag
-                  (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl])))
-                     (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-                      Wptag
-                        (Wpgen_let
-                           (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-                           (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X0</span> : A1) =&gt;
-                            Wptag
-                              (Wpgen_seq
-                                 (Wptag
-                                    (Wpgen_app_untyped
-                                       (trm_apps (val_set_field rtree)
-                                          (``pl :: dyn_to_val (Dyn p) :: nil))))
-                                 (Wptag
-                                    (Wpgen_seq
-                                       (Wptag
-                                          (Wpgen_app_untyped
-                                             (trm_apps (val_set_field ltree)
-                                                (dyn_to_val (Dyn p) :: ``[ X0]))))
-                                       (Wptag (Wpgen_val_unlifted ``pl))))))))))
-               (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))) Enc_loc
-            (<span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
-             ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭
-             ⟭) *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk27" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk27">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
+CODE (App val_neg (``(isTrue (tl = leaf))))
+⟬* POST @ Bind X : bool In
+          (If_ X Then 
+             <span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (``pl) <span class="k">in</span>
+             <span class="kn">Let</span> {A1 EA0} X0 := App (val_get_field rtree) (``pl) <span class="k">in</span>
+             App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+             App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X0) ;
+             $(``pl)
+           Else
+             $(dyn_to_val (Dyn p)))
+          ;
+          <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
+          ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk27" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk27">mxapp Triple_neg.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tl, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬
          Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ tl ⟧ ⟭
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_if (! isTrue (tl = leaf))
-       (Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl])))
-             (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-              Wptag
-                (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-                   (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-                    Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field rtree) (``pl :: dyn_to_val (Dyn p) :: nil))))
-                         (Wptag
-                            (Wpgen_seq
-                               (Wptag
-                                  (Wpgen_app_untyped
-                                     (trm_apps (val_set_field ltree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                               (Wptag (Wpgen_val_unlifted ``pl))))))))))
-       (Wptag (Wpgen_val_unlifted (dyn_to_val (Dyn p))))
+CODE (If_ ! isTrue (tl = leaf) Then 
+        <span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (``pl) <span class="k">in</span>
+        <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (``pl) <span class="k">in</span>
+        App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+        App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X) ;
+        $(``pl)
+      Else
+        $(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x tl tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp">
 </span></span><span class="alectryon-wsp">      </span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk28" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk28"><span class="nb">destruct</span> tl <span class="k">as</span> [| xl tll tlr];
@@ -1115,7 +543,7 @@ CODE Wpgen_if (! isTrue (tl = leaf))
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x leaf tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭
           ⟭ *⟭</div></blockquote><div class="alectryon-extra-goals"><input class="alectryon-extra-goal-toggle" id="literatetree-v-chk29" style="display: none" type="checkbox"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x, xl</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tll, tlr, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><label class="goal-separator" for="literatetree-v-chk29"><hr></label><div class="goal-conclusion">⟬* PRE @ ⟬
@@ -1123,22 +551,11 @@ CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field rtree) (``pl :: dyn_to_val (Dyn p) :: nil))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field ltree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                         (Wptag (Wpgen_val_unlifted ``pl))))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (``pl) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (``pl) <span class="k">in</span>
+      App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+      App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X) ;
+      $(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
@@ -1148,11 +565,11 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl]
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x leaf tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭
           ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk2b" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk2b">xchange &lt;- MTree_node.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ p ┆ ⟦ $MTree ┆ node x leaf tr ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
+CODE ($(dyn_to_val (Dyn p)))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬ Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x leaf tr) ⟧ ⟭ ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭
           ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><span class="alectryon-input">mxvals*.</span><span class="alectryon-wsp">
@@ -1161,22 +578,11 @@ CODE Wpgen_val_unlifted (dyn_to_val (Dyn p))
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
            ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field rtree) (``pl :: dyn_to_val (Dyn p) :: nil))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field ltree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                         (Wptag (Wpgen_val_unlifted ``pl))))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (``pl) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (``pl) <span class="k">in</span>
+      App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+      App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X) ;
+      $(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
@@ -1189,22 +595,11 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl]
              ┆ ⟬
                Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
                ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">_</span> : Enc A0) (<span class="nv">_</span> : A0) =&gt;
-        Wptag
-          (Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-             (<span class="k">fun</span> (<span class="nv">A1</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A1) (<span class="nv">X</span> : A1) =&gt;
-              Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field rtree) (``pl :: dyn_to_val (Dyn p) :: nil))))
-                   (Wptag
-                      (Wpgen_seq
-                         (Wptag
-                            (Wpgen_app_untyped
-                               (trm_apps (val_set_field ltree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                         (Wptag (Wpgen_val_unlifted ``pl))))))))
+CODE (<span class="kn">Let</span> {A0 _} _ := App (val_get_field ltree) (``pl) <span class="k">in</span>
+      <span class="kn">Let</span> {A1 EA0} X := App (val_get_field rtree) (``pl) <span class="k">in</span>
+      App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+      App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X) ;
+      $(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
@@ -1218,19 +613,10 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field ltree) ``[ pl]
              ┆ ⟬
                Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
                ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl])))
-       (<span class="k">fun</span> (<span class="nv">A0</span> : <span class="kt">Type</span>) (<span class="nv">EA0</span> : Enc A0) (<span class="nv">X</span> : A0) =&gt;
-        Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_app_untyped
-                   (trm_apps (val_set_field rtree) (``pl :: dyn_to_val (Dyn p) :: nil))))
-             (Wptag
-                (Wpgen_seq
-                   (Wptag
-                      (Wpgen_app_untyped
-                         (trm_apps (val_set_field ltree) (dyn_to_val (Dyn p) :: ``[ X]))))
-                   (Wptag (Wpgen_val_unlifted ``pl))))))
+CODE (<span class="kn">Let</span> {A0 EA0} X := App (val_get_field rtree) (``pl) <span class="k">in</span>
+      App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+      App (val_set_field ltree) (dyn_to_val (Dyn p)) (``X) ;
+      $(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
@@ -1244,15 +630,9 @@ CODE Wpgen_let (Wptag (Wpgen_app_untyped (trm_apps (val_get_field rtree) ``[ pl]
              ┆ ⟬
                Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
                ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag
-          (Wpgen_app_untyped (trm_apps (val_set_field rtree) (``pl :: dyn_to_val (Dyn p) :: nil))))
-       (Wptag
-          (Wpgen_seq
-             (Wptag
-                (Wpgen_app_untyped
-                   (trm_apps (val_set_field ltree) (dyn_to_val (Dyn p) :: ``[ plr]))))
-             (Wptag (Wpgen_val_unlifted ``pl))))
+CODE (App (val_set_field rtree) (``pl) (dyn_to_val (Dyn p)) ;
+      App (val_set_field ltree) (dyn_to_val (Dyn p)) (``plr) ;
+      $(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
@@ -1266,9 +646,8 @@ CODE Wpgen_seq
              ┆ ⟬
                Star ┆ ⟬ PointsTo ┆ p ┆ ⟦ $MNode ┆ x ┆ pl ┆ pr ⟧ ⟭
                ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_seq
-       (Wptag (Wpgen_app_untyped (trm_apps (val_set_field ltree) (dyn_to_val (Dyn p) :: ``[ plr]))))
-       (Wptag (Wpgen_val_unlifted ``pl))
+CODE (App (val_set_field ltree) (dyn_to_val (Dyn p)) (``plr) ;
+      $(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
@@ -1281,7 +660,7 @@ CODE Wpgen_seq
              Star ┆ ⟬ PointsTo ┆ pll ┆ ⟦ $MTree ┆ tll ⟧ ⟭
              ┆ ⟬ Star ┆ ⟬ PointsTo ┆ plr ┆ ⟦ $MTree ┆ tlr ⟧ ⟭ ┆ ⟬ PointsTo ┆ pr ┆ ⟦ $MTree ┆ tr ⟧ ⟭
                ⟭ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``pl
+CODE ($(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
@@ -1291,12 +670,12 @@ CODE Wpgen_val_unlifted ``pl
          ┆ ⟬
            Star ┆ ⟬ PointsTo ┆ pl ┆ ⟦ $MNode ┆ xl ┆ pll ┆ p ⟧ ⟭
            ┆ ⟬ PointsTo ┆ pll ┆ ⟦ $MTree ┆ tll ⟧ ⟭ ⟭ ⟭ *⟭
-CODE Wpgen_val_unlifted ``pl
+CODE ($(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
           ┆ ⟬ <span class="kn">Opaque</span> ┆ GC ⟭ ⟭ *⟭</div></blockquote></div></div></small><span class="alectryon-wsp"> </span></span><span class="alectryon-sentence"><input class="alectryon-toggle" id="literatetree-v-chk33" style="display: none" type="checkbox"><label class="alectryon-input" for="literatetree-v-chk33">xchange &lt;- MTree_node.</label><small class="alectryon-output"><div><div class="alectryon-goals"><blockquote class="alectryon-goal"><div class="goal-hyps"><span><var>A</var><span class="hyp-type"><b>: </b><span><span class="kt">Type</span></span></span></span><br><span><var>EA</var><span class="hyp-type"><b>: </b><span>Enc A</span></span></span><br><span><var>x, xl</var><span class="hyp-type"><b>: </b><span>A</span></span></span><br><span><var>tll, tlr, tr</var><span class="hyp-type"><b>: </b><span>tree A</span></span></span><br><span><var>p, pl, pr, pll, plr</var><span class="hyp-type"><b>: </b><span>loc</span></span></span><br></div><span class="goal-separator"><hr></span><div class="goal-conclusion">⟬* PRE @ ⟬ PointsTo ┆ pl ┆ ⟦ $MTree ┆ node xl tll (node x tlr tr) ⟧ ⟭ *⟭
-CODE Wpgen_val_unlifted ``pl
+CODE ($(``pl))
 ⟬* POST @ <span class="k">fun</span> <span class="nv">x0</span> : loc =&gt;
           ⟬
           Star ┆ ⟬ PointsTo ┆ x0 ┆ ⟦ $MTree ┆ rightRotate (node x (node xl tll tlr) tr) ⟧ ⟭
