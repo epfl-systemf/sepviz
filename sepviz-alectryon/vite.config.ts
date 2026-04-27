@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import path from 'path';
 
 export default defineConfig({
   publicDir: 'public',
@@ -7,9 +6,9 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     lib: {
-      entry: 'src/alectryon-viz.ts',
+      entry: 'src/sepviz-alectryon.ts',
       formats: ['es'],
-      fileName: () => 'alectryon-viz.js',
+      fileName: () => 'sepviz-alectryon.js',
     },
     sourcemap: true, // for debugging
   },

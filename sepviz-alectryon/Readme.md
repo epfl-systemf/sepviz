@@ -1,4 +1,4 @@
-# Alectryon-viz App
+# Sepviz-Alectryon App
 
 ## Building
 
@@ -12,8 +12,8 @@ After `npm run preview`, the `dist` folder is structured as follows:
 
 ```
 dist
-├── alectryon-viz.css
-├── alectryon-viz.js
+├── sepviz-alectryon.css
+├── sepviz-alectryon.js
 ├── cfml-examples
 │   ├── ... some other css and js files
 │   ├── the cfml example htmls, e.g., CFML-LiterateQueue.html

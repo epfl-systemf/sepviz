@@ -1,6 +1,6 @@
-import { loadRenderConfig, ResetKeywords, RenderConfig } from 'sep-viz';
-import { Render, ExtHTMLElement } from 'sep-viz';
-import 'sep-viz/sep-viz.css';
+import { loadRenderConfig, ResetKeywords, RenderConfig } from 'sepviz';
+import { Render, ExtHTMLElement } from 'sepviz';
+import 'sepviz/sepviz.css';
 
 import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';

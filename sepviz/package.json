@@ -1,5 +1,5 @@
 {
-  "name": "sep-viz",
+  "name": "sepviz",
   "version": "0.1.0",
   "type": "module",
   "description": "Visualization library for separation-logic proofs",
@@ -12,7 +12,7 @@
       "import": "./dist/*.js",
       "types": "./dist/*.d.ts"
     },
-    "./sep-viz.css": "./dist/sep-viz.css"
+    "./sepviz.css": "./dist/sepviz.css"
   },
   "types": "./dist/index.d.ts",
   "files": ["dist"],
