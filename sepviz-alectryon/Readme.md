@@ -1,14 +1,21 @@
-# Sepviz-Alectryon App
+# sepviz-alectryon
 
-## Building
+An extension to [Alectryon](https://github.com/cpitclaudel/alectryon) that uses the [sepviz](../sepviz) library to:
+- render separation-logic formulas as diagrams;
+- animate transitions between them as proof goals evolve.
 
-```
-npm install
-```
+## Setup
 
-### Example proofs generation
+Read the outer [Readme.md](../Readmd.md) for setup instructions.
+
+The following npm commands are available for this directory:
+1. `npm install`: install dependencies;
+2. `npm run preview`: build the `sepviz-alectryon` app and process pre-compiled Rocq proofs;
+3. `npm run build`: recompile Rocq proofs, and `npm run preview`.
+
+### Output
 -
-After `npm run build`, the `dist` folder is structured as follows:
+After `npm run preview`, the `dist` folder is structured as follows:
 
 ```
 dist
