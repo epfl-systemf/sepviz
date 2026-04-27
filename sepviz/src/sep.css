@@ -62,6 +62,10 @@
   font-size: 12px;
 }
 
+.sep-svg svg {
+  pointer-events: none;
+}
+
 /* Wand / Non-separating Conjunction / Disjunction */
 
 .sep-pred-container {

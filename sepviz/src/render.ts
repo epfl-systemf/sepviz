@@ -12,7 +12,7 @@ import { BaseType } from 'd3-selection';
  */
 const GraphvizOptions = {
   fit: false,
-  zoom: true,
+  zoom: false,
   keyMode: 'id' as KeyMode,
   useWorker: false,
 };
