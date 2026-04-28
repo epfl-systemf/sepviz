@@ -7,4 +7,7 @@ all:
 	npm run build
 
 clean:
-	rm -rf dist node_modules
+	rm -rf dist
+
+distclean: clean
+	rm -rf node_modules

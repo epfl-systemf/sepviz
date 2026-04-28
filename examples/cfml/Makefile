@@ -29,3 +29,5 @@ html: $(HTML_FILES) $(YAML_FILE)
 
 clean:
 	rm -f *.vo *.vok *.vos *.glob .*.aux
+
+distclean: clean

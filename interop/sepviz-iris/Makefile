@@ -21,3 +21,5 @@ install: all
 
 clean:
 	find theories -type f \( -name '*.vo' -o -name '*.vok' -o -name '*.vos' -o -name '*.glob' -o -name '.*.aux' \) -delete
+
+distclean: clean

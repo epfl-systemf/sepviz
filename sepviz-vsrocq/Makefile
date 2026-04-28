@@ -11,4 +11,6 @@ all:
 
 clean:
 	rm -rf vendor/vsrocq/client/dist vendor/vsrocq/client/*.vsix
+
+distclean: clean
 	find vendor/vsrocq/client -name node_modules -type d -prune -exec rm -rf {} +
