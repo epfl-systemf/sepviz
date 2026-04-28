@@ -14,9 +14,9 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
+      entry: 'src/sepviz.ts',
       formats: ['es'],
-      fileName: () => 'index.js',
+      fileName: () => 'sepviz.js',
     },
     rollupOptions: {
       external: ['d3', 'd3-graphviz', /^d3-/, /^@codemirror\//],

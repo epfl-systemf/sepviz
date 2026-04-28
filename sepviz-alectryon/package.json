@@ -3,23 +3,14 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "gen:proofs": "./scripts/gen_proofs.sh cfml-examples iris-tutorial software-foundations-slf",
-    "inject": "./scripts/inject.sh",
-    "build": "npm run gen:proofs && npm run inject && tsc --noEmit && vite build",
-    "preview": "npm run inject && vite build"
+    "build": "tsc --noEmit && vite build"
   },
   "dependencies": {
-    "d3-graphviz": "^5.6.0",
     "sepviz": "*"
   },
   "devDependencies": {
-    "@types/d3-ease": "^3.0.2",
-    "@types/d3-transition": "^3.0.9",
-    "prettier": "^3.6.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.1",
-    "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.0.15"
+    "vite": "^7.2.1"
   }
 }

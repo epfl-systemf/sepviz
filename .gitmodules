@@ -1,12 +1,12 @@
-[submodule "examples/cfml-examples"]
-	path = examples/cfml-examples
-	url = https://github.com/epfl-systemf/sepviz-cfml-examples.git
-[submodule "examples/iris-tutorial"]
-	path = examples/iris-tutorial
-	url = https://github.com/epfl-systemf/sepviz-iris-tutorial.git
-[submodule "examples/software-foundations-slf"]
-	path = examples/software-foundations-slf
+[submodule "interop/sepviz-cfml/vendor/cfml"]
+	path = interop/sepviz-cfml/vendor/cfml
+	url = https://github.com/yawen-guan/cfml.git
+[submodule "interop/sepviz-cfml/vendor/tlc"]
+	path = interop/sepviz-cfml/vendor/tlc
+	url = https://github.com/charguer/tlc.git
+[submodule "interop/sepviz-slf/vendor/slf"]
+	path = interop/sepviz-slf/vendor/slf
 	url = https://github.com/epfl-systemf/sepviz-software-foundations-slf.git
-[submodule "examples/software-foundations-vc"]
-	path = examples/software-foundations-vc
-	url = https://github.com/epfl-systemf/sepviz-software-foundations-vc.git
+[submodule "sepviz-vsrocq/vendor/vsrocq"]
+	path = sepviz-vsrocq/vendor/vsrocq
+	url = https://github.com/epfl-systemf/sepviz-vsrocq.git

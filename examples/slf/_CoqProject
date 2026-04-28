@@ -1,0 +1,3 @@
+-Q . Sepviz.Examples.SLF
+-Q ../../interop/sepviz-slf/theories Sepviz
+-Q ../../interop/sepviz-slf/vendor/slf SLF

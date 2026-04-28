@@ -1,0 +1,15 @@
+opam-version: "2.0"
+name: "sepviz-iris"
+synopsis: "Sepviz notations for Iris"
+authors: ["Yawen Guan" "Shardul Chiplunkar" "Clément Pit-Claudel"]
+maintainer: "clement.pit-claudel@epfl.ch"
+homepage: "https://github.com/epfl-systemf/sepviz"
+bug-reports: "https://github.com/epfl-systemf/sepviz/issues"
+license: "MIT"
+build:   [ [ make "-j%{jobs}%" ] ]
+install: [ [ make "install" "DESTDIR=%{prefix}%" ] ]
+depends: [
+  "coq" { = "8.20.1" }
+  "coq-iris" { = "4.3.0" }
+  "coq-iris-heap-lang" { = "4.3.0" }
+]

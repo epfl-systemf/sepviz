@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="528pt" height="174pt" viewBox="0.00 0.00 528.00 174.00">
+<g id="graph0" class="graph" transform="translate(0,173.8000030517578) scale(1)">
+<polygon fill="none" stroke="none" points="0,0 0,-173.8 528.06,-173.8 528.06,0 0,0"></polygon>
+<!-- b1 -->
+<g id="b1" class="node">
+<title>b1</title>
+<polyline fill="none" stroke="black" points="256.03,-155 317.44,-155"></polyline>
+<text text-anchor="start" x="257.03" y="-159.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">b1</text>
+<text text-anchor="start" x="270.23" y="-159.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">: </text>
+<text text-anchor="start" x="283.43" y="-159.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">MCell</text>
+<polyline fill="none" stroke="black" points="293.33,-155 256.03,-155 256.03,-135.8 293.33,-135.8"></polyline>
+<text text-anchor="start" x="271.38" y="-142.1" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">x</text>
+<polyline fill="none" stroke="black" points="293.33,-135.8 317.44,-135.8 317.44,-155 293.33,-155"></polyline>
+<polyline fill="none" stroke="black" points="293.33,-135.8 256.03,-135.8 256.03,-116.6 293.33,-116.6"></polyline>
+<text text-anchor="start" x="268.08" y="-122.9" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">c2</text>
+<polyline fill="none" stroke="black" points="293.33,-116.6 317.44,-116.6 317.44,-135.8 293.33,-135.8"></polyline>
+</g>
+<!-- c2 -->
+<g id="c2" class="node">
+<title>c2</title>
+<text text-anchor="start" x="350.64" y="-72.7" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">c2</text>
+<text text-anchor="start" x="363.84" y="-72.7" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">: </text>
+<text text-anchor="start" x="377.04" y="-72.7" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">MListSeg</text>
+<text text-anchor="start" x="365.49" y="-57.5" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">L2'</text>
+</g>
+<!-- b1&#45;&gt;c2 -->
+<!-- b1&#45;&gt;c2 -->
+<g id="b1-out$1-c" class="edge">
+<title>b1:c-&gt;c2:w</title>
+<path fill="none" stroke="black" d="M309.73,-122.75C312.84,-119.46 317.51,-114.3 321.04,-109.4 324.01,-105.27 336.9,-75.77 344.98,-64.85"></path>
+<ellipse fill="black" stroke="black" cx="308.13" cy="-124.41" rx="2" ry="2"></ellipse>
+<polygon fill="black" stroke="black" points="345.87,-66.4 348.49,-61.79 343.57,-63.76 345.87,-66.4"></polygon>
+</g>
+<!-- b2 -->
+<g id="b2" class="node">
+<title>b2</title>
+<polyline fill="none" stroke="black" points="463.05,-42 524.46,-42"></polyline>
+<text text-anchor="start" x="464.05" y="-46.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">b2</text>
+<text text-anchor="start" x="477.25" y="-46.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">: </text>
+<text text-anchor="start" x="490.45" y="-46.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">MCell</text>
+<polyline fill="none" stroke="black" points="500.35,-42 463.05,-42 463.05,-22.8 500.35,-22.8"></polyline>
+<text text-anchor="start" x="475.1" y="-29.1" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">d2</text>
+<polyline fill="none" stroke="black" points="500.35,-22.8 524.46,-22.8 524.46,-42 500.35,-42"></polyline>
+<polyline fill="none" stroke="black" points="500.35,-22.8 463.05,-22.8 463.05,-3.6 500.35,-3.6"></polyline>
+<text text-anchor="start" x="477.12" y="-9.9" font-family="Helvetica,sans-Serif" font-size="11.00" xml:space="preserve">∅</text>
+<polyline fill="none" stroke="black" points="500.35,-3.6 524.46,-3.6 524.46,-22.8 500.35,-22.8"></polyline>
+</g>
+<!-- c2&#45;&gt;b2 -->
+<!-- c2&#45;&gt;b2 -->
+<g id="c2-list-e" class="edge">
+<title>c2:e-&gt;b2:w</title>
+<path fill="none" stroke="black" d="M401.14,-60.8C424.28,-60.8 432.46,-60.62 451.45,-47.4 455.53,-44.56 455.54,-39.61 456.78,-36.18"></path>
+<polygon fill="black" stroke="black" points="457.77,-37.62 460.82,-33.28 455.74,-34.77 457.77,-37.62"></polygon>
+</g>
+<!-- f1 -->
+<g id="f1" class="node">
+<title>f1</title>
+<text text-anchor="start" x="143.61" y="-133.7" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">f1</text>
+<text text-anchor="start" x="156.82" y="-133.7" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">: </text>
+<text text-anchor="start" x="170.02" y="-133.7" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">MListSeg</text>
+<text text-anchor="start" x="160.12" y="-118.5" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">L1</text>
+</g>
+<!-- f1&#45;&gt;b1 -->
+<!-- f1&#45;&gt;b1 -->
+<g id="f1-list-e" class="edge">
+<title>f1:e-&gt;b1:w</title>
+<path fill="none" stroke="black" d="M190.82,-121.8C211.2,-121.8 216.73,-124.29 235.43,-132.4 238.72,-133.83 244.28,-139.44 249.13,-142.8"></path>
+<polygon fill="black" stroke="black" points="248.36,-144.38 253.64,-144.79 249.77,-141.17 248.36,-144.38"></polygon>
+</g>
+<!-- f2 -->
+<g id="f2" class="node">
+<title>f2</title>
+<polyline fill="none" stroke="black" points="256.03,-90 317.44,-90"></polyline>
+<text text-anchor="start" x="257.03" y="-94.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">f2</text>
+<text text-anchor="start" x="270.23" y="-94.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">: </text>
+<text text-anchor="start" x="283.43" y="-94.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">MCell</text>
+<polyline fill="none" stroke="black" points="293.33,-90 256.03,-90 256.03,-70.8 293.33,-70.8"></polyline>
+<text text-anchor="start" x="268.08" y="-77.1" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">d1</text>
+<polyline fill="none" stroke="black" points="293.33,-70.8 317.44,-70.8 317.44,-90 293.33,-90"></polyline>
+<polyline fill="none" stroke="black" points="293.33,-70.8 256.03,-70.8 256.03,-51.6 293.33,-51.6"></polyline>
+<text text-anchor="start" x="268.08" y="-57.9" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">c2</text>
+<polyline fill="none" stroke="black" points="293.33,-51.6 317.44,-51.6 317.44,-70.8 293.33,-70.8"></polyline>
+</g>
+<!-- f2&#45;&gt;c2 -->
+<!-- f2&#45;&gt;c2 -->
+<g id="f2-out$1-c" class="edge">
+<title>f2:c-&gt;c2:w</title>
+<path fill="none" stroke="black" d="M311.18,-61.13C317.98,-61.03 330.96,-60.86 343.28,-60.81"></path>
+<ellipse fill="black" stroke="black" cx="308.88" cy="-61.16" rx="2" ry="2"></ellipse>
+<polygon fill="black" stroke="black" points="343.13,-62.56 348.12,-60.8 343.12,-59.06 343.13,-62.56"></polygon>
+</g>
+<!-- p1 -->
+<g id="p1" class="node">
+<title>p1</title>
+<polyline fill="none" stroke="black" points="30.8,-72 92.21,-72"></polyline>
+<text text-anchor="start" x="31.8" y="-76.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">p1</text>
+<text text-anchor="start" x="45" y="-76.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">: </text>
+<text text-anchor="start" x="58.21" y="-76.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">MCell</text>
+<polyline fill="none" stroke="black" points="68.11,-72 30.8,-72 30.8,-52.8 68.11,-52.8"></polyline>
+<text text-anchor="start" x="42.85" y="-59.1" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">f1</text>
+<polyline fill="none" stroke="black" points="68.11,-52.8 92.21,-52.8 92.21,-72 68.11,-72"></polyline>
+<polyline fill="none" stroke="black" points="68.11,-52.8 30.8,-52.8 30.8,-33.6 68.11,-33.6"></polyline>
+<text text-anchor="start" x="42.85" y="-39.9" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">b2</text>
+<polyline fill="none" stroke="black" points="68.11,-33.6 92.21,-33.6 92.21,-52.8 68.11,-52.8"></polyline>
+</g>
+<!-- p1&#45;&gt;b2 -->
+<!-- p1&#45;&gt;b2 -->
+<g id="p1-out$1-c" class="edge">
+<title>p1:c-&gt;b2:w</title>
+<path fill="none" stroke="black" d="M83.71,-39.04C89.34,-30.42 103.78,-11.4 121.41,-11.4 121.41,-11.4 121.41,-11.4 442.45,-11.4 452.62,-11.4 450.92,-24.74 456.27,-30.15"></path>
+<ellipse fill="black" stroke="black" cx="82.47" cy="-41.07" rx="2" ry="2"></ellipse>
+<polygon fill="black" stroke="black" points="455.34,-31.67 460.64,-31.85 456.61,-28.41 455.34,-31.67"></polygon>
+</g>
+<!-- p1&#45;&gt;f1 -->
+<!-- p1&#45;&gt;f1 -->
+<g id="p1-out$0-c" class="edge">
+<title>p1:c-&gt;f1:w</title>
+<path fill="none" stroke="black" d="M84.29,-65.94C93.87,-76.73 123.05,-109.08 136.79,-118.92"></path>
+<ellipse fill="black" stroke="black" cx="82.81" cy="-64.27" rx="2" ry="2"></ellipse>
+<polygon fill="black" stroke="black" points="136,-120.49 141.26,-121.13 137.55,-117.35 136,-120.49"></polygon>
+</g>
+<!-- p1$ptr -->
+<g id="p1$ptr" class="node">
+<title>p1$ptr</title>
+<text text-anchor="middle" x="9.6" y="-68.4" font-family="Courier,monospace" font-size="10.00" xml:space="preserve">p1</text>
+</g>
+<!-- p1$ptr&#45;&gt;p1 -->
+<g id="p1$ptr-e" class="edge">
+<title>p1$ptr:e-&gt;p1:nw</title>
+<path fill="none" stroke="black" d="M19.2,-71.4C20.82,-71.4 22.19,-71.87 23.42,-72.34"></path>
+<polygon fill="black" stroke="black" points="23.39,-74.09 28.29,-72.08 23.2,-70.6 23.39,-74.09"></polygon>
+</g>
+<!-- p2 -->
+<g id="p2" class="node">
+<title>p2</title>
+<polyline fill="none" stroke="black" points="152.52,-76 213.92,-76"></polyline>
+<text text-anchor="start" x="153.52" y="-80.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">p2</text>
+<text text-anchor="start" x="166.72" y="-80.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">: </text>
+<text text-anchor="start" x="179.92" y="-80.3" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">MCell</text>
+<polyline fill="none" stroke="black" points="189.82,-76 152.52,-76 152.52,-56.8 189.82,-56.8"></polyline>
+<text text-anchor="start" x="164.57" y="-63.1" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">f2</text>
+<polyline fill="none" stroke="black" points="189.82,-56.8 213.92,-56.8 213.92,-76 189.82,-76"></polyline>
+<polyline fill="none" stroke="black" points="189.82,-56.8 152.52,-56.8 152.52,-37.6 189.82,-37.6"></polyline>
+<text text-anchor="start" x="164.57" y="-43.9" font-family="Courier,monospace" font-size="11.00" xml:space="preserve">b2</text>
+<polyline fill="none" stroke="black" points="189.82,-37.6 213.92,-37.6 213.92,-56.8 189.82,-56.8"></polyline>
+</g>
+<!-- p2&#45;&gt;b2 -->
+<!-- p2&#45;&gt;b2 -->
+<g id="p2-out$1-c" class="edge">
+<title>p2:c-&gt;b2:w</title>
+<path fill="none" stroke="black" d="M206.93,-44.45C214.01,-39.92 229.22,-31.4 243.43,-31.4 243.43,-31.4 243.43,-31.4 442.45,-31.4 448.58,-31.4 451.47,-31.89 455.67,-32.19"></path>
+<ellipse fill="black" stroke="black" cx="204.94" cy="-45.8" rx="2" ry="2"></ellipse>
+<polygon fill="black" stroke="black" points="455.48,-33.93 460.54,-32.35 455.6,-30.43 455.48,-33.93"></polygon>
+</g>
+<!-- p2&#45;&gt;f2 -->
+<!-- p2&#45;&gt;f2 -->
+<g id="p2-out$0-c" class="edge">
+<title>p2:c-&gt;f2:w</title>
+<path fill="none" stroke="black" d="M207.64,-66.9C215.52,-67.86 231.68,-70.29 244.43,-75.4 246.54,-76.25 247.84,-77.31 249.06,-78.24"></path>
+<ellipse fill="black" stroke="black" cx="205.36" cy="-66.66" rx="2" ry="2"></ellipse>
+<polygon fill="black" stroke="black" points="248.31,-79.83 253.6,-79.88 249.5,-76.54 248.31,-79.83"></polygon>
+</g>
+<!-- p2$ptr -->
+<g id="p2$ptr" class="node">
+<title>p2$ptr</title>
+<text text-anchor="middle" x="122.41" y="-72.4" font-family="Courier,monospace" font-size="10.00" xml:space="preserve">p2</text>
+</g>
+<!-- p2$ptr&#45;&gt;p2 -->
+<g id="p2$ptr-e" class="edge">
+<title>p2$ptr:e-&gt;p2:nw</title>
+<path fill="none" stroke="black" d="M132.01,-75.4C137.84,-75.4 141.87,-78.44 145.75,-78.57"></path>
+<polygon fill="black" stroke="black" points="146.28,-80.25 150.13,-76.62 144.85,-77.06 146.28,-80.25"></polygon>
+</g>
+</g>
+</svg>

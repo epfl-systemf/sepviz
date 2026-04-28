@@ -1,12 +1,12 @@
 {
   "name": "sepviz",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Visualization library for separation-logic proofs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/sepviz.js",
+      "types": "./dist/sepviz.d.ts"
     },
     "./*": {
       "import": "./dist/*.js",
@@ -14,7 +14,7 @@
     },
     "./sepviz.css": "./dist/sepviz.css"
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/sepviz.d.ts",
   "files": ["dist"],
   "scripts": {
     "build": "tsc --noEmit && vite build",
@@ -22,15 +22,14 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@types/d3-ease": "^3.0.2",
     "@types/d3-graphviz": "^2.6.10",
-    "@types/d3-selection": "^3.0.11",
+    "@types/d3-transition": "^1",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^24.12.2",
     "d3-selection": "*",
-    "lodash": "^4.17.21",
     "peggy": "^5.1.0",
-    "prettier": "^3.6.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.1",
@@ -40,6 +39,7 @@
   "dependencies": {
     "d3-ease": "^3.0.1",
     "d3-graphviz": "^5.6.0",
+    "d3-transition": "^3.0.1",
     "js-yaml": "^4.1.0",
     "lodash.merge": "^4.6.2"
   }

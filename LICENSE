@@ -1,0 +1,43 @@
+MIT License
+
+Copyright (c) 2024-2026 EPFL SYSTEMF
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----
+
+The following directories contain third-party code:
+
+- interop/sepviz-cfml/vendor/cfml/
+  MIT (Arthur Charguéraud)
+- interop/sepviz-cfml/vendor/tlc/
+  MIT (Arthur Charguéraud)
+- interop/sepviz-slf/vendor/slf/
+  MIT, derived from Software Foundations (Arthur Charguéraud).
+- sepviz-vsrocq/
+  MIT (the VsRocq team and contributors).
+
+The following files derive from third-party materials:
+
+- examples/cfml/{LiterateQueue,LiterateTree}.v:
+  CC-by 4.0, derived from the CFML mutable queue tutorial
+- examples/iris/LinkedLists.v
+  MIT, derived from github.com/logsem/iris-tutorial
+- examples/slf/SLFExample.v
+  MIT, derived from the SLF "Repr" chapter
