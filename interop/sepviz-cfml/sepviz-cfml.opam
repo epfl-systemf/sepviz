@@ -3,6 +3,8 @@ name: "sepviz-cfml"
 synopsis: "Sepviz notations for CFML"
 authors: ["Yawen Guan" "Shardul Chiplunkar" "Clément Pit-Claudel"]
 maintainer: "clement.pit-claudel@epfl.ch"
+homepage: "https://github.com/epfl-systemf/sepviz"
+bug-reports: "https://github.com/epfl-systemf/sepviz/issues"
 license: "MIT"
 build:   [ [ make "-j%{jobs}%" ] ]
 install: [ [ make "install" "DESTDIR=%{prefix}%" ] ]
