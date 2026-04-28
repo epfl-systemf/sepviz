@@ -2,8 +2,9 @@ import { RenderConfig } from './config';
 import { assert, createElement } from './utility';
 import * as AST from './parser';
 import { DotBuilder } from './dot-builder';
-import { graphviz, KeyMode, Graphviz } from 'd3-graphviz';
-import { BaseType } from 'd3-selection';
+import { graphviz, KeyMode } from 'd3-graphviz';
+import { Transition, transition } from 'd3-transition';
+import { easeCubicInOut } from 'd3-ease';
 
 /**
  * https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
@@ -17,8 +18,14 @@ const GraphvizOptions = {
   useWorker: false,
 };
 
+interface GraphvizInstance {
+  transition(factory: () => Transition<any, any, any, any>): GraphvizInstance;
+  renderDot(dot: string): GraphvizInstance;
+  on(event: 'end', cb: () => void): GraphvizInstance;
+}
+
 export type ExtHTMLElement = HTMLElement & {
-  __graphviz__?: Graphviz<BaseType, any, BaseType, any>;
+  __graphviz__?: GraphvizInstance;
   dot?: string;
   goalReset?: boolean;
 };
@@ -26,9 +33,13 @@ export type ExtHTMLElement = HTMLElement & {
 export class Render {
   private readonly parser: AST.Parser;
   private counts: Record<string, number>;
+  private rendering: Set<string>;
+  private prevDots: Map<string, string | undefined>;
   constructor(private readonly config: RenderConfig) {
     this.parser = new AST.Parser(config);
     this.counts = {};
+    this.rendering = new Set<string>();
+    this.prevDots = new Map();
   }
 
   private nextVid(stream: string): string {
@@ -56,6 +67,46 @@ export class Render {
         goalNode.append(host);
       } else {
         goalNode.append(createElement('span', [], { text: seg })); // string
+      }
+    });
+  }
+
+  public async animate(host: HTMLElement, duration = 2000) {
+    ['PRE', 'POST'].forEach(async (stream) => {
+      const vizNode = host.querySelector<HTMLElement>(
+        `.sep-visualization.sep-stream-${stream}`
+      );
+      const prevDot = this.prevDots.get(stream);
+      const svgNode = vizNode?.querySelector<ExtHTMLElement>('.sep-svg');
+      const gviz = svgNode?.__graphviz__;
+      const currDot = svgNode?.dot;
+      this.prevDots.set(stream, currDot);
+
+      if (!vizNode || !gviz || !currDot || !prevDot || prevDot === currDot)
+        return;
+      const vid = vizNode.id;
+      if (!vid || this.rendering.has(vid)) return;
+
+      this.rendering.add(vid);
+      try {
+        // render the previous diagram instantly
+        await new Promise<void>((resolve) => {
+          gviz
+            .transition(() => transition().duration(0))
+            .renderDot(prevDot)
+            .on('end', resolve);
+        });
+        // transition to the current diagram
+        await new Promise<void>((resolve) => {
+          gviz
+            .transition(() =>
+              transition().duration(duration).ease(easeCubicInOut)
+            )
+            .renderDot(currDot)
+            .on('end', resolve);
+        });
+      } finally {
+        this.rendering.delete(vid);
       }
     });
   }
