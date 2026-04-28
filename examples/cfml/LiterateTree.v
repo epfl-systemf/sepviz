@@ -2,6 +2,7 @@
 .. coq:: none
 |*)
 
+#[warnings="-notation-overridden -ambiguous-paths -notation-incompatible-prefix"]
 From Sepviz Require Import WPUntyped CFMLNotations.
 
 Ltac auto_star ::=

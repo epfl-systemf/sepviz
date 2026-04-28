@@ -1,11 +1,13 @@
 (** * Repr: Representation Predicates *)
 
 Set Implicit Arguments.
+#[warnings="-notation-overridden -ambiguous-paths -notation-incompatible-prefix"]
 From SLF Require Import LibSepReference.
 Import ProgramSyntax DemoPrograms.
 From SLF Require Import Basic.
 Open Scope liblist_scope.
 
+#[warnings="-notation-overridden -ambiguous-paths -notation-incompatible-prefix"]
 From Sepviz Require Import SLFNotations.
 
 Implicit Types n m : int.

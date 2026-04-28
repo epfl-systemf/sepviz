@@ -13,6 +13,7 @@ License: CC-by 4.0.
 Modified by Yawen.
  *)
 
+#[warnings="-notation-overridden -ambiguous-paths -notation-incompatible-prefix"]
 From Sepviz Require Import WPUntyped CFMLNotations.
 From Sepviz.Examples.CFML Require Import ListNull.
 
