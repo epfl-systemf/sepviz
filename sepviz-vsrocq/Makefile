@@ -1,5 +1,7 @@
 .PHONY: init all clean
 
+export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+
 init:
 	cd vendor/vsrocq/client && yarn install && yarn run install:all
 
