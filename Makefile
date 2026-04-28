@@ -11,3 +11,6 @@ clean: $(SUBDIRS:%=clean-%)
 $(SUBDIRS:%=init-%):  init-%:  ; +$(MAKE) -C $* init
 $(SUBDIRS:%=all-%):   all-%:   ; +$(MAKE) -C $* all
 $(SUBDIRS:%=clean-%): clean-%: ; +$(MAKE) -C $* clean
+
+serve-examples:
+	+$(MAKE) -C examples serve

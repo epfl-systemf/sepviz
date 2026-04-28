@@ -6,16 +6,20 @@ COQ_FLAGS       := $(shell cat _CoqProject)
 
 VO_FILES   := $(patsubst %.v,%.vo,$(wildcard *.v))
 HTML_FILES := $(DEMOS:%=../_build/iris/%.html)
+YAML_FILE  := ../_build/iris/sepviz.yaml
 
 .PHONY: all coq html clean
 
 all: coq html
 
 coq:  $(VO_FILES)
-html: $(HTML_FILES)
+html: $(HTML_FILES) $(YAML_FILE)
 
 %.vo: %.v _CoqProject
 	coqc $(COQ_FLAGS) $<
+
+../_build/iris/%: %
+	cp $< $@
 
 ../_build/iris/%.html: %.v %.vo ../sepviz.yaml | ../_build/iris
 	$(ALECTRYON) $(COQ_FLAGS) $(ALECTRYON_FLAGS) -o $@ $<

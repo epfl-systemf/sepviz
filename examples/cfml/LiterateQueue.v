@@ -1,9 +1,4 @@
 (*|
-.. raw:: html
-
-   <link rel="stylesheet" href="../sepviz-alectryon.css" />
-   <script type="module" src="../sepviz-alectryon.js"></script>
-
 .. coq:: none
 |*)
 
@@ -132,3 +127,10 @@ Ltac auto_tilde ::= auto_tilde_default.
 (* Qed. *)
 
 (* TODO: disable RET notation in TRIPLE *)
+
+(*|
+.. raw:: html
+
+   <link rel="stylesheet" href="../sepviz-alectryon.css" />
+   <script type="module" src="../sepviz-alectryon.js"></script>
+|*)

@@ -1,9 +1,4 @@
 (*|
-.. raw:: html
-
-   <link rel="stylesheet" href="../sepviz-alectryon.css" />
-   <script type="module" src="../sepviz-alectryon.js"></script>
-
 .. coq:: none
 |*)
 
@@ -318,3 +313,10 @@ Admitted.
 END TEMPLATE *)
 
 End linked_lists.
+
+(*|
+.. raw:: html
+
+   <link rel="stylesheet" href="../sepviz-alectryon.css" />
+   <script type="module" src="../sepviz-alectryon.js"></script>
+|*)

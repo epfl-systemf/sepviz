@@ -1,9 +1,4 @@
 (*|
-.. raw:: html
-
-   <link rel="stylesheet" href="../sepviz-alectryon.css" />
-   <script type="module" src="../sepviz-alectryon.js"></script>
-
 .. coq:: none
 |*)
 
@@ -265,3 +260,10 @@ End TreeApiSpecs.
 
 Ltac auto_star ::= auto_star_default.
 Ltac auto_tilde ::= auto_tilde_default.
+
+(*|
+.. raw:: html
+
+   <link rel="stylesheet" href="../sepviz-alectryon.css" />
+   <script type="module" src="../sepviz-alectryon.js"></script>
+|*)

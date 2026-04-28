@@ -1,9 +1,4 @@
 (*|
-.. raw:: html
-
-   <link rel="stylesheet" href="../sepviz-alectryon.css" />
-   <script type="module" src="../sepviz-alectryon.js"></script>
-
 .. coq:: none
 |*)
 
@@ -141,5 +136,8 @@ Qed.
 End queues.
 
 (*|
-.. coq:: none
+.. raw:: html
+
+   <link rel="stylesheet" href="../sepviz-alectryon.css" />
+   <script type="module" src="../sepviz-alectryon.js"></script>
 |*)

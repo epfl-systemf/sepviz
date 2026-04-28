@@ -1,10 +1,3 @@
-(*|
-.. raw:: html
-
-   <link rel="stylesheet" href="../sepviz-alectryon.css" />
-   <script type="module" src="../sepviz-alectryon.js"></script>
-|*)
-
 (** * Repr: Representation Predicates *)
 
 Set Implicit Arguments.
@@ -1641,3 +1634,10 @@ Proof using. (* FILL IN HERE *) Admitted.
     found in the companion course notes, linked in the [Preface]. *)
 
 (* 2026-01-07 13:36 *)
+
+(*|
+.. raw:: html
+
+   <link rel="stylesheet" href="../sepviz-alectryon.css" />
+   <script type="module" src="../sepviz-alectryon.js"></script>
+|*)
