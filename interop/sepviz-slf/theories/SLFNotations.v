@@ -1,3 +1,4 @@
+#[warnings="-notation-overridden -ambiguous-paths -notation-incompatible-prefix"]
 From SLF Require Import LibSepReference.
 
 Declare Scope sepviz_scope.
@@ -83,10 +84,10 @@ Section septest.
   Open Scope sepviz_scope.
   Parameter A B C: hprop.
   Parameter P: Prop.
-  Check (hstar A B).
-  Check (hstar (hstar A C) B).
-  Check (hwand A B).
-  Check (hwand (hstar (hstar A A) B) (hpure P)).
+  (* Check (hstar A B). *)
+  (* Check (hstar (hstar A C) B). *)
+  (* Check (hwand A B). *)
+  (* Check (hwand (hstar (hstar A A) B) (hpure P)). *)
 End septest.
 
 

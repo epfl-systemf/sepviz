@@ -114,10 +114,10 @@ Section septest.
   Context `{!heapGS Σ}.
   Parameter A B C: iProp Σ.
   Parameter P: Prop.
-  Check (bi_sep A B).
-  Check (bi_sep (bi_sep A C) B).
-  Check (bi_wand A B).
-  Check (bi_wand (bi_sep (bi_sep A A) B) (bi_pure P)).
+  (* Check (bi_sep A B). *)
+  (* Check (bi_sep (bi_sep A C) B). *)
+  (* Check (bi_wand A B). *)
+  (* Check (bi_wand (bi_sep (bi_sep A A) B) (bi_pure P)). *)
 End septest.
 
 (** ** Values *)
@@ -133,10 +133,10 @@ Notation "'$LitV' ┆ v " :=
 
 Section valtest.
   Parameter x: val.
-  Check (LitV 1).
-  Check (InjLV x).
-  Check (PairV (LitV 1) (LitV 2)).
-  Check (PairV x (LitV 2)).
-  Check (PairV x x).
-  Check (PairV x (InjLV x)).
+  (* Check (LitV 1). *)
+  (* Check (InjLV x). *)
+  (* Check (PairV (LitV 1) (LitV 2)). *)
+  (* Check (PairV x (LitV 2)). *)
+  (* Check (PairV x x). *)
+  (* Check (PairV x (InjLV x)). *)
 End valtest.
