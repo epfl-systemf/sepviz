@@ -859,10 +859,7 @@ Fixpoint MTree (T:tree) (p:loc) : hprop :=
       \* (MTree T2 p2)
   end.
 
-Notation "'PointsTo' ┆ p ┆ ⟦ '$MTree' ┆ x ⟧" :=
-  (MTree x p)
-    (in custom sep at level 200,
-     p constr, x constr at level 200): sepviz_scope.
+(** SEPVIZ add Notation here **)
 
 (* ================================================================= *)
 (** ** Alternative Characterization of [MTree] *)

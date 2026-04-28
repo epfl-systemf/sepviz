@@ -12,11 +12,6 @@ constr:
     args:
       0:
         inTable: true
-  '$MTree':
-    label: 'MTree'
-    args:
-      0:
-        inTable: true
   '$Record2_val':
     label: 'Record'
     drawBorder: true
