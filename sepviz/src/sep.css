@@ -66,6 +66,10 @@
   pointer-events: none;
 }
 
+.sep-diagram:has(.sep-svg) {
+  background: #eeeeec;
+}
+
 /* Wand / Non-separating Conjunction / Disjunction */
 
 .sep-pred-container {
