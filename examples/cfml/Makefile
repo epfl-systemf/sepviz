@@ -21,7 +21,7 @@ html: $(HTML_FILES) $(YAML_FILE)
 ../_build/cfml/%: %
 	cp $< $@
 
-../_build/cfml/%.html: %.v %.vo ../sepviz.yaml | ../_build/cfml
+../_build/cfml/%.html: %.v %.vo | ../_build/cfml
 	$(ALECTRYON) $(COQ_FLAGS) $(ALECTRYON_FLAGS) -o $@ $<
 
 ../_build/cfml:

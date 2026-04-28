@@ -21,7 +21,7 @@ html: $(HTML_FILES) $(YAML_FILE)
 ../_build/iris/%: %
 	cp $< $@
 
-../_build/iris/%.html: %.v %.vo ../sepviz.yaml | ../_build/iris
+../_build/iris/%.html: %.v %.vo | ../_build/iris
 	$(ALECTRYON) $(COQ_FLAGS) $(ALECTRYON_FLAGS) -o $@ $<
 
 ../_build/iris:
