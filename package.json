@@ -1,0 +1,3 @@
+{
+  "workspaces": ["sepviz", "sepviz-alectryon"]
+}
