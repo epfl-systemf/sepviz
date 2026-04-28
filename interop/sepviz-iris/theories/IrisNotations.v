@@ -7,6 +7,7 @@ Global Open Scope sepviz_scope.
 (** ** Separation-logic formulas: heap props *)
 
 Declare Custom Entry sep.
+Declare Custom Entry val.
 
 Notation "⟬ e ⟭" :=
   (e)
@@ -17,10 +18,10 @@ Notation "'Pure' ┆ P" :=
     (in custom sep at level 200,
      P constr at level 200): sepviz_scope.
 
-Notation "'PointsTo' ┆ l ┆ v ┆ dq " :=
+Notation "'PointsTo' ┆ l ┆ ⟦ v ⟧ ┆ dq " :=
   (pointsto l dq v)
     (in custom sep at level 200,
-     l constr, dq constr, v constr at level 200): sepviz_scope.
+     l constr, dq constr, v custom val at level 200): sepviz_scope.
 
 Notation "'PointsTo' ┆ l ┆ ⟦ $Basic ┆ v ⟧ ┆ dq " :=
   (pointsto l dq v)
@@ -120,8 +121,6 @@ Section septest.
 End septest.
 
 (** ** Values *)
-
-Declare Custom Entry val.
 
 Notation "⟦ e ⟧" :=
   (e)

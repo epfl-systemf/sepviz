@@ -101,10 +101,10 @@ Notation "⟦ e ⟧" :=
 
 (** ** slf framework specific *)
 
-Notation "'PointsTo' ┆ p ┆ x" :=
+Notation "'PointsTo' ┆ p ┆ ⟦ x ⟧" :=
   (hrecord x p)
     (in custom sep at level 200,
-     p constr, x constr at level 200): sepviz_scope.
+     p constr, x custom val at level 200): sepviz_scope.
 
 Notation "'$Record2_val' ┆ k1 ┆ v1 ┆ k2 ┆ v2" :=
   ((k1,(v1:val))::(k2,(v2:val))::nil)
