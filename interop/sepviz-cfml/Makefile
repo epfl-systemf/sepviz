@@ -13,7 +13,7 @@ all: vendor $(VO_FILES)
 
 vendor:
 	+$(MAKE) -C vendor/tlc
-	+$(MAKE) -C vendor/cfml .depend_lib
+	+$(MAKE) -C vendor/cfml .depend_lib COQEXTRAFLAGS="-Q ../tlc/src TLC"
 	+$(MAKE) -C vendor/cfml libcoq COQEXTRAFLAGS="-Q ../tlc/src TLC"
 
 $(VO_FILES): | vendor
