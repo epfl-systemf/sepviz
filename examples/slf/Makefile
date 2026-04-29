@@ -18,7 +18,7 @@ html: $(HTML_FILES) $(YAML_FILE)
 %.vo: %.v _CoqProject
 	coqc $(COQ_FLAGS) $<
 
-../_build/slf/%: %
+../_build/slf/%: % | ../_build/slf
 	cp $< $@
 
 ../_build/slf/%.html: %.v %.vo | ../_build/slf

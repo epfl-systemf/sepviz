@@ -18,7 +18,9 @@ html: $(HTML_FILES) $(YAML_FILE)
 %.vo: %.v _CoqProject
 	coqc $(COQ_FLAGS) $<
 
-../_build/cfml/%: %
+LiterateQueue.vo: ListNull.vo
+
+../_build/cfml/%: % | ../_build/cfml
 	cp $< $@
 
 ../_build/cfml/%.html: %.v %.vo | ../_build/cfml

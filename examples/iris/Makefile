@@ -18,7 +18,7 @@ html: $(HTML_FILES) $(YAML_FILE)
 %.vo: %.v _CoqProject
 	coqc $(COQ_FLAGS) $<
 
-../_build/iris/%: %
+../_build/iris/%: % | ../_build/iris
 	cp $< $@
 
 ../_build/iris/%.html: %.v %.vo | ../_build/iris
