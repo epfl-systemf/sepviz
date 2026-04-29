@@ -6,7 +6,7 @@ An extension to [Alectryon](https://github.com/cpitclaudel/alectryon) that uses 
 
 ## Setup
 
-Read the outer [Readme.md](../Readmd.md) for setup instructions.
+Read the outer [Readme.md](../Readme.md) for setup instructions.
 
 The following npm commands are available for this directory:
 1. `npm install`: install dependencies;
