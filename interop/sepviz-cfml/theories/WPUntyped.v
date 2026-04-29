@@ -4,6 +4,7 @@ formulas [Wpgen]. *)
 
 (* TODO: rename this file? *)
 
+#[warnings="-notation-incompatible-prefix -ambiguous-paths"]
 From CFML Require Export WPLib.
 
 Set Implicit Arguments.
@@ -12,13 +13,15 @@ Set Implicit Arguments.
 (** * Display notations for untyped CF constructs *)
 
 (** ** New notations. *)
+Declare Scope cfu_scope.
+Global Open Scope cfu_scope.
 
 Notation "'$' v" :=
  (Wptag (Wpgen_val_unlifted v))
  (in custom cf at level 69,
   v constr at level 0,
   only printing,
-  format "'$' v") : cf_scope.
+  format "'$' v") : cfu_scope.
 
 Notation "'Let' '{' A E '}' x ':=' F1 'in' F2" :=
  (Wptag (Wpgen_let F1 (fun A E x => F2)))
@@ -28,7 +31,7 @@ Notation "'Let' '{' A E '}' x ':=' F1 'in' F2" :=
   F1 custom cf at level 99,
   F2 custom cf at level 99,
   right associativity,
-  format "'[v' '[' 'Let'  '{' A  E '}'  x  ':='  F1  'in' ']' '/' '[' F2 ']' ']'") : cf_scope.
+  format "'[v' '[' 'Let'  '{' A  E '}'  x  ':='  F1  'in' ']' '/' '[' F2 ']' ']'") : cfu_scope.
 
 Notation "'App' f v1 .. vn" :=
  (Wptag (Wpgen_app_untyped (trm_apps f (trms_vals (@cons val v1 .. (@cons val vn (@nil val)) ..)))))
@@ -36,7 +39,7 @@ Notation "'App' f v1 .. vn" :=
   only printing,
   f constr at level 0,
   v1 constr at level 0,
-  vn constr at level 0) : cf_scope.
+  vn constr at level 0) : cfu_scope.
 
 Notation "'App' f v1 v2 .. vn" :=
  (Wptag (Wpgen_app_untyped (trm_apps f (trms_vals (@cons val v1 (@cons val v2 .. (@cons val vn (@nil val)) ..))))))
@@ -45,7 +48,7 @@ Notation "'App' f v1 v2 .. vn" :=
   f constr at level 0,
   v1 constr at level 0,
   v2 constr at level 0,
-  vn constr at level 0) : cf_scope.
+  vn constr at level 0) : cfu_scope.
 
 Notation "F1 ; F2" :=
  (Wptag (Wpgen_seq F1 F2))
@@ -54,7 +57,7 @@ Notation "F1 ; F2" :=
   F1 custom cf at level 99,
   F2 custom cf at level 99,
   right associativity,
-  format "'[v' '[' F1 ']'  ; '/' '[' F2 ']' ']'") : cf_scope.
+  format "'[v' '[' F1 ']'  ; '/' '[' F2 ']' ']'") : cfu_scope.
 
 Notation "'Bind' x ':' T 'In' F ; Q" :=
  (fun x : T => F _ _ Q)
@@ -64,7 +67,7 @@ Notation "'Bind' x ':' T 'In' F ; Q" :=
   F custom cf at level 0,
   Q constr at level 200,
   right associativity,
-  format "'[v' '[' 'Bind'  x  ':'  T  'In' ']' '/' '[' F ']' '/' ; '/' '[' Q ']' ']'") : cf_scope.
+  format "'[v' '[' 'Bind'  x  ':'  T  'In' ']' '/' '[' F ']' '/' ; '/' '[' Q ']' ']'") : cfu_scope.
 
 (** ** Overwritten notations. *)
 
@@ -76,7 +79,7 @@ Notation "'Let' x ':=' F1 'in' F2" :=
   F1 custom cf at level 99,
   F2 custom cf at level 99,
   right associativity,
-  format "'[v' '[' 'Let'  x  ':='  F1  'in' ']' '/' '[' F2 ']' ']'") : cf_scope.
+  format "'[v' '[' 'Let'  x  ':='  F1  'in' ']' '/' '[' F2 ']' ']'") : cfu_scope.
 
 Notation "'If_' v 'Then' F1 'Else' F2" :=
  (Wptag (Wpgen_if v F1 F2))
@@ -86,7 +89,7 @@ Notation "'If_' v 'Then' F1 'Else' F2" :=
   F1 custom cf at level 99,
   F2 custom cf at level 99,
   left associativity,
-  format "'[v' '[' 'If_'  v  'Then'  ']' '/' '['   F1 ']' '/' 'Else' '/' '['   F2 ']' ']'") : cf_scope.
+  format "'[v' '[' 'If_'  v  'Then'  ']' '/' '['   F1 ']' '/' 'Else' '/' '['   F2 ']' ']'") : cfu_scope.
 
 (* ========================================================================== *)
 (**  [Wpgen_let] *)
@@ -406,3 +409,6 @@ Proof.
 Qed.
 
 Ltac auto_tilde ::= auto_tilde_default.
+
+#[export] Set Warnings
+  "-notation-overridden,-notation-incompatible-prefix,-ambiguous-paths".

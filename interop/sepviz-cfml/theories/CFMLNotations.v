@@ -98,3 +98,6 @@ End septest.
 Notation "⟦ e ⟧" :=
   (e)
     (e custom val at level 200, at level 0): sepviz_scope.
+
+#[export] Set Warnings
+  "-notation-overridden,-notation-incompatible-prefix,-ambiguous-paths".
