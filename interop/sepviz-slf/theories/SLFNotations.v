@@ -55,24 +55,29 @@ Notation "'IfThenElse' ┆ ⟬ 'Pure' ┆ P ⟭ ┆ v1 ┆ v2" :=
 
 (** ** Separation-logic formulas: props *)
 
+#[warnings="-notation-incompatible-prefix"]
 Notation "'SPEC' t ⟬* 'PRE' @ H *⟭ ⟬* 'POST' @ Q *⟭" :=
   (triple t H Q)
     (at level 200,
      t constr, H constr, Q constr at level 200,
+     only printing,
      format "'SPEC'  t '//' '⟬*'  'PRE'  '@'  H  '*⟭' '//' '⟬*'  'POST'  '@'  Q  '*⟭'"): sepviz_scope.
 
 Notation "⟬* 'PRE' @ H *⟭ 'CODE' F ⟬* 'POST' @ Q *⟭" :=
   (himpl H (mkstruct F Q))
     (at level 200,
      H constr, F constr, Q constr at level 200,
+     only printing,
      format "'⟬*'  'PRE'  '@'  H  '*⟭' '//' 'CODE'  F '//' '⟬*'  'POST'  '@'  Q  '*⟭'"): sepviz_scope.
 
 (* For continuous animation *)
+#[warnings="-notation-incompatible-prefix"]
 Notation "⟬* 'PRE' @ H1 '*⟭' ==> ⟬* 'POST' @ H2 *⟭" :=
   (himpl H1 H2)
     (at level 200,
      H1 constr at level 200,
      H2 constr at level 200,
+     only printing,
      format "'⟬*'  'PRE'  '@'  H1  '*⟭' '==>' '⟬*'  'POST'  '@'  H2  '*⟭'"): sepviz_scope.
 
 

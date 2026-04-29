@@ -51,6 +51,7 @@ Notation "'Opaque' ┆ 'emp'" :=
 
 (** ** Separation-logic formulas: props *)
 
+#[warnings="-notation-incompatible-prefix"]
 Notation "'SPEC' t ⟬* 'PRE' @ H *⟭ ⟬* 'POST' @ Q *⟭" :=
   (Triple t H Q)
     (at level 200,
@@ -64,13 +65,16 @@ Notation "⟬* 'PRE' @ H *⟭ 'CODE' F ⟬* 'POST' @ Q *⟭" :=
      H constr,
      F custom cf at level 0,
      Q constr at level 200,
+     only printing,
      format "'⟬*'  'PRE'  '@'  H  '*⟭' '//' 'CODE'  F '//' '⟬*'  'POST'  '@'  Q  '*⟭'"): sepviz_scope.
 
 (* For continuous animation *)
+#[warnings="-notation-incompatible-prefix"]
 Notation "⟬* 'PRE' @ H1 *⟭ ==> ⟬* 'POST' @ H2 *⟭" :=
   (himpl H1 H2)
     (at level 200,
      H1 constr, H2 constr at level 200,
+     only printing,
      format "'⟬*'  'PRE'  '@'  H1  '*⟭' '==>' '⟬*'  'POST'  '@'  H2  '*⟭'"): sepviz_scope.
 
 
