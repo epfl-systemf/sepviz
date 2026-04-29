@@ -14,5 +14,7 @@ A library for visualizing and animating separation-logic formulas as memory diag
 
 - [examples](./examples): Examples of integration with CFML, SLF, and Iris.
 
-Use `make init` to {OPAM,npm,pip} dependencies, then `make all` to build everything.
-Use `make serve` and browse to `localhost:8080` to view generated examples.
+This library works with Coq 8.20.1 (most of the separation-logic libraries that we target have not yet been ported to Rocq 9):
+
+- Use `make init` to {OPAM,npm,pip} dependencies, then `make all` to build everything.
+- Use `make serve` and browse to `localhost:8080` to view generated examples.
