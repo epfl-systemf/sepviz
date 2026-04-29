@@ -163,3 +163,15 @@
 .sep-bigop-binder {
   font-size: 0.7em;
 }
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+  .sep-diagram {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+body.vscode-dark .sep-diagram,
+body.vscode-high-contrast .sep-diagram {
+  filter: invert(1) hue-rotate(180deg);
+}
