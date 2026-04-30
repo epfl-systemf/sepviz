@@ -66,8 +66,9 @@
   pointer-events: none;
 }
 
-.sep-diagram:has(.sep-svg) {
+.sep-diagram {
   background: #eeeeec;
+  color: black;
 }
 
 /* Wand / Non-separating Conjunction / Disjunction */
@@ -165,12 +166,6 @@
 }
 
 /* Dark mode. */
-@media (prefers-color-scheme: dark) {
-  .sep-diagram {
-    filter: invert(1) hue-rotate(180deg);
-  }
-}
-
 body.vscode-dark .sep-diagram,
 body.vscode-high-contrast .sep-diagram {
   filter: invert(1) hue-rotate(180deg);
