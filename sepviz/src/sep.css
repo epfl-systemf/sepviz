@@ -170,3 +170,8 @@ body.vscode-dark .sep-diagram,
 body.vscode-high-contrast .sep-diagram {
   filter: invert(1) hue-rotate(180deg);
 }
+
+/* Prevent vsrocq from re-rendering on MouseOver. */
+body[class^='vscode-'] [class^='_Goal'] {
+  pointer-events: none;
+}
