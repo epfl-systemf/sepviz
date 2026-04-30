@@ -175,3 +175,7 @@ body.vscode-high-contrast .sep-diagram {
 body[class^='vscode-'] [class^='_Goal'] {
   pointer-events: none;
 }
+
+body[class^='vscode-'] .src-button {
+  display: none;
+}
