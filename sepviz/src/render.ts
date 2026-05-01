@@ -164,7 +164,7 @@ export class Render {
         return this.renderPures(x.args as AST.HProp[]);
       }
       case 'Stars': {
-        const host = createElement('div', ['vertial-stack']);
+        const host = createElement('div', ['vertical-stack']);
         host.append(
           ...x.args.map((arg) => {
             const node = this.renderHPropArg(arg);
@@ -185,7 +185,7 @@ export class Render {
           `Wand: expected 2 arguments in ${JSON.stringify(x)}`
         );
         const nodes = x.args.slice(0, 2).map((arg) => this.renderHPropArg(arg));
-        nodes[0]!.classList.add('sep-wand-hyp', 'vertial-stack');
+        nodes[0]!.classList.add('sep-wand-hyp', 'vertical-stack');
         const op = createElement('div', ['sep-op'], { text: '-∗' });
         host.append(nodes[0]!, op, nodes[1]!);
         return host;
@@ -195,7 +195,7 @@ export class Render {
         const op = x.op === 'Conjs' ? '∧' : `∨`;
         const host = createElement('div', [
           'sep-pred-container',
-          'vertial-stack',
+          'vertical-stack',
         ]);
         const nodes = x.args.map((arg) => this.renderHPropArg(arg));
         host.append(
