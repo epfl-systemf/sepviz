@@ -63,6 +63,10 @@ interface DotTarget {
   attrs: Attrs;
 }
 
+export function edgeToString(e: DotEdge): string {
+  return [e.srcUid, ...e.srcOutPorts, e.dstUid, ...e.dstInPorts].join('-');
+}
+
 function getArgEntryConfig(
   pt: AST.HProp_PointsTo,
   idx: number
@@ -187,7 +191,7 @@ export class DotBuilder {
      *      and `q ~> MCell p null * p ~> MCell q null`
      *      should end up with the same cluster with root `p`.
      */
-    edges.sort((e1, e2) => e1.toString().localeCompare(e2.toString()));
+    edges.sort((e1, e2) => edgeToString(e1).localeCompare(edgeToString(e2)));
     edges.forEach((edge) => union(edge.srcUid, edge.dstUid));
 
     const clusters: Record<string, DotCluster> = {};

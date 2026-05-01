@@ -1,4 +1,4 @@
-import { DotBuilder } from '../src/dot-builder';
+import { DotBuilder, edgeToString } from '../src/dot-builder';
 import { RenderConfig, defaultRenderConfig } from '../src/config';
 import { HProp_PointsTo, Symbol, Value, Parser } from '../src/parser';
 import { expect, test } from 'vitest';
@@ -77,18 +77,16 @@ test('pointsto example', () => {
     'p2',
     'p2$ptr',
   ]);
-  expect(
-    clusters[0].edges.map((edge) => `${edge.srcUid} --> ${edge.dstUid}`)
-  ).toEqual([
-    'f2 --> c2',
-    'f2 --> c2',
-    'c2 --> b2',
-    'c2 --> b2',
-    'p2 --> f2',
-    'p2 --> f2',
-    'p2 --> b2',
-    'p2 --> b2',
-    'p2$ptr --> p2',
+  expect(clusters[0].edges.map(edgeToString)).toEqual([
+    'c2-e-b2-w',
+    'c2-list-e-b2-in$0-w',
+    'f2-e-c2-w',
+    'f2-out$1-c-c2-list-w',
+    'p2-e-b2-w',
+    'p2-e-f2-w',
+    'p2-out$0-c-f2-in$0-w',
+    'p2-out$1-c-b2-in$0-w',
+    'p2$ptr-e-p2-in$0-nw',
   ]);
   expect(clusters[1].root).toEqual('p1$ptr');
   expect(clusters[1].nodes.map((node) => node.uid)).toEqual([
@@ -97,16 +95,14 @@ test('pointsto example', () => {
     'p1',
     'p1$ptr',
   ]);
-  expect(
-    clusters[1].edges.map((edge) => `${edge.srcUid} --> ${edge.dstUid}`)
-  ).toEqual([
-    'p1 --> f1',
-    'p1 --> f1',
-    'p1 --> b1',
-    'p1 --> b1',
-    'f1 --> b1',
-    'f1 --> b1',
-    'p1$ptr --> p1',
+  expect(clusters[1].edges.map(edgeToString)).toEqual([
+    'f1-e-b1-w',
+    'f1-list-e-b1-in$0-w',
+    'p1-e-b1-w',
+    'p1-e-f1-w',
+    'p1-out$0-c-f1-list-w',
+    'p1-out$1-c-b1-in$0-w',
+    'p1$ptr-e-p1-in$0-nw',
   ]);
 });
 
@@ -164,12 +160,12 @@ edge [tailclip="false", arrowsize="0.5", minlen="3"]
 "f$0" [id="f$0", label=<<table border="0" cellborder="0" cellspacing="0" cellpadding="2"><tr><td colspan="2" cellpadding="0" sides="b"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td>f0</td><td>: </td><td>MListSeg</td></tr></table></td></tr><tr><td port="list" sides="tlb">L1 ++ x :: L2&#39;</td><td sides="trb"></td></tr></table>>]
 "p1" [id="p1", label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2"><tr><td colspan="2" cellpadding="0" sides="b"><table border="0" cellborder="0" cellspacing="0" cellpadding="0"><tr><td>p1</td><td>: </td><td>MCell</td></tr></table></td></tr><tr><td port="in$0" sides="tlb"><font color="#3465a4">f0</font></td><td port="out$0" sides="trb"></td></tr><tr><td port="in$1" sides="tlb"><font color="#3465a4">b0</font></td><td port="out$1" sides="trb"></td></tr></table>>]
 "p1$ptr" [id="p1$ptr", label="p1", fontsize="10", width="0"]
-"p1":"out$0":"c" -> "f$0":"list":"w" [id="p1-out$0-c", dir="both", arrowtail="dot", arrowhead="normal"]
-"p1":"e" -> "f$0":"w" [id="p1-e", style="invis", constraint="false"]
-"p1":"out$1":"c" -> "b$0":"in$0":"w" [id="p1-out$1-c", dir="both", arrowtail="dot", arrowhead="normal"]
-"p1":"e" -> "b$0":"w" [id="p1-e", style="invis", constraint="false"]
-"f$0":"list":"e" -> "b$0":"in$0":"w" [id="f$0-list-e"]
 "f$0":"e" -> "b$0":"w" [id="f$0-e", style="invis", constraint="false"]
+"f$0":"list":"e" -> "b$0":"in$0":"w" [id="f$0-list-e"]
+"p1":"e" -> "b$0":"w" [id="p1-e", style="invis", constraint="false"]
+"p1":"e" -> "f$0":"w" [id="p1-e", style="invis", constraint="false"]
+"p1":"out$0":"c" -> "f$0":"list":"w" [id="p1-out$0-c", dir="both", arrowtail="dot", arrowhead="normal"]
+"p1":"out$1":"c" -> "b$0":"in$0":"w" [id="p1-out$1-c", dir="both", arrowtail="dot", arrowhead="normal"]
 "p1$ptr":"e" -> "p1":"in$0":"nw" [id="p1$ptr-e", tailclip="true", minlen="1"]
 }`.trim();
   expect(dotBuilder.dot).toEqual(dot);
