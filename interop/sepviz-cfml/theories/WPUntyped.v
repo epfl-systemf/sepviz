@@ -60,7 +60,7 @@ Notation "F1 ; F2" :=
   format "'[v' '[' F1 ']'  ; '/' '[' F2 ']' ']'") : cfu_scope.
 
 Notation "'Bind' x ':' T 'In' F ; Q" :=
- (fun x : T => F _ _ Q)
+ (fun x : T => (Wptag F) _ _ Q)
  (at level 200,
   only printing,
   x name, T constr,
