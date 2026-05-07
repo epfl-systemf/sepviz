@@ -6,7 +6,7 @@ The following are demos of interactive literate proof scripts for separation-log
 
 - Using [Iris](https://iris-project.org/): <a href="iris/Queue.html">queues</a> (queue transfer, same proof as the CFML one) and <a href="iris/LinkedLists.html">linked lists</a> (adapted from the [Iris tutorial](https://github.com/logsem/iris-tutorial); uses iterated separating conjunction)
 
-- Using the variant of CFML in [*Separation Logic Foundations*](https://softwarefoundations.cis.upenn.edu/slf-current/index.html), part of the Software Foundations textbook series: the <a href="slf/SLFExample.html">"Representation predicates" chapter</a> (lists, list segments, trees, stacks)
+- Using the variant of CFML in [*Separation Logic Foundations*](https://softwarefoundations.cis.upenn.edu/slf-current/index.html), part of the Software Foundations textbook series: the <a href="slf/SLFExample.html">"Representation predicates" chapter</a> (lists, list segments, stacks; visualizing trees is left as an exercise for the reader).
 
 ```{raw} html
 <div class="gallery">
