@@ -73,14 +73,16 @@ function tarjanSCC(
 
 function topoSortDAG(
   root: Node,
-  graph: Record<Node, Node[]>,
+  g: Record<Node, Node[]>,
   previousOrder: Record<Node, number> | null
 ): Node[] {
   const visited: Record<Node, boolean> = {};
-  Object.keys(graph).forEach((n) => (visited[n] = false));
+  Object.keys(g).forEach((n) => (visited[n] = false));
   const sorted: Node[] = [];
 
-  // TODO: we can order the order roots in (reversed) alphabet order as well.
+  const graph = Object.fromEntries(
+    Object.entries(g).sort(([a], [b]) => -compareNode(previousOrder)(a, b))
+  );
   Object.keys(graph).forEach((n) => {
     if (!visited[n] && n !== root) dfs(n);
   });
@@ -130,9 +132,6 @@ export function sort(
   nodes.sort(compareNode(null));
   const orderMap: Record<Node, number> = {};
   nodes.forEach((n, idx) => (orderMap[n] = idx));
-  return orderMap;
-
-  // TODO: investigate why the toposort + (de)condensation leads to more edge crossing
 
   edges.forEach((e) => graph[e.src]!.push(e.dst));
   const SCCs: Record<Node, Node[]> = tarjanSCC(root, graph);
@@ -142,11 +141,6 @@ export function sort(
   const nodeMap: Record<Node, Node> = {};
   // Every member of a SCC maps to the SCC root in the new graph.
   Object.entries(SCCs).forEach(([sccRoot, scc]) => {
-    if (scc.length === 0) return;
-    if (scc.length === 1) {
-      nodeMap[sccRoot] = sccRoot;
-      return;
-    }
     scc.forEach((w) => (nodeMap[w] = sccRoot));
   });
   const condensedGraph: Record<Node, Node[]> = {};

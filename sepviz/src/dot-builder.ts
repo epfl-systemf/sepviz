@@ -390,8 +390,6 @@ export class DotBuilder {
 
   protected buildEdges(pt: AST.HProp_PointsTo): DotEdge[] {
     const srcUid = pt.locUid();
-    const seen = new Set<string>();
-
     const edges = pt.reprArgs.flatMap((arg, idx) => {
       assert(
         pt.config !== undefined,
@@ -413,21 +411,6 @@ export class DotBuilder {
         dstInPorts: dstInPorts,
         attrs: c.inTable ? InTablePointerEdgeAttrs : {},
       };
-      if (srcOutPorts.length == 1 && dstInPorts.length == 1) return [edge];
-      // If `edge` starts or ends inside a table, add an invisible node-level
-      // edge to reduce edge crossing.
-      const key = `${srcUid}-${dstUid}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        const nodeLevelEdge: DotEdge = {
-          srcUid: srcUid,
-          srcOutPorts: ['e'],
-          dstUid: dstUid,
-          dstInPorts: ['w'],
-          attrs: { style: 'invis', constraint: false },
-        };
-        return [edge, nodeLevelEdge];
-      }
       return [edge];
     });
 
