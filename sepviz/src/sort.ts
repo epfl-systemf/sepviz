@@ -1,4 +1,4 @@
-import { assert } from './utility';
+import { assert, compareStr } from './utility';
 
 type Node = string;
 
@@ -108,13 +108,12 @@ function compareNode(previousOrder: Record<Node, number> | null) {
   //   + if only one branch is in the previous order, this branch takes priority;
   //   + if both branch are not in the previous order, sort by ascending alphabet order.
   return (n1: Node, n2: Node) => {
-    if (!previousOrder)
-      return n1.localeCompare(n2, undefined, { sensitivity: 'base' });
+    if (!previousOrder) return compareStr(n1, n2);
     if (n1 in previousOrder && n2 in previousOrder)
       return previousOrder[n1]! - previousOrder[n2]!;
     if (n1 in previousOrder) return -1;
     if (n2 in previousOrder) return 1;
-    return n1.localeCompare(n2, undefined, { sensitivity: 'base' });
+    return compareStr(n1, n2);
   };
 }
 

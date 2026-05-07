@@ -27,3 +27,9 @@ export function createElement(
   children.forEach((child) => node.append(child));
   return node;
 }
+
+export function compareStr(n1: string, n2: string): number {
+  if (n1 < n2) return -1;
+  if (n1 > n2) return 1;
+  return 0;
+}

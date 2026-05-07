@@ -11,7 +11,7 @@ import {
   PointerEdgeAttrs,
 } from './config';
 import { sort } from './sort';
-import { assert, escapeHtml } from './utility';
+import { assert, compareStr, escapeHtml } from './utility';
 
 // -- XML ----------------------------------------------------------------------
 
@@ -142,9 +142,7 @@ export class DotBuilder {
 
     const clusters = this.partition(nodes, edges);
     clusters
-      .sort((c1, c2) =>
-        c2.root.localeCompare(c1.root, undefined, { sensitivity: 'base' })
-      )
+      .sort((c1, c2) => compareStr(c2.root, c1.root))
       .map((c) => this.sortNodes(c));
 
     const targets: DotTarget[] = [
@@ -193,7 +191,7 @@ export class DotBuilder {
      *      and `q ~> MCell p null * p ~> MCell q null`
      *      should end up with the same cluster with root `p`.
      */
-    edges.sort((e1, e2) => edgeToString(e1).localeCompare(edgeToString(e2)));
+    edges.sort((e1, e2) => compareStr(edgeToString(e1), edgeToString(e2)));
     edges.forEach((edge) => union(edge.srcUid, edge.dstUid));
 
     const clusters: Record<string, DotCluster> = {};
