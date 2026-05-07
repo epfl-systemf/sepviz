@@ -1,14 +1,34 @@
+// @ts-ignore
 import { parse } from '../src/sep-grammar.g';
 import { expect, test } from 'vitest';
 
-function tryParse(desc, input) {
+type PeggyLocation = {
+  start: {
+    offset: number;
+    line: number;
+    column: number;
+  };
+  end: {
+    offset: number;
+    line: number;
+    column: number;
+  };
+};
+
+type PeggyParseError = Error & {
+  message: string;
+  location?: PeggyLocation;
+};
+
+function tryParse(desc: string, input: string) {
   console.log(`\n=== ${desc} ===`);
   console.log(`Input: "${input}"`);
   try {
     const result = parse(input);
     console.log('Success:');
     console.log(JSON.stringify(result, null, 2));
-  } catch (e) {
+  } catch (err) {
+    const e = err as PeggyParseError;
     console.log('Failed:', e.message);
     if (e.location) {
       const pos = e.location.start.offset;

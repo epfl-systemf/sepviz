@@ -39,19 +39,12 @@ export interface RenderConfig {
   graph: Attrs;
   edge: Attrs;
   node: Attrs;
-  hprop: HPropConfig; // TODO: add config to support new hprops
   constr: ConstrConfig;
   value: ValueConfig;
 }
 
-export type HPropConfig = Record<string, HPropEntryConfig>;
 export type ConstrConfig = Record<string, ConstrEntryConfig>;
 export type ValueConfig = Record<string, ValueEntryConfig>;
-
-export interface HPropEntryConfig {
-  argNum: number;
-  pattern: string;
-}
 
 export interface ValueEntryConfig {
   label?: string;
@@ -128,7 +121,6 @@ export function defaultRenderConfig(): RenderConfig {
       fontname: defaultFontConfig.name,
       fontsize: defaultFontConfig.size,
     },
-    hprop: {},
     constr: {},
     value: {},
   };

@@ -1,6 +1,6 @@
 import { DotBuilder, edgeToString } from '../src/dot-builder';
 import { RenderConfig, defaultRenderConfig } from '../src/config';
-import { HProp_PointsTo, Symbol, Value, Parser } from '../src/parser';
+import { HProp, HProp_PointsTo, Symbol, Value, Parser } from '../src/parser';
 import { expect, test } from 'vitest';
 
 const config: RenderConfig = {
@@ -8,14 +8,12 @@ const config: RenderConfig = {
   constr: {
     TestConstr: {
       label: 'TestConstr',
-      argNum: 0,
       args: {},
       drawBorder: false,
       inPort: undefined,
     },
     $MCell: {
       label: 'MCell',
-      argNum: 2,
       args: {
         '0': {
           forceEdge: false,
@@ -35,7 +33,6 @@ const config: RenderConfig = {
     },
     $MListSeg: {
       label: 'MListSeg',
-      argNum: 2,
       args: {
         '0': {
           forceEdge: true,
@@ -58,26 +55,44 @@ const config: RenderConfig = {
 
 test('pointsto example', () => {
   const pts = [
-    new HProp_PointsTo('', 'p1', '$MCell', ['f1', 'b1']),
-    new HProp_PointsTo('', 'f2', '$MCell', ['x', 'c2']),
-    new HProp_PointsTo('', 'c2', '$MListSeg', ['b2', "L2'"]),
-    new HProp_PointsTo('', 'p2', '$MCell', ['f2', 'b2']),
-    new HProp_PointsTo('', 'b2', '$MCell', ['d2', 'null']),
-    new HProp_PointsTo('', 'f1', '$MListSeg', ['b1', 'L1']),
-    new HProp_PointsTo('', 'b1', '$MCell', ['d1', 'null']),
+    new HProp_PointsTo('', new Symbol(true, 'p1', 'p1'), '$MCell', [
+      'f1',
+      'b1',
+    ]),
+    new HProp_PointsTo('', new Symbol(true, 'f2', 'f2'), '$MCell', ['x', 'c2']),
+    new HProp_PointsTo('', new Symbol(true, 'c2', 'c2'), '$MListSeg', [
+      'b2',
+      "L2'",
+    ]),
+    new HProp_PointsTo('', new Symbol(true, 'p2', 'p2'), '$MCell', [
+      'f2',
+      'b2',
+    ]),
+    new HProp_PointsTo('', new Symbol(true, 'b2', 'b2'), '$MCell', [
+      'd2',
+      'null',
+    ]),
+    new HProp_PointsTo('', new Symbol(true, 'f1', 'f1'), '$MListSeg', [
+      'b1',
+      'L1',
+    ]),
+    new HProp_PointsTo('', new Symbol(true, 'b1', 'b1'), '$MCell', [
+      'd1',
+      'null',
+    ]),
   ];
   const dotBuilder = new DotBuilder(config, pts);
   const clusters = dotBuilder.clusters;
   expect(clusters.length).toEqual(2);
-  expect(clusters[0].root).toEqual('p2$ptr');
-  expect(clusters[0].nodes.map((node) => node.uid)).toEqual([
+  expect(clusters[0]!.root).toEqual('p2$ptr');
+  expect(clusters[0]!.nodes.map((node) => node.uid)).toEqual([
     'b2',
     'c2',
     'f2',
     'p2',
     'p2$ptr',
   ]);
-  expect(clusters[0].edges.map(edgeToString)).toEqual([
+  expect(clusters[0]!.edges.map(edgeToString)).toEqual([
     'c2-e-b2-w',
     'c2-list-e-b2-in$0-w',
     'f2-e-c2-w',
@@ -88,14 +103,14 @@ test('pointsto example', () => {
     'p2-out$1-c-b2-in$0-w',
     'p2$ptr-e-p2-in$0-nw',
   ]);
-  expect(clusters[1].root).toEqual('p1$ptr');
-  expect(clusters[1].nodes.map((node) => node.uid)).toEqual([
+  expect(clusters[1]!.root).toEqual('p1$ptr');
+  expect(clusters[1]!.nodes.map((node) => node.uid)).toEqual([
     'b1',
     'f1',
     'p1',
     'p1$ptr',
   ]);
-  expect(clusters[1].edges.map(edgeToString)).toEqual([
+  expect(clusters[1]!.edges.map(edgeToString)).toEqual([
     'f1-e-b1-w',
     'f1-list-e-b1-in$0-w',
     'p1-e-b1-w',
@@ -107,7 +122,7 @@ test('pointsto example', () => {
 });
 
 test('a single pointsto', () => {
-  const valueConfig = { '@list_append': { argNum: 2, label: '$1 ++ $2' } };
+  const valueConfig = { '@list_append': { label: '$1 ++ $2' } };
   const pts = [
     new HProp_PointsTo('', new Symbol(true, '@plus-p-1', 'p + 1'), '$MCell', [
       new Value('', '@list_append', ['l1', 'l2'], valueConfig),
@@ -128,7 +143,11 @@ edge [tailclip="false", arrowsize="0.5", minlen="3"]
 });
 
 test('escape html in labels', () => {
-  const pts = [new HProp_PointsTo('', 'p', '$MCell', ['(λ x : Z, #x) <$> xs'])];
+  const pts = [
+    new HProp_PointsTo('', new Symbol(true, 'p', 'p'), '$MCell', [
+      '(λ x : Z, #x) <$> xs',
+    ]),
+  ];
   const dotBuilder = new DotBuilder(config, pts);
   const dot = `
 digraph {
@@ -148,9 +167,10 @@ test('integrated test: cfml example', () => {
     ` ⟬ Star ┆ ⟬ Star ┆ ⟬ Exist ┆ f ┆ ⟬ Exist ┆ b ┆ ⟬ Exist ┆ d ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭ ┆ ⟬ Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ L1 ++ x :: L2' ⟧ ⟭ ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ ⟬ Exist ┆ f ┆ ⟬ Exist ┆ b ┆ ⟬ Exist ┆ d ┆ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f ┆ b ⟧ ⟭ ┆ ⟬ Star ┆ ⟬ PointsTo ┆ f ┆ ⟦ $MListSeg ┆ b ┆ nil ⟧ ⟭ ┆ ⟬ PointsTo ┆ b ┆ ⟦ $MCell ┆ d ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ┆ ⟬ Opaque ┆ GC ⟭ ⟭ `.trim();
   const parser = new Parser(config);
   const goal = parser.parse(text);
-  const pts = goal[0]!.args[0]!.args[0]! as HProp;
+  const pts = ((goal[0]! as HProp).args[0]! as HProp).args[0]! as HProp;
   expect(pts.op).toEqual('PointsTos');
-  const dotBuilder = new DotBuilder(config, pts.args);
+  pts.args.forEach((pt) => expect(pt).toBeInstanceOf(HProp_PointsTo));
+  const dotBuilder = new DotBuilder(config, pts.args as HProp_PointsTo[]);
   const dot = `
 digraph {
 graph [rankdir="LR", ranksep="0.05", nodesep="0.05", concentrate="false", splines="true", packmode="array_i", truecolor="true", bgcolor="#00000000", pad="0", fontname="Courier", fontsize="11"]
