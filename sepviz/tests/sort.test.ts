@@ -6,13 +6,13 @@ test('the sorted result respects the previous order if passed', () => {
     b: 0,
     f: 1,
   };
-  const nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
+  const nodes = ['a', 'b', 'C', 'd', 'e', 'f', 'g', 'h', 'i'];
   const edges = [
     // a -> f -> c -> d; d -> f; d -> e;
     // a -> b -> g -> h -> b; g -> i;
     { src: 'a', dst: 'f' },
-    { src: 'f', dst: 'c' },
-    { src: 'c', dst: 'd' },
+    { src: 'f', dst: 'C' },
+    { src: 'C', dst: 'd' },
     { src: 'd', dst: 'f' },
     { src: 'd', dst: 'e' },
     { src: 'a', dst: 'b' },
@@ -28,7 +28,7 @@ test('the sorted result respects the previous order if passed', () => {
     g: 2,
     h: 3,
     f: 4,
-    c: 5,
+    C: 5,
     d: 6,
     e: 7,
     i: 8,

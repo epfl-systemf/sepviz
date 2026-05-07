@@ -142,7 +142,9 @@ export class DotBuilder {
 
     const clusters = this.partition(nodes, edges);
     clusters
-      .sort((c1, c2) => c2.root.localeCompare(c1.root))
+      .sort((c1, c2) =>
+        c2.root.localeCompare(c1.root, undefined, { sensitivity: 'base' })
+      )
       .map((c) => this.sortNodes(c));
 
     const targets: DotTarget[] = [
