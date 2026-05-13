@@ -83,7 +83,7 @@ HPropTermSegment
 ValueLD = "⟦"
 ValueRD = "⟧"
 Value
-  = ValueLD _ op:Ident args:(_ Sep _ @(Value / GallinaTerm))* _ ValueRD {
+  = ValueLD _ op:Ident args:(_ Sep _ @GallinaTerm)* _ ValueRD {
       const node = { kind: "value", op, args};
       return withMeta(node, text());
     }
