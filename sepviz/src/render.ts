@@ -27,7 +27,6 @@ interface GraphvizInstance {
 export type ExtHTMLElement = HTMLElement & {
   __graphviz__?: GraphvizInstance;
   dot?: string;
-  goalReset?: boolean;
 };
 
 export class Render {

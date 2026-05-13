@@ -1,11 +1,11 @@
-import { loadRenderConfig, ResetKeywords, RenderConfig } from 'sepviz';
+import { loadRenderConfig, ResetKeywords } from 'sepviz';
 import { Render, ExtHTMLElement } from 'sepviz';
 import 'sepviz/sepviz.css';
 
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
-  markGoalResets(); // FIXME: use it to break animation
+  markGoalResets();
   // Pass config path via URL query parameter, e.g., `?config=/path/to/config`
   const configPath =
     new URLSearchParams(window.location.search).get('config') ?? 'sepviz.yaml';
@@ -22,7 +22,7 @@ function markGoalResets() {
       const input = n.querySelector<HTMLElement>('.alectryon-input');
       const firstText = input?.firstChild?.textContent?.trim();
       if (firstText && ResetKeywords.includes(firstText))
-        (n as ExtHTMLElement).goalReset = true;
+        n.classList.add('sep-goal-reset');
     });
 }
 
@@ -38,7 +38,8 @@ function renderEmbedded(render: Render) {
           render.render(
             goalNode.innerText,
             goalNode,
-            idx === 0 // only animate the first hprop of conclusion
+            // only animate the first hprop of conclusion
+            idx === 0 && !sentenceNode.classList.contains('sep-goal-reset')
           );
         });
       sentenceNode
