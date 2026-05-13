@@ -64,6 +64,7 @@
 
 .sep-svg svg {
   pointer-events: none;
+  max-width: 100%;
 }
 
 .sep-diagram {
