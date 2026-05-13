@@ -99,7 +99,7 @@ GallinaTermSegment
 
 Delimiter = Sep / HPropLD / HPropRD / ValueLD / ValueRD
 
-Ident = $( !Delimiter [a-zA-Z_\u0080-\uFFFF$\@]
+Ident = $( !Delimiter [a-zA-Z_\u0080-\uFFFF$]
           (!Delimiter [a-zA-Z0-9_'\u0080-\uFFFF])* )
 
 _ "whitespace" = $[\p{White_Space}]*

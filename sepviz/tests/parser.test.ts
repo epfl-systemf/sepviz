@@ -3,16 +3,16 @@ import { Parser, Goal, HProp, HProp_PointsTo, Symbol } from '../src/parser';
 import { expect, test } from 'vitest';
 
 const valueConfig = {
-  '@plus': {
+  $plus: {
     label: '$1 + $2',
   },
-  '@list_append': {
+  $list_append: {
     label: '$1 ++ $2',
   },
-  '@eq': {
+  $eq: {
     label: '$1 == $2',
   },
-  '@gt': {
+  $gt: {
     label: '$1 > $2',
   },
   $LitV: {
@@ -49,12 +49,12 @@ test('flatten stars', () => {
 test('resolve symbols', () => {
   // instead of `l1 ++ l2`, the rocq output should be ⟦ list_append ┆ l1 ┆ l2 ⟧
   const text =
-    '(fun r => ⟬ Exist ┆ l1 ┆ ⟬ PointsTo ┆ r ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭ ⟭)';
+    '(fun r => ⟬ Exist ┆ l1 ┆ ⟬ PointsTo ┆ r ┆ ⟦ isList ┆ ⟦ $list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭ ⟭)';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     '(fun r => ',
     {
-      raw: '⟬ PointsTo ┆ r ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
+      raw: '⟬ PointsTo ┆ r ┆ ⟦ isList ┆ ⟦ $list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
       op: 'PointsTo',
       args: [],
       loc: {
@@ -65,10 +65,10 @@ test('resolve symbols', () => {
       repr: 'isList',
       reprArgs: [
         {
-          raw: '⟦ @list_append ┆ l1 ┆ l2 ⟧',
-          op: '@list_append',
+          raw: '⟦ $list_append ┆ l1 ┆ l2 ⟧',
+          op: '$list_append',
           args: [{ isGlobal: false, uid: 'l1$0', label: 'l10' }, 'l2'],
-          uid: '@list_append-l1$0-l2',
+          uid: '$list_append-l1$0-l2',
           label: 'l10 ++ l2',
         },
       ],
@@ -79,11 +79,11 @@ test('resolve symbols', () => {
 
 test('aggregate pures', () => {
   const text =
-    '⟬ Star ┆ ⟬ Star ┆ ⟬ Pure ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭ ┆ ⟬ Pure ┆ ⟦ @gt ┆ x ┆ y ⟧ ⟭ ⟭ ┆ A ⟭';
+    '⟬ Star ┆ ⟬ Star ┆ ⟬ Pure ┆ ⟦ $eq ┆ l1 ┆ l2 ⟧ ⟭ ┆ ⟬ Pure ┆ ⟦ $gt ┆ x ┆ y ⟧ ⟭ ⟭ ┆ A ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     {
-      raw: '⟬ Star ┆ ⟬ Star ┆ ⟬ Pure ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭ ┆ ⟬ Pure ┆ ⟦ @gt ┆ x ┆ y ⟧ ⟭ ⟭ ┆ A ⟭',
+      raw: '⟬ Star ┆ ⟬ Star ┆ ⟬ Pure ┆ ⟦ $eq ┆ l1 ┆ l2 ⟧ ⟭ ┆ ⟬ Pure ┆ ⟦ $gt ┆ x ┆ y ⟧ ⟭ ⟭ ┆ A ⟭',
       op: 'Stars',
       args: [
         {
@@ -91,27 +91,27 @@ test('aggregate pures', () => {
           op: 'Pures',
           args: [
             {
-              raw: '⟬ Pure ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭',
+              raw: '⟬ Pure ┆ ⟦ $eq ┆ l1 ┆ l2 ⟧ ⟭',
               op: 'Pure',
               args: [
                 {
-                  raw: '⟦ @eq ┆ l1 ┆ l2 ⟧',
-                  op: '@eq',
+                  raw: '⟦ $eq ┆ l1 ┆ l2 ⟧',
+                  op: '$eq',
                   args: ['l1', 'l2'],
-                  uid: '@eq-l1-l2',
+                  uid: '$eq-l1-l2',
                   label: 'l1 == l2',
                 },
               ],
             },
             {
-              raw: '⟬ Pure ┆ ⟦ @gt ┆ x ┆ y ⟧ ⟭',
+              raw: '⟬ Pure ┆ ⟦ $gt ┆ x ┆ y ⟧ ⟭',
               op: 'Pure',
               args: [
                 {
-                  raw: '⟦ @gt ┆ x ┆ y ⟧',
-                  op: '@gt',
+                  raw: '⟦ $gt ┆ x ┆ y ⟧',
+                  op: '$gt',
                   args: ['x', 'y'],
-                  uid: '@gt-x-y',
+                  uid: '$gt-x-y',
                   label: 'x > y',
                 },
               ],
@@ -125,16 +125,16 @@ test('aggregate pures', () => {
 });
 
 test('pointsto example', () => {
-  const text = `⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ @MCell ┆ f1 ┆ b1 ⟧ ⟭
-┆ ⟬ Star ┆ ⟬ PointsTo ┆ f2 ┆ ⟦ @MCell ┆ x ┆ c2 ⟧ ⟭
-┆ ⟬ Star ┆ ⟬ PointsTo ┆ c2 ┆ ⟦ @MListSeg ┆ b2 ┆ L2' ⟧ ⟭
-┆ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ @MCell ┆ f2 ┆ b2 ⟧ ⟭
-┆ ⟬ Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ @MCell ┆ d2 ┆ null ⟧ ⟭
-┆ ⟬ Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ @MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ @MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭`;
+  const text = `⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f1 ┆ b1 ⟧ ⟭
+┆ ⟬ Star ┆ ⟬ PointsTo ┆ f2 ┆ ⟦ $MCell ┆ x ┆ c2 ⟧ ⟭
+┆ ⟬ Star ┆ ⟬ PointsTo ┆ c2 ┆ ⟦ $MListSeg ┆ b2 ┆ L2' ⟧ ⟭
+┆ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f2 ┆ b2 ⟧ ⟭
+┆ ⟬ Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭
+┆ ⟬ Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭`;
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     {
-      raw: "⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ @MCell ┆ f1 ┆ b1 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ f2 ┆ ⟦ @MCell ┆ x ┆ c2 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ c2 ┆ ⟦ @MListSeg ┆ b2 ┆ L2' ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ @MCell ┆ f2 ┆ b2 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ @MCell ┆ d2 ┆ null ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ @MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ @MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭",
+      raw: "⟬ Star ┆ ⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f1 ┆ b1 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ f2 ┆ ⟦ $MCell ┆ x ┆ c2 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ c2 ┆ ⟦ $MListSeg ┆ b2 ┆ L2' ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f2 ┆ b2 ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭\n┆ ⟬ Star ┆ ⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭ ┆ ⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭ ⟭",
       op: 'Stars',
       args: [
         {
@@ -142,7 +142,7 @@ test('pointsto example', () => {
           op: 'PointsTos',
           args: [
             {
-              raw: '⟬ PointsTo ┆ p1 ┆ ⟦ @MCell ┆ f1 ┆ b1 ⟧ ⟭',
+              raw: '⟬ PointsTo ┆ p1 ┆ ⟦ $MCell ┆ f1 ┆ b1 ⟧ ⟭',
               op: 'PointsTo',
               args: [],
               loc: {
@@ -150,11 +150,11 @@ test('pointsto example', () => {
                 label: 'p1',
                 uid: 'p1',
               },
-              repr: '@MCell',
+              repr: '$MCell',
               reprArgs: ['f1', 'b1'],
             },
             {
-              raw: '⟬ PointsTo ┆ f2 ┆ ⟦ @MCell ┆ x ┆ c2 ⟧ ⟭',
+              raw: '⟬ PointsTo ┆ f2 ┆ ⟦ $MCell ┆ x ┆ c2 ⟧ ⟭',
               op: 'PointsTo',
               args: [],
               loc: {
@@ -162,11 +162,11 @@ test('pointsto example', () => {
                 label: 'f2',
                 uid: 'f2',
               },
-              repr: '@MCell',
+              repr: '$MCell',
               reprArgs: ['x', 'c2'],
             },
             {
-              raw: "⟬ PointsTo ┆ c2 ┆ ⟦ @MListSeg ┆ b2 ┆ L2' ⟧ ⟭",
+              raw: "⟬ PointsTo ┆ c2 ┆ ⟦ $MListSeg ┆ b2 ┆ L2' ⟧ ⟭",
               op: 'PointsTo',
               args: [],
               loc: {
@@ -174,11 +174,11 @@ test('pointsto example', () => {
                 label: 'c2',
                 uid: 'c2',
               },
-              repr: '@MListSeg',
+              repr: '$MListSeg',
               reprArgs: ['b2', "L2'"],
             },
             {
-              raw: '⟬ PointsTo ┆ p2 ┆ ⟦ @MCell ┆ f2 ┆ b2 ⟧ ⟭',
+              raw: '⟬ PointsTo ┆ p2 ┆ ⟦ $MCell ┆ f2 ┆ b2 ⟧ ⟭',
               op: 'PointsTo',
               args: [],
               loc: {
@@ -186,11 +186,11 @@ test('pointsto example', () => {
                 label: 'p2',
                 uid: 'p2',
               },
-              repr: '@MCell',
+              repr: '$MCell',
               reprArgs: [{ isGlobal: true, label: 'f2', uid: 'f2' }, 'b2'],
             },
             {
-              raw: '⟬ PointsTo ┆ b2 ┆ ⟦ @MCell ┆ d2 ┆ null ⟧ ⟭',
+              raw: '⟬ PointsTo ┆ b2 ┆ ⟦ $MCell ┆ d2 ┆ null ⟧ ⟭',
               op: 'PointsTo',
               args: [],
               loc: {
@@ -198,11 +198,11 @@ test('pointsto example', () => {
                 label: 'b2',
                 uid: 'b2',
               },
-              repr: '@MCell',
+              repr: '$MCell',
               reprArgs: ['d2', 'null'],
             },
             {
-              raw: '⟬ PointsTo ┆ f1 ┆ ⟦ @MListSeg ┆ b1 ┆ L1 ⟧ ⟭',
+              raw: '⟬ PointsTo ┆ f1 ┆ ⟦ $MListSeg ┆ b1 ┆ L1 ⟧ ⟭',
               op: 'PointsTo',
               args: [],
               loc: {
@@ -210,11 +210,11 @@ test('pointsto example', () => {
                 label: 'f1',
                 uid: 'f1',
               },
-              repr: '@MListSeg',
+              repr: '$MListSeg',
               reprArgs: ['b1', 'L1'],
             },
             {
-              raw: '⟬ PointsTo ┆ b1 ┆ ⟦ @MCell ┆ d1 ┆ null ⟧ ⟭',
+              raw: '⟬ PointsTo ┆ b1 ┆ ⟦ $MCell ┆ d1 ┆ null ⟧ ⟭',
               op: 'PointsTo',
               args: [],
               loc: {
@@ -222,7 +222,7 @@ test('pointsto example', () => {
                 label: 'b1',
                 uid: 'b1',
               },
-              repr: '@MCell',
+              repr: '$MCell',
               reprArgs: ['d1', 'null'],
             },
           ],
@@ -233,19 +233,19 @@ test('pointsto example', () => {
 });
 
 test('term array', () => {
-  const text = '⟬ Pure ┆ l3 = ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭';
+  const text = '⟬ Pure ┆ l3 = ┆ ⟦ $eq ┆ l1 ┆ l2 ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     {
-      raw: '⟬ Pure ┆ l3 = ┆ ⟦ @eq ┆ l1 ┆ l2 ⟧ ⟭',
+      raw: '⟬ Pure ┆ l3 = ┆ ⟦ $eq ┆ l1 ┆ l2 ⟧ ⟭',
       op: 'Pure',
       args: [
         'l3 =',
         {
-          raw: '⟦ @eq ┆ l1 ┆ l2 ⟧',
-          op: '@eq',
+          raw: '⟦ $eq ┆ l1 ┆ l2 ⟧',
+          op: '$eq',
           args: ['l1', 'l2'],
-          uid: '@eq-l1-l2',
+          uid: '$eq-l1-l2',
           label: 'l1 == l2',
         },
       ],
@@ -256,25 +256,25 @@ test('term array', () => {
 test('pointsto with loc containing value', () => {
   // x + (p + 1)  ->  l1 ++ l2
   const text =
-    '⟬ PointsTo ┆ x + ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭';
+    '⟬ PointsTo ┆ x + ⟦ $plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ $list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭';
   const goal: Goal = parser.parse(text);
   expect(goal).toEqual([
     {
-      raw: '⟬ PointsTo ┆ x + ⟦ @plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ @list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
+      raw: '⟬ PointsTo ┆ x + ⟦ $plus ┆ p ┆ 1 ⟧ ┆ ⟦ isList ┆ ⟦ $list_append ┆ l1 ┆ l2 ⟧ ⟧ ⟭',
       op: 'PointsTo',
       args: [],
       loc: {
         isGlobal: true,
         label: 'x + p + 1',
-        uid: 'x + @plus-p-1',
+        uid: 'x + $plus-p-1',
       },
       repr: 'isList',
       reprArgs: [
         {
-          raw: '⟦ @list_append ┆ l1 ┆ l2 ⟧',
-          op: '@list_append',
+          raw: '⟦ $list_append ┆ l1 ┆ l2 ⟧',
+          op: '$list_append',
           args: ['l1', 'l2'],
-          uid: '@list_append-l1-l2',
+          uid: '$list_append-l1-l2',
           label: 'l1 ++ l2',
         },
       ],
