@@ -133,8 +133,7 @@
 }
 
 /* Wrap hypotheses */
-.alectryon-windowed
-  .alectryon-io
+.alectryon-io
   .alectryon-sentence.alectryon-target
   .alectryon-output
   .goal-hyps {
