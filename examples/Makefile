@@ -11,6 +11,7 @@ init: .venv
 
 .venv:
 	python3 -m venv .venv
+	$(PYTHON) -m ensurepip --upgrade
 	$(PYTHON) -m pip install pyyaml alectryon==2.0.0
 
 all: $(EXAMPLES:%=all-%) $(addprefix _build/,$(ALECTRYON_DIST)) _build/index.html $(addprefix _build/,$(GIFS))
