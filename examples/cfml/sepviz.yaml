@@ -1,4 +1,9 @@
 constr:
+  '$MList':
+    label: 'MList'
+    args:
+      0:
+        inTable: true
   '$MQueue':
     label: 'MQueue'
     args:

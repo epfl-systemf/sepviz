@@ -1,4 +1,4 @@
-DEMOS := LiterateQueue LiterateTree
+DEMOS := LiterateQueue LiterateTree LiterateList
 
 ALECTRYON       ?= $(abspath ../.venv/bin/python) -m alectryon
 ALECTRYON_FLAGS := --webpage-style windowed --long-line-threshold 0
