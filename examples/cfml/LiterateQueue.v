@@ -17,7 +17,10 @@ Modified by Yawen.
 From Sepviz Require Import WPUntyped CFMLNotations.
 From Sepviz.Examples.CFML Require Import ListNull.
 
+Hint Rewrite dyn_to_val_dyn_make: rw.
+
 Ltac auto_star ::=
+  autorewrite with rw in *;
   try easy;
   try solve [ intuition eauto with maths ].
 Ltac auto_tilde ::=

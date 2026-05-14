@@ -5,7 +5,10 @@
 #[warnings="-notation-overridden -ambiguous-paths -notation-incompatible-prefix"]
 From Sepviz Require Import WPUntyped CFMLNotations.
 
+Hint Rewrite dyn_to_val_dyn_make: rw.
+
 Ltac auto_star ::=
+  autorewrite with rw in *;
   try easy;
   try solve [ intuition eauto with maths ].
 Ltac auto_tilde ::=
@@ -186,7 +189,7 @@ Section TreeApiSpecs.
     PRE (p ~> MTree t)
     POST (fun r => \[r = isTrue (t = leaf)] \* p ~> MTree t).
   Proof.
-    xwp. mxapp Triple_eq. destruct t; rewrite isTrue_eq_isTrue_eq.
+    xwp. mxapp* Triple_eq. destruct t; rewrite isTrue_eq_isTrue_eq.
     - rewrite MTree_leaf. xsimpl*.
     - xchange MTree_node_not_null. xsimpl*.
   Qed.
@@ -198,7 +201,7 @@ Section TreeApiSpecs.
     PRE (p ~> MTree t)
     POST (fun (r: loc) => r ~> MTree (leftRotate t)).
   Proof.
-    xwp. mxapp Triple_is_empty. mxapp Triple_neg.
+    xwp. mxapp* Triple_is_empty. mxapp Triple_neg.
     destruct t as [| x tl tr];
       xif; try easy; intros _.
     - (* t = leaf *) mxvals*.
@@ -223,7 +226,7 @@ Section TreeApiSpecs.
     PRE (p ~> MTree t)
     POST (fun (r: loc) => r ~> MTree (rightRotate t)).
   Proof.
-    xwp. mxapp Triple_is_empty. mxapp Triple_neg.
+    xwp. mxapp* Triple_is_empty. mxapp Triple_neg.
     destruct t as [| x tl tr];
       xif; try easy; intros _.
     - (* t = leaf *) mxvals*.

@@ -7,7 +7,7 @@ constr:
   '$MQueue':
     label: 'MQueue'
     args:
-      0: # FIXME: count from 1
+      0:
         inTable: true
   '$MCell':
     label: 'MCell'
