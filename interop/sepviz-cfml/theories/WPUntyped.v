@@ -17,14 +17,14 @@ Declare Scope cfu_scope.
 Global Open Scope cfu_scope.
 
 Notation "'$' v" :=
- (Wptag (Wpgen_val_unlifted v))
+ (Wpgen_val_unlifted v)
  (in custom cf at level 69,
   v constr at level 0,
   only printing,
   format "'$' v") : cfu_scope.
 
 Notation "'Let' '{' A E '}' x ':=' F1 'in' F2" :=
- (Wptag (Wpgen_let F1 (fun A E x => F2)))
+ (Wpgen_let F1 (fun A E x => F2))
  (in custom cf at level 69,
   only printing,
   x name, A name, E name,
@@ -34,7 +34,7 @@ Notation "'Let' '{' A E '}' x ':=' F1 'in' F2" :=
   format "'[v' '[' 'Let'  '{' A  E '}'  x  ':='  F1  'in' ']' '/' '[' F2 ']' ']'") : cfu_scope.
 
 Notation "'App' f v1 .. vn" :=
- (Wptag (Wpgen_app_untyped (trm_apps f (trms_vals (@cons val v1 .. (@cons val vn (@nil val)) ..)))))
+ (Wpgen_app_untyped (trm_apps f (trms_vals (@cons val v1 .. (@cons val vn (@nil val)) ..))))
  (in custom cf at level 68,
   only printing,
   f constr at level 0,
@@ -42,7 +42,7 @@ Notation "'App' f v1 .. vn" :=
   vn constr at level 0) : cfu_scope.
 
 Notation "'App' f v1 v2 .. vn" :=
- (Wptag (Wpgen_app_untyped (trm_apps f (trms_vals (@cons val v1 (@cons val v2 .. (@cons val vn (@nil val)) ..))))))
+ (Wpgen_app_untyped (trm_apps f (trms_vals (@cons val v1 (@cons val v2 .. (@cons val vn (@nil val)) ..)))))
  (in custom cf at level 68,
   only printing,
   f constr at level 0,
@@ -51,7 +51,7 @@ Notation "'App' f v1 v2 .. vn" :=
   vn constr at level 0) : cfu_scope.
 
 Notation "F1 ; F2" :=
- (Wptag (Wpgen_seq F1 F2))
+ (Wpgen_seq F1 F2)
  (in custom cf at level 68,
   only printing,
   F1 custom cf at level 99,
@@ -59,7 +59,7 @@ Notation "F1 ; F2" :=
   right associativity,
   format "'[v' '[' F1 ']'  ; '/' '[' F2 ']' ']'") : cfu_scope.
 
-Notation "'Bind' x ':' T 'In' F ; Q" :=
+Notation "'Bind' x ':' T 'In' '`' F ; Q" :=
  (fun x : T => (Wptag F) _ _ Q)
  (at level 200,
   only printing,
@@ -67,12 +67,12 @@ Notation "'Bind' x ':' T 'In' F ; Q" :=
   F custom cf at level 0,
   Q constr at level 200,
   right associativity,
-  format "'[v' '[' 'Bind'  x  ':'  T  'In' ']' '/' '[' F ']' '/' ; '/' '[' Q ']' ']'") : cfu_scope.
+  format "'[v' '[' 'Bind'  x  ':'  T  'In' ']' '/' '[' '`' F ']' '/' ; '/' '[' Q ']' ']'") : cfu_scope.
 
 (** ** Overwritten notations. *)
 
 Notation "'Let' x ':=' F1 'in' F2" :=
- (Wptag (Wpgen_let_trm F1 (fun x => F2)))
+ (Wpgen_let_trm F1 (fun x => F2))
  (in custom cf at level 69,
   only printing,
   x ident,
@@ -82,7 +82,7 @@ Notation "'Let' x ':=' F1 'in' F2" :=
   format "'[v' '[' 'Let'  x  ':='  F1  'in' ']' '/' '[' F2 ']' ']'") : cfu_scope.
 
 Notation "'If_' v 'Then' F1 'Else' F2" :=
- (Wptag (Wpgen_if v F1 F2))
+ (Wpgen_if v F1 F2)
  (in custom cf at level 69,
   only printing,
   v constr at level 69,
@@ -90,6 +90,22 @@ Notation "'If_' v 'Then' F1 'Else' F2" :=
   F2 custom cf at level 99,
   left associativity,
   format "'[v' '[' 'If_'  v  'Then'  ']' '/' '['   F1 ']' '/' 'Else' '/' '['   F2 ']' ']'") : cfu_scope.
+
+Notation "'App' f v1" :=
+ (Wpgen_app_untyped (trm_apps f (cons v1 nil)))
+ (in custom cf at level 68,
+  only printing,
+  f constr at level 0,
+  v1 constr at level 0) : cfu_scope.
+
+Notation "'App' f v1 v2 .. vn" :=
+ (Wpgen_app_untyped (trm_apps f (cons v1 (cons v2 .. (cons vn nil) ..))))
+ (in custom cf at level 68,
+  only printing,
+  f constr at level 0,
+  v1 constr at level 0,
+  v2 constr at level 0,
+  vn constr at level 0) : cfu_scope.
 
 (* ========================================================================== *)
 (**  [Wpgen_let] *)
