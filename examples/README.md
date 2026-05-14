@@ -2,7 +2,7 @@
 
 The following are demos of interactive literate proof scripts for separation-logic proofs covering different frameworks and data structures:
 
-- Using [CFML](https://www.chargueraud.org/softs/cfml/): <a href="cfml/LiterateQueue.html">queues</a> (queue transfer) and <a href="cfml/LiterateTree.html">binary trees</a> (tree rotations)
+- Using [CFML](https://www.chargueraud.org/softs/cfml/): <a href="cfml/LiterateQueue.html">queues</a> (queue transfer), <a href="cfml/LiterateTree.html">binary trees</a> (tree rotations), <a href="cfml/LiterateList.html">linked lists</a> (list API)
 
 - Using [Iris](https://iris-project.org/): <a href="iris/Queue.html">queues</a> (queue transfer, same proof as the CFML one) and <a href="iris/LinkedLists.html">linked lists</a> (adapted from the [Iris tutorial](https://github.com/logsem/iris-tutorial); uses iterated separating conjunction)
 
