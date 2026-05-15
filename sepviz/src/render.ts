@@ -5,6 +5,8 @@ import { DotBuilder } from './dot-builder';
 import { graphviz, KeyMode } from 'd3-graphviz';
 import { Transition, transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
+// @ts-ignore
+import srcSvg from './assets/src.svg?raw';
 
 /**
  * https://github.com/magjac/d3-graphviz?tab=readme-ov-file#graphviz_keyMode
@@ -132,9 +134,11 @@ export class Render {
     this.hide(srcView); // default: diagram view
     srcView.addEventListener('click', () => this.toggle(dgmView, srcView));
 
-    const srcButton = createElement('button', ['src-button'], {
-      text: '📝',
-    });
+    const srcIcon = createElement('span', ['src-icon']);
+    srcIcon.innerHTML = srcSvg;
+
+    const srcButton = createElement('button', ['src-button']);
+    srcButton.appendChild(srcIcon);
     srcButton.addEventListener('click', () => this.toggle(srcView, dgmView));
 
     dgmView.append(srcButton, this.renderHProp(hprop));

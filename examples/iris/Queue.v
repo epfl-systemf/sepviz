@@ -125,7 +125,9 @@ Proof.
     iDestruct "HQ2" as (f2 b2 d2) "(Hp2 & HL2 & Hb2)".
     wp_load. wp_load. wp_pures.
     iDestruct (isListSeg_cons_inv with "HL2") as (c2) "[Hf2 HL2']".
-    wp_load. wp_load. wp_store. wp_load. wp_load. wp_store. wp_store. wp_load. wp_store.
+    wp_load. wp_load. wp_store.
+    wp_load. wp_load. wp_store.
+    wp_store. wp_load. wp_store.
     iApply "HΦ". iModIntro.
     iSplitR "Hp2 Hf2".
     { unfold isQueue. iExists f1, b2, d2. iFrame.

@@ -54,6 +54,21 @@
   z-index: 10;
   font-family: 'Iosevka';
   font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.src-button .src-icon {
+  display: inline-flex;
+  width: 1em;
+  height: 1em;
+}
+
+.src-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* NOTE: Use Courier 11 in graphviz and override display with Iosevka 12. */
