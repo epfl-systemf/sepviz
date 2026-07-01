@@ -14,15 +14,14 @@ constr:
     drawBorder: true
   '$MListSeg':
     label: 'MListSeg'
-    inPort: list
+    inPort: 'portL'
     args:
       0:
         forceEdge: true # forceEdge=true means there is always an edge to this argument
-        outPort: list
+        outPort: 'portL'
       1:
         inTable: true
-        inPort: list
-        outPort: list
+        inPort: 'portL'
   '$MTree':
     label: 'MTree'
     args:
