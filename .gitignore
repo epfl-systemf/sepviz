@@ -53,3 +53,4 @@ Makefile.coq.conf
 interop/*/vendor/.built
 *.vsix
 .direnv
+.envrc
