@@ -6,15 +6,17 @@ VO_FILES := $(V_FILES:.v=.vo)
 
 .PHONY: init all install clean
 
+all: init build
+
+build: $(VO_FILES)
+
 init:
 	opam install --yes --deps-only .
-
-all: $(VO_FILES)
 
 theories/%.vo: theories/%.v _CoqProject
 	coqc $(COQ_FLAGS) $<
 
-install: all
+install: build
 	install -d $(DESTDIR)$(COQ_LIB)/user-contrib/Sepviz
 	install -m 0644 theories/*.vo theories/*.glob theories/*.v \
 	    $(DESTDIR)$(COQ_LIB)/user-contrib/Sepviz/
