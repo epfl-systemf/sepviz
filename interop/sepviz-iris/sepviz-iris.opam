@@ -1,8 +1,9 @@
 opam-version: "2.0"
 name: "sepviz-iris"
+version: "0.1.0"
 synopsis: "Sepviz notations for Iris"
 authors: ["Yawen Guan" "Shardul Chiplunkar" "Clément Pit-Claudel"]
-maintainer: "clement.pit-claudel@epfl.ch"
+maintainer: "Yawen Guan <yawen.guan@epfl.ch>"
 homepage: "https://github.com/epfl-systemf/sepviz"
 bug-reports: "https://github.com/epfl-systemf/sepviz/issues"
 license: "MIT"
