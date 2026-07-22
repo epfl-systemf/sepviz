@@ -18,3 +18,7 @@ This library works with Coq 8.20.1 (most of the separation-logic libraries that 
 
 - Use `make init` to {OPAM,npm,pip} dependencies, then `make all` to build everything.
 - Use `make serve` and browse to `localhost:8080` to view generated examples.
+
+## Reading about the code 
+
+- [Yawen Guan, Shardul Chiplunkar, and Clément Pit-Claudel. 2026. Automatic Heap-Memory Diagrams for Separation-Logic Proofs. To appear in Computer Aided Verification: 38th International Conference, CAV 2026.](https://yawen.me/assets/sepviz.pdf)
