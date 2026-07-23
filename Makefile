@@ -1,3 +1,7 @@
+ROOT := $(abspath $(dir $(firstword $(MAKEFILE_LIST))))
+OCAMLC_VERSION := 5.4.0
+OPAM_SWITCH := $(ROOT)
+OPAM_EXEC := opam exec --switch="$(OPAM_SWITCH)" --
 SUBDIRS := interop/sepviz-iris interop/sepviz-cfml interop/sepviz-slf \
            sepviz sepviz-alectryon sepviz-vsrocq \
            examples
@@ -9,23 +13,24 @@ SUBDIRS := interop/sepviz-iris interop/sepviz-cfml interop/sepviz-slf \
 init: prepare $(SUBDIRS:%=init-%)
 
 prepare:
-	@if ! opam switch list --short | grep -qx coq-8.20; then \
-		opam switch create coq-8.20 5.4.0; \
+	@if [ ! -d $(ROOT)/_opam ]; then \
+		opam switch create $(ROOT) $(OCAMLC_VERSION) --no-install; \
+		echo "Local opam switch created at $(ROOT)."; \
+	else \
+		echo "Local opam switch already exists at $(ROOT); Reusing."; \
 	fi
-	@eval $$(opam env --switch=coq-8.20) && \
-	if ! opam repo list --short | grep -qx coq-released; then \
-		opam repo add coq-released https://coq.inria.fr/opam/released; \
+	@if ! opam repository list --switch=$(ROOT) --short | grep -Fxq coq-released; then \
+		opam repository add --switch=$(ROOT) coq-released https://coq.inria.fr/opam/released; \
 	fi
-	@eval $$(opam env --switch=coq-8.20)
 
 all:  $(SUBDIRS:%=all-%)
 clean: $(SUBDIRS:%=clean-%)
 distclean: $(SUBDIRS:%=distclean-%)
 
-$(SUBDIRS:%=init-%):      init-%:      ; +$(MAKE) -C $* init
-$(SUBDIRS:%=all-%):       all-%:       ; +$(MAKE) -C $* all
-$(SUBDIRS:%=clean-%):     clean-%:     ; +$(MAKE) -C $* clean
-$(SUBDIRS:%=distclean-%): distclean-%: ; +$(MAKE) -C $* distclean
+$(SUBDIRS:%=init-%):      init-%:      ; +$(OPAM_EXEC) $(MAKE) -C "$(ROOT)/$*" init
+$(SUBDIRS:%=all-%):       all-%:       ; +$(OPAM_EXEC) $(MAKE) -C "$(ROOT)/$*" all
+$(SUBDIRS:%=clean-%):     clean-%:     ; +$(OPAM_EXEC) $(MAKE) -C "$(ROOT)/$*" clean
+$(SUBDIRS:%=distclean-%): distclean-%: ; +$(OPAM_EXEC) $(MAKE) -C "$(ROOT)/$*" distclean
 
 serve-examples:
-	+$(MAKE) -C examples serve
+	+$(OPAM_EXEC) $(MAKE) -C examples serve
