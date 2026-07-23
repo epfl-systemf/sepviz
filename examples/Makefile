@@ -14,7 +14,7 @@ init: .venv
 	$(PYTHON) -m ensurepip --upgrade
 	$(PYTHON) -m pip install pyyaml alectryon==2.0.0
 
-all: $(EXAMPLES:%=all-%) $(addprefix _build/,$(ALECTRYON_DIST)) _build/index.html $(addprefix _build/,$(GIFS))
+all: $(EXAMPLES:%=all-%) $(addprefix _build/,$(ALECTRYON_DIST)) _build/index.html $(addprefix _build/,$(GIFS)) _build/control.js
 
 $(EXAMPLES:%=all-%):   all-%:   ; +$(MAKE) -C $* all
 $(EXAMPLES:%=clean-%): clean-%: ; +$(MAKE) -C $* clean
@@ -30,6 +30,9 @@ $(addprefix _build/,$(GIFS)): _build/%: gifs/% | _build
 
 _build/index.html: README.md | _build
 	$(ALECTRYON) --frontend md --backend webpage --no-header --webpage-style centered $< -o $@
+
+_build/control.js: control.js
+	cp $< $@
 
 serve:
 	cd _build && python3 -m http.server

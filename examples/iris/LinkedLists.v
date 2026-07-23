@@ -319,4 +319,5 @@ End linked_lists.
 
    <link rel="stylesheet" href="../sepviz-alectryon.css" />
    <script type="module" src="../sepviz-alectryon.js"></script>
+   <script type="text/javascript" src="../control.js"></script>
 |*)

@@ -196,6 +196,9 @@ body[class^='vscode-'] .src-button {
 
 /* Do not show the goal when hovering a sentence. */
 @media (any-hover: hover) {
-.alectryon-io .alectryon-sentence:hover .alectryon-output:not(:hover) {
+  .alectryon-io
+    .alectryon-sentence:not(.alectryon-target):hover
+    .alectryon-output:not(:hover) {
     display: none;
+  }
 }
