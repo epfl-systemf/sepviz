@@ -7,7 +7,7 @@ GIFS           := queue-transfer.gif tree-right-rotate.gif
 .PHONY: init all serve clean distclean $(EXAMPLES:%=all-%) $(EXAMPLES:%=clean-%)
 
 init: .venv
-	opam install --yes vsrocq-language-server
+	@opam install --yes vsrocq-language-server
 
 .venv:
 	python3 -m venv .venv

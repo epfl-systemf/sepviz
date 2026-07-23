@@ -6,12 +6,10 @@ VO_FILES := $(V_FILES:.v=.vo)
 
 .PHONY: init all install clean vendor
 
-all: init build
-
 init:
 	opam install --yes --deps-only .
 
-build: vendor $(VO_FILES)
+all: vendor $(VO_FILES)
 
 vendor:
 	+$(MAKE) -C vendor/tlc

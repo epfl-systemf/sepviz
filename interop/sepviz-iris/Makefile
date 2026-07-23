@@ -6,9 +6,7 @@ VO_FILES := $(V_FILES:.v=.vo)
 
 .PHONY: init all install clean
 
-all: init build
-
-build: $(VO_FILES)
+all: $(VO_FILES)
 
 init:
 	opam install --yes --deps-only .
