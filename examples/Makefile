@@ -1,7 +1,7 @@
 PYTHON         := $(abspath .venv/bin/python)
 ALECTRYON      := $(PYTHON) -m alectryon
 EXAMPLES       := iris cfml slf talk-demo
-ALECTRYON_DIST := sepviz-alectryon.js sepviz-alectryon.css
+ALECTRYON_DIST := sepviz-alectryon.js sepviz-alectryon.js.map sepviz-alectryon.css
 GIFS           := queue-transfer.gif tree-right-rotate.gif
 
 .PHONY: init all serve clean distclean $(EXAMPLES:%=all-%) $(EXAMPLES:%=clean-%)
