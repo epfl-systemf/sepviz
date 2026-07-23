@@ -1,6 +1,6 @@
 PYTHON         := $(abspath .venv/bin/python)
 ALECTRYON      := $(PYTHON) -m alectryon
-EXAMPLES       := iris cfml slf
+EXAMPLES       := iris cfml slf talk-demo
 ALECTRYON_DIST := sepviz-alectryon.js sepviz-alectryon.css
 GIFS           := queue-transfer.gif tree-right-rotate.gif
 
