@@ -151,7 +151,8 @@
 :is(.alectryon-windowed .alectryon-io, .alectryon-io)
   .alectryon-sentence.alectryon-target
   .alectryon-output
-  .goal-hyps {
+  .goal-hyps,
+.alectryon-io .goal-hyps {
   flex-flow: row wrap;
   justify-content: flex-start;
 }
