@@ -73,43 +73,45 @@ export class Render {
   }
 
   public async animate(host: HTMLElement, duration = 2000) {
-    ['PRE', 'POST'].forEach(async (stream) => {
-      const vizNode = host.querySelector<HTMLElement>(
-        `.sep-visualization.sep-stream-${stream}`
-      );
-      const prevDot = this.prevDots.get(stream);
-      const svgNode = vizNode?.querySelector<ExtHTMLElement>('.sep-svg');
-      const gviz = svgNode?.__graphviz__;
-      const currDot = svgNode?.dot;
-      this.prevDots.set(stream, currDot);
+    await Promise.all(
+      ['PRE', 'POST'].map(async (stream) => {
+        const vizNode = host.querySelector<HTMLElement>(
+          `.sep-visualization.sep-stream-${stream}`
+        );
+        const prevDot = this.prevDots.get(stream);
+        const svgNode = vizNode?.querySelector<ExtHTMLElement>('.sep-svg');
+        const gviz = svgNode?.__graphviz__;
+        const currDot = svgNode?.dot;
+        this.prevDots.set(stream, currDot);
 
-      if (!vizNode || !gviz || !currDot || !prevDot || prevDot === currDot)
-        return;
-      const vid = vizNode.id;
-      if (!vid || this.rendering.has(vid)) return;
+        if (!vizNode || !gviz || !currDot || !prevDot || prevDot === currDot)
+          return;
+        const vid = vizNode.id;
+        if (!vid || this.rendering.has(vid)) return;
 
-      this.rendering.add(vid);
-      try {
-        // render the previous diagram instantly
-        await new Promise<void>((resolve) => {
-          gviz
-            .transition(() => transition().duration(0))
-            .renderDot(prevDot)
-            .on('end', resolve);
-        });
-        // transition to the current diagram
-        await new Promise<void>((resolve) => {
-          gviz
-            .transition(() =>
-              transition().duration(duration).ease(easeCubicInOut)
-            )
-            .renderDot(currDot)
-            .on('end', resolve);
-        });
-      } finally {
-        this.rendering.delete(vid);
-      }
-    });
+        this.rendering.add(vid);
+        try {
+          // render the previous diagram instantly
+          await new Promise<void>((resolve) => {
+            gviz
+              .transition(() => transition().duration(0))
+              .renderDot(prevDot)
+              .on('end', resolve);
+          });
+          // transition to the current diagram
+          await new Promise<void>((resolve) => {
+            gviz
+              .transition(() =>
+                transition().duration(duration).ease(easeCubicInOut)
+              )
+              .renderDot(currDot)
+              .on('end', resolve);
+          });
+        } finally {
+          this.rendering.delete(vid);
+        }
+      })
+    );
   }
 
   private hide(node: HTMLElement) {
