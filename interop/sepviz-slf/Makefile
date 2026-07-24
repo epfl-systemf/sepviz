@@ -20,9 +20,9 @@ theories/%.vo: theories/%.v _CoqProject
 	coqc $(COQ_FLAGS) $<
 
 install: all
-	install -d $(DESTDIR)$(COQ_LIB)/user-contrib/Sepviz
+	install -d $(DESTDIR)/lib/coq/user-contrib/Sepviz
 	install -m 0644 theories/*.vo theories/*.glob theories/*.v \
-	    $(DESTDIR)$(COQ_LIB)/user-contrib/Sepviz/
+	    $(DESTDIR)/lib/coq/user-contrib/Sepviz/
 
 clean:
 	find theories -type f \( -name '*.vo' -o -name '*.vok' -o -name '*.vos' -o -name '*.glob' -o -name '.*.aux' \) -delete
