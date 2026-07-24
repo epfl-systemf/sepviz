@@ -94,13 +94,20 @@ Proof using.
   - xunfold MQueue. xpull ;=> f2 b2 d2 f1 b1 d1.
     destruct L2 as [| x L2']; [solve [tryfalse] |].
     xchange MListSeg_cons ;=> c2.
-    mxapp Triple_get_tail. mxapp Triple_get_head.
-    mxapp Triple_get_head. mxapp Triple_get_head.
-    mxapp Triple_set_head. mxapp Triple_get_tail.
-    mxapp Triple_set_tail. mxapp Triple_get_tail.
-    mxapp Triple_set_tail. mxapp Triple_set_head.
-    mxapp Triple_set_tail. mxapp Triple_set_tail.
-    xchange <- (@MListSeg_cons A EA b1). xchange <- (@MListSeg_concat A EA f1).
+    mxapp Triple_get_tail.
+    mxapp Triple_get_head.
+    mxapp Triple_get_head.
+    mxapp Triple_get_head.
+    mxapp Triple_set_head.
+    mxapp Triple_get_tail.
+    mxapp Triple_set_tail.
+    mxapp Triple_get_tail.
+    mxapp Triple_set_tail.
+    mxapp Triple_set_head.
+    mxapp Triple_set_tail.
+    mxapp Triple_set_tail.
+    xchange <- (@MListSeg_cons A EA b1).
+    xchange <- (@MListSeg_concat A EA f1).
     xchanges (@MListSeg_nil_intro A EA f2).
   - subst. rew_list. mxvals.
 Qed.

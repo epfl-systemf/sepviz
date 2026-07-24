@@ -18,7 +18,8 @@ Fixpoint isListSeg (p: loc) (L : list val) (q: loc): iProp Σ :=
 Notation "'PointsTo' ┆ p ┆ ⟦ 'isListSeg' ┆ x ┆ y ⟧" :=
   (isListSeg p x y)
     (in custom sep at level 200,
-     p constr, x constr, y constr at level 200): sepviz_scope.
+      p constr, x constr, y constr at level 200,
+      only printing): sepviz_scope.
 
 Lemma isListSeg_cons_inv (p : loc) (x : val) (L : list val) (q : loc) :
   isListSeg p (x::L) q ⊢ ∃ (p1: loc), p ↦ (x, #p1) ∗ isListSeg p1 L q.
@@ -28,31 +29,33 @@ Lemma isListSeg_cons_app: forall (p p1: loc) (x: val) (L: list val) (q: loc),
   p ↦ (x, #p1) ∗ isListSeg p1 L q ⊢ isListSeg p (x::L) q.
 Proof. iIntros. simpl. iFrame. Qed.
 
-Lemma isListSeg_concat : forall p1 p3 L1 L2,
-  isListSeg p1 (L1++L2) p3 ⊣⊢ ∃ p2, isListSeg p1 L1 p2 ∗ isListSeg p2 L2 p3.
+Lemma isListSeg_concat : forall p1 p2 p3 L1 L2,
+  isListSeg p1 L1 p2 ∗ isListSeg p2 L2 p3 ⊢ isListSeg p1 (L1 ++ L2) p3.
 Proof.
-  intros p1 p3 L1. revert p1.
+  intros p1 p2 p3 L1. revert p1.
   induction L1 as [| x L1' IH]; intros p1 L2.
-  - simpl. iSplit.
-    + iIntros "H". iExists p1. iFrame. done.
-    + iIntros "(%p2 & -> & H)". done.
-  - simpl. iSplit.
-    + iIntros "(%p1' & Hp & H)".
-      iDestruct (bi.equiv_entails_1_1 _ _ (IH p1' L2) with "H") as "(%p2 & H1 & H2)".
-      iExists p2. iFrame.
-    + iIntros "(%p2 & (%p1' & Hp & H1) & H2)".
-      iExists p1'. iFrame.
-      iApply (bi.equiv_entails_1_2 _ _ (IH p1' L2)).
-      iExists p2. iFrame.
+  - simpl. iIntros "(-> & H)". done.
+  - simpl.
+    iIntros "((%p1' & Hp1 & H1) & H2)". iFrame.
+     iApply IH. by iFrame.
 Qed.
 
-Definition isQueue (p: loc) (L: list val): iProp Σ :=
+Definition isQueue (p : loc) (L : list val): iProp Σ :=
   ∃ (f b: loc) (d: val), p ↦ (#f, #b) ∗ isListSeg f L b ∗ b ↦ (d, NONEV).
 
 Notation "'PointsTo' ┆ p ┆ ⟦ 'isQueue' ┆ x ⟧" :=
   (isQueue p x)
     (in custom sep at level 200,
-     p constr, x constr at level 200): sepviz_scope.
+        p constr, x constr at level 200,
+        only printing): sepviz_scope.
+
+Lemma isQueue_fold (p f b : loc) (L : list val) (d : val) :
+  p ↦ (#f, #b) ∗ isListSeg f L b ∗ b ↦ (d, NONEV) ⊢ isQueue p L.
+Proof. iIntros "(Hp & HL & Hb)". iExists f, b, d. iFrame. Qed.
+
+Lemma isQueue_fold_empty (p f : loc) (d : val) :
+  p ↦ (#f, #f) ∗ f ↦ (d, NONEV) ⊢ isQueue p [].
+Proof. iIntros "(Hp & Hf)". iApply isQueue_fold. by iFrame. Qed.
 
 Definition is_empty : val :=
   λ: "p",
@@ -90,9 +93,7 @@ Proof.
   rewrite /is_empty.
   wp_pures.
   iDestruct "HQ" as (f b d) "(Hp & Hseg & Hb)".
-  wp_load.
-  wp_pures.
-  iModIntro.
+  wp_load. wp_pures. iModIntro.
   destruct L as [| x L1].
   - (* L = [] *)
     simpl. iDestruct "Hseg" as %->. rewrite bool_decide_true; auto.
@@ -125,15 +126,19 @@ Proof.
     iDestruct "HQ2" as (f2 b2 d2) "(Hp2 & HL2 & Hb2)".
     wp_load. wp_load. wp_pures.
     iDestruct (isListSeg_cons_inv with "HL2") as (c2) "[Hf2 HL2']".
-    wp_load. wp_load. wp_store.
-    wp_load. wp_load. wp_store.
-    wp_store. wp_load. wp_store.
-    iApply "HΦ". iModIntro.
-    iSplitR "Hp2 Hf2".
-    { unfold isQueue. iExists f1, b2, d2. iFrame.
-      iApply isListSeg_concat. iExists b1. iFrame. }
-    { unfold isQueue. iExists f2, f2, d1. iFrame. done. }
+    wp_load; wp_load; wp_store.
+    wp_load; wp_load; wp_store.
+    wp_store. wp_load; wp_store.
+    iApply "HΦ"; iModIntro.
+    iPoseProof (isQueue_fold_empty with "[$Hp2 $Hf2]") as "HQ2". iFrame "HQ2".
+    iPoseProof (isListSeg_cons_app with "[$Hb1 $HL2']") as "HL2".
+    iPoseProof (isListSeg_concat with "[$HL1 $HL2]") as "HL".
+    iPoseProof (isQueue_fold with "[$Hp1 $HL $Hb2]") as "HQ1". by iFrame.
 Qed.
+
+(*|
+.. coq:: none
+|*)
 
 End queues.
 
