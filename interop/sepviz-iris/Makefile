@@ -14,7 +14,7 @@ init:
 theories/%.vo: theories/%.v _CoqProject
 	coqc $(COQ_FLAGS) $<
 
-install: build
+install: all
 	install -d $(DESTDIR)$(COQ_LIB)/user-contrib/Sepviz
 	install -m 0644 theories/*.vo theories/*.glob theories/*.v \
 	    $(DESTDIR)$(COQ_LIB)/user-contrib/Sepviz/
