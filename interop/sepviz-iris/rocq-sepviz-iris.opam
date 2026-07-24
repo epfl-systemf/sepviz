@@ -10,7 +10,7 @@ license: "MIT"
 build:   [ [ make "all" "-j%{jobs}%" ] ]
 install: [ [ make "install" "DESTDIR=%{prefix}%" ] ]
 depends: [
-  "coq" { >= "8.20.1" }
-  "coq-iris" { >= "4.3.0" }
-  "coq-iris-heap-lang" { >= "4.3.0" }
+  "rocq-core" { >= "9.0.1" }
+  "rocq-iris" { >= "4.5.0" }
+  "rocq-iris-heap-lang" { >= "4.5.0" }
 ]
