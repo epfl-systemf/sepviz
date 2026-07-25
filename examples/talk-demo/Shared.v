@@ -103,3 +103,5 @@ Notation "'PointsTo' ┆ p ┆ ⟦ 'isQueue' ┆ x ⟧" :=
     (in custom sep at level 200,
         p constr, x constr at level 200,
         only printing): sepviz_scope.
+
+Notation "'NONEV'" := (InjLV (LitV LitUnit)) (only printing).

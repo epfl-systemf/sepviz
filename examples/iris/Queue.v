@@ -9,6 +9,8 @@ From Sepviz Require Import IrisNotations.
 Section queues.
 Context `{!heapGS Σ}.
 
+Notation "'NONEV'" := (InjLV (LitV LitUnit)) (only printing).
+
 Fixpoint isListSeg (p: loc) (L : list val) (q: loc): iProp Σ :=
   match L with
   | [] => ⌜p = q⌝
