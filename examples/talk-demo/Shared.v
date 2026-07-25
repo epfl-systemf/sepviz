@@ -94,14 +94,16 @@ End queues.
 
 Notation "'PointsTo' ┆ p ┆ ⟦ 'isListSeg' ┆ x ┆ y ⟧" :=
   (isListSeg p x y)
-    (in custom sep at level 200,
-        p constr, x constr, y constr at level 200,
-        only printing): sepviz_scope.
+  (in custom sep at level 200,
+   p constr, x constr, y constr at level 200,
+   format "PointsTo ┆ p ┆ ⟦ isListSeg ┆ x ┆ y ⟧",
+   only printing): sepviz_scope.
 
 Notation "'PointsTo' ┆ p ┆ ⟦ 'isQueue' ┆ x ⟧" :=
   (isQueue p x)
-    (in custom sep at level 200,
-        p constr, x constr at level 200,
-        only printing): sepviz_scope.
+  (in custom sep at level 200,
+   p constr, x constr at level 200,
+   format "PointsTo ┆ p ┆ ⟦ isQueue ┆ x ⟧",
+   only printing): sepviz_scope.
 
 Notation "'NONEV'" := (InjLV (LitV LitUnit)) (only printing).

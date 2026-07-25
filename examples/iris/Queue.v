@@ -19,9 +19,10 @@ Fixpoint isListSeg (p: loc) (L : list val) (q: loc): iProp Σ :=
 
 Notation "'PointsTo' ┆ p ┆ ⟦ 'isListSeg' ┆ x ┆ y ⟧" :=
   (isListSeg p x y)
-    (in custom sep at level 200,
-      p constr, x constr, y constr at level 200,
-      only printing): sepviz_scope.
+  (in custom sep at level 200,
+   p constr, x constr, y constr at level 200,
+   format "PointsTo ┆ p ┆ ⟦ isListSeg ┆ x ┆ y ⟧",
+   only printing): sepviz_scope.
 
 Lemma isListSeg_cons_inv (p : loc) (x : val) (L : list val) (q : loc) :
   isListSeg p (x::L) q ⊢ ∃ (p1: loc), p ↦ (x, #p1) ∗ isListSeg p1 L q.
@@ -47,9 +48,10 @@ Definition isQueue (p : loc) (L : list val): iProp Σ :=
 
 Notation "'PointsTo' ┆ p ┆ ⟦ 'isQueue' ┆ x ⟧" :=
   (isQueue p x)
-    (in custom sep at level 200,
-        p constr, x constr at level 200,
-        only printing): sepviz_scope.
+  (in custom sep at level 200,
+   p constr, x constr at level 200,
+   format "PointsTo ┆ p ┆ ⟦ isQueue ┆ x ⟧",
+   only printing): sepviz_scope.
 
 Lemma isQueue_fold (p f b : loc) (L : list val) (d : val) :
   p ↦ (#f, #b) ∗ isListSeg f L b ∗ b ↦ (d, NONEV) ⊢ isQueue p L.
