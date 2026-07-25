@@ -1,5 +1,5 @@
 opam-version: "2.0"
-name: "sepviz-slf"
+name: "rocq-sepviz-slf"
 synopsis: "Sepviz notations for Separation Logic Foundations"
 authors: ["Yawen Guan" "Shardul Chiplunkar" "Clément Pit-Claudel"]
 maintainer: "clement.pit-claudel@epfl.ch"

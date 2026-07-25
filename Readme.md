@@ -25,26 +25,26 @@ The main branch works with Coq 8.20.1, as not all of the separation-logic librar
 
 The framework-specific interoperability packages can be installed separately.
 
-### `sepviz-iris`
+### `rocq-sepviz-iris`
 
 For Coq versions 8.20.1 or later, but earlier than Rocq 9.0, with Iris 4.3.0 or later, install from the main branch:
 ```bash
-opam pin add -n sepviz-iris.dev https://github.com/epfl-systemf/sepviz.git --subpath=interop/sepviz-iris
-opam install sepviz-iris.dev
+opam pin add -n rocq-sepviz-iris.dev https://github.com/epfl-systemf/sepviz.git --subpath=interop/sepviz-iris
+opam install rocq-sepviz-iris.dev
 ```
 
 For Rocq 9.0.1 or later, install from the `rocq-9.0.1` branch:
 ```bash
-opam pin add -n sepviz-iris.dev https://github.com/epfl-systemf/sepviz.git\#rocq-9.0.1 --subpath=interop/sepviz-iris
-opam install sepviz-iris.dev
+opam pin add -n rocq-sepviz-iris.dev https://github.com/epfl-systemf/sepviz.git\#rocq-9.0.1 --subpath=interop/sepviz-iris
+opam install rocq-sepviz-iris.dev
 ```
 
-### `sepviz-cfml` and `sepviz-slf`
+### `rocq-sepviz-cfml` and `rocq-sepviz-slf`
 
 For Coq versions 8.20.1 or later, but earlier than Rocq 9.0, replace `<framework>` with either `cfml` or `slf`:
 ```bash
-opam pin add -n sepviz-<framework>.dev https://github.com/epfl-systemf/sepviz.git --subpath=interop/sepviz-<framework>
-opam install sepviz-<framework>.dev
+opam pin add -n rocq-sepviz-<framework>.dev https://github.com/epfl-systemf/sepviz.git --subpath=interop/sepviz-<framework>
+opam install rocq-sepviz-<framework>.dev
 ```
 
 ## Reading about the code

@@ -1,5 +1,5 @@
 opam-version: "2.0"
-name: "sepviz-iris"
+name: "rocq-sepviz-iris"
 version: "0.1.0"
 synopsis: "Sepviz notations for Iris"
 authors: ["Yawen Guan" "Shardul Chiplunkar" "Clément Pit-Claudel"]

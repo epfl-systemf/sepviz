@@ -1,5 +1,5 @@
 opam-version: "2.0"
-name: "sepviz-cfml"
+name: "rocq-sepviz-cfml"
 version: "0.1.0"
 synopsis: "Sepviz notations for CFML"
 authors: ["Yawen Guan" "Shardul Chiplunkar" "Clément Pit-Claudel"]
