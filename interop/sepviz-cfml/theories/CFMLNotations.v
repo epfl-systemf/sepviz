@@ -12,41 +12,58 @@ Declare Custom Entry val.
 
 Notation "⟬  e  ⟭" :=
   (e)
-    (e custom sep at level 200, at level 0): sepviz_scope.
+  (e custom sep at level 200,
+   at level 0,
+   format "⟬ e ⟭",
+   only printing) : sepviz_scope.
 
 Notation "'Pure' ┆ P" :=
   (hpure P)
-    (in custom sep at level 200,
-     P constr at level 200): sepviz_scope.
+  (in custom sep at level 200,
+   P constr at level 200,
+   format "Pure ┆ P",
+   only printing) : sepviz_scope.
 
 Notation "'PointsTo' ┆ x ┆ ⟦ S ⟧" :=
   (repr S x)
-    (in custom sep at level 200,
-        x constr, S custom val at level 200): sepviz_scope.
+  (in custom sep at level 200,
+   x constr, S custom val at level 200,
+   format "PointsTo ┆ x ┆ ⟦ S ⟧",
+   only printing) : sepviz_scope.
 
 Notation "'Star' ┆ H1 ┆ H2" :=
   (hstar H1 H2)
-    (in custom sep at level 200,
-     H1 constr, H2 constr at level 200): sepviz_scope.
+  (in custom sep at level 200,
+   H1 constr, H2 constr at level 200,
+   format "Star ┆ H1 ┆ H2",
+   only printing) : sepviz_scope.
 
 Notation "'Wand' ┆ H1 ┆ H2" :=
   (hwand H1 H2)
-    (in custom sep at level 200,
-     H1 constr, H2 constr at level 200): sepviz_scope.
+  (in custom sep at level 200,
+   H1 constr, H2 constr at level 200,
+   format "Wand ┆ H1 ┆ H2",
+   only printing) : sepviz_scope.
 
 Notation "'Exist' ┆ x ┆ P" :=
   (hexists (fun x => P))
-    (in custom sep at level 200,
-     x name, (* necessary for binder *)
-     P constr at level 200): sepviz_scope.
+  (in custom sep at level 200,
+   x name, (* necessary for binder *)
+   P constr at level 200,
+   format "Exist ┆ x ┆ P",
+   only printing) : sepviz_scope.
 
 Notation "'Opaque' ┆ 'GC'" :=
   (hgc)
-    (in custom sep at level 200): sepviz_scope.
+  (in custom sep at level 200,
+   format "Opaque ┆ GC",
+   only printing) : sepviz_scope.
 
 Notation "'Opaque' ┆ 'emp'" :=
   (hempty)
-    (in custom sep at level 200): sepviz_scope.
+  (in custom sep at level 200,
+   format "Opaque ┆ emp",
+   only printing) : sepviz_scope.
 
 
 (** ** Separation-logic formulas: props *)
@@ -54,28 +71,28 @@ Notation "'Opaque' ┆ 'emp'" :=
 #[warnings="-notation-incompatible-prefix"]
 Notation "'SPEC' t ⟬* 'PRE' @ H *⟭ ⟬* 'POST' @ Q *⟭" :=
   (Triple t H Q)
-    (at level 200,
-     t constr, H constr, Q constr at level 200,
-     only printing,
-     format "'SPEC'  t '//' '⟬*'  'PRE'  '@'  H  '*⟭' '//' '⟬*'  'POST'  '@'  Q  '*⟭'"): sepviz_scope.
+  (at level 200,
+   t constr, H constr, Q constr at level 200,
+   format "SPEC  t '//' ⟬* PRE @ H *⟭ '//' ⟬* POST @ Q *⟭",
+   only printing) : sepviz_scope.
 
 Notation "⟬* 'PRE' @ H *⟭ 'CODE' F ⟬* 'POST' @ Q *⟭" :=
   (himpl H (F _ _ Q))
-    (at level 200,
-     H constr,
-     F custom cf at level 0,
-     Q constr at level 200,
-     only printing,
-     format "'⟬*'  'PRE'  '@'  H  '*⟭' '//' 'CODE'  F '//' '⟬*'  'POST'  '@'  Q  '*⟭'"): sepviz_scope.
+  (at level 200,
+   H constr,
+   F custom cf at level 0,
+   Q constr at level 200,
+   format "⟬* PRE @ H *⟭ '//' CODE  F '//' ⟬* POST @  Q *⟭",
+   only printing) : sepviz_scope.
 
 (* For continuous animation *)
 #[warnings="-notation-incompatible-prefix"]
 Notation "⟬* 'PRE' @ H1 *⟭ ==> ⟬* 'POST' @ H2 *⟭" :=
   (himpl H1 H2)
-    (at level 200,
-     H1 constr, H2 constr at level 200,
-     only printing,
-     format "'⟬*'  'PRE'  '@'  H1  '*⟭' '==>' '⟬*'  'POST'  '@'  H2  '*⟭'"): sepviz_scope.
+  (at level 200,
+   H1 constr, H2 constr at level 200,
+   format "⟬* PRE @ H1 *⟭ ==> ⟬* POST @ H2 *⟭",
+   only printing) : sepviz_scope.
 
 
 (** ** Disabled notations *)
@@ -97,7 +114,9 @@ End septest.
 
 Notation "⟦ e ⟧" :=
   (e)
-    (e custom val at level 200, at level 0): sepviz_scope.
+  (e custom val at level 200, at level 0,
+   format "⟦ e ⟧",
+   only printing) : sepviz_scope.
 
 #[export] Set Warnings
   "-notation-overridden,-notation-incompatible-prefix,-ambiguous-paths".
