@@ -1,5 +1,7 @@
 # Sepviz
 
+[▶️ Try the online demo interactively](https://systemf.epfl.ch/etc/sepviz/)
+
 ![Sepviz demo](examples/gifs/queue-transfer.png)
 
 A library for visualizing and animating separation-logic formulas as memory diagrams.  This repo contains:
@@ -49,4 +51,4 @@ opam install rocq-sepviz-<framework>.dev
 
 ## Reading about the code
 
-- [Yawen Guan, Shardul Chiplunkar, and Clément Pit-Claudel. 2026. Automatic Heap-Memory Diagrams for Separation-Logic Proofs. To appear in Computer Aided Verification: 38th International Conference, CAV 2026.](https://yawen.me/assets/sepviz.pdf)
+- Guan, Y., Chiplunkar, S., Pit-Claudel, C. (2026). Automatic Heap-Memory Diagrams for Separation-Logic Proofs. In: Darulova, E., Lin, A.W., Rümmer, P. (eds) Computer Aided Verification. CAV 2026. Lecture Notes in Computer Science, vol 16683. Springer, Cham. [https://doi.org/10.1007/978-3-032-32526-6_12](https://doi.org/10.1007/978-3-032-32526-6_12)
