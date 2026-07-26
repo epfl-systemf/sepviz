@@ -130,9 +130,9 @@ Proof.
     iDestruct "HQ2" as (f2 b2 d2) "(Hp2 & HL2 & Hb2)".
     wp_load. wp_load. wp_pures.
     iDestruct (isListSeg_cons_inv with "HL2") as (c2) "[Hf2 HL2']".
-    wp_load; wp_load; wp_store.
-    wp_load; wp_load; wp_store.
-    wp_store. wp_load; wp_store.
+    wp_load. wp_load. wp_store.
+    wp_load. wp_load. wp_store.
+    wp_store. wp_load. wp_store.
     iApply "HΦ"; iModIntro.
     iPoseProof (isQueue_fold_empty with "[$Hp2 $Hf2]") as "HQ2". iFrame "HQ2".
     iPoseProof (isListSeg_cons_app with "[$Hb1 $HL2']") as "HL2".
