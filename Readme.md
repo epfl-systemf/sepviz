@@ -1,6 +1,8 @@
 # Sepviz
 
-[▶️ Try the online demo interactively](https://systemf.epfl.ch/etc/sepviz/)
+🕹️ Try the [online demo](https://systemf.epfl.ch/etc/sepviz/) interactively 
+
+📋 Tutorial: [Part 1: Heap Predicates as Memory Diagrams](https://systemf.epfl.ch/blog/sepviz-part1/), [Part 2: Animation and Extensions](https://systemf.epfl.ch/blog/sepviz-part2/)
 
 ![Sepviz demo](examples/gifs/queue-transfer.png)
 
